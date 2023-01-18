@@ -1,0 +1,75 @@
+- name: test downloading and installing MQ
+  hosts: docker
+  become: true
+  environment:
+    PATH: /opt/mqm/bin:{{ ansible_env.PATH }}
+
+  roles: 
+    - { role: ../../roles/setupusers }
+    - { role: ../../roles/downloadmq }
+    - { role: ../../roles/installmq }
+
+  tasks:
+    - name: Copy developer config file to target
+      copy:
+        src: ../../dev-config.mqsc
+        dest: /home/{{ ansible_ssh_user }}
+
+    - name: get 'mqclient' group
+      shell: getent group mqclient
+      register: testout_mqclient_group
+    - name: test 'mqclient' group exists
+      assert:
+        that:
+          - '{{ testout_mqclient_group.stdout_lines }} is search("mqclient")'
+    
+    - name: get 'app' user
+      shell: cat /etc/passwd
+      register: testout_app_user
+    - name: test 'app' user exists
+      assert:
+        that:
+          - '{{ testout_app_user.stdout_lines }} is search("app")'
+
+    - name: get mq download zip
+      stat:
+        path: /tmp/mq.tar.gz
+      register: testout_mq_downloaded
+    - name: test mq is downloaded
+      assert:
+        that:
+          - testout_mq_downloaded.stat.exists
+
+    - name: get mq unarchived directory
+      stat:
+        path: /tmp/MQServer
+      register: testout_mq_unarchived
+    - name: test mq is unarchived
+      assert:
+        that:
+          testout_mq_unarchived.stat.isdir
+
+    - name: Check license status
+      shell: cat /tmp/MQServer/licensestatus.txt
+      register: test_out_accepted
+
+    - name: test licence accepted
+      assert:
+        that: '{{ test_out_accepted }} is search("Proceed with install")'
+
+    - name: get mq version
+      shell: dspmqver
+      register: testout_mq_version
+    - name: test mq installed and environment variables set
+      assert:
+        that: '{{ testout_mq_version }} is search("LicenseType: Developer")'
+
+    - name: get dev config
+      stat: 
+        path: "/home/{{ ansible_ssh_user }}/dev-config.mqsc"
+      register: testout_dev_config_copied
+    - name: test dev config exists
+      assert:
+        that:
+          testout_dev_config_copied.stat.exists
+    

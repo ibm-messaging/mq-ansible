@@ -1,0 +1,38 @@
+- hosts: [YOUR_TARGET_MACHINES]
+  become: false
+  environment:
+    PATH: /opt/mqm/bin:{{ ansible_env.PATH }}
+
+  roles: 
+    - role: setupusers
+      vars:
+        gid: 999
+    - downloadmq
+    - installmq
+    - getconfig
+    - setupconsole
+    - startconsole
+ 
+  tasks:
+
+    - name: Create a queue manager
+      queue_manager:
+        qmname: 
+        - 'QM1'
+        - 'QM2'
+        state: 'present'
+ 
+    - name: Start a queue manager
+      queue_manager:
+        qmname:
+        - 'QM1'
+        - 'QM2'
+        state: 'running'
+
+    - name: Run MQSC File
+      queue_manager:
+        qmname:
+        - 'QM1'
+        - 'QM2'
+        state: 'running'
+        mqsc_file: '/home/{{ ansible_ssh_user }}/dev-config.mqsc'

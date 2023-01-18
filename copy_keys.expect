@@ -1,0 +1,9 @@
+#!/usr/bin/expect -f
+spawn ssh-copy-id -i /home/travis/.ssh/id_rsa.pub -o StrictHostKeyChecking=no tester@172.18.0.2
+expect "password:"
+send "4vgju@bh9g4QZBvtjmw\n"
+expect eof
+spawn ssh-copy-id -i /home/travis/.ssh/id_rsa_root.pub -o StrictHostKeyChecking=no root@172.18.0.2
+expect "password:"
+send "g4QZB@vtjmw4vgjubh9\n"
+expect eof

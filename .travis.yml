@@ -1,0 +1,52 @@
+language: python
+python:
+- "3.10"
+sudo: required
+addons:
+  ssh_known_hosts: 
+  - 172.18.0.2
+  - ec2-44-203-149-160.compute-1.amazonaws.com
+before_install:
+- sudo apt-get update
+- sudo apt-get install build-essential procps curl file git python3.6 expect
+install:
+- pip install -r requirements.txt
+script:
+# Basic Tests, Independent of Operating System, VM or Container
+- cd ansible_collections/ibm/ibmmq
+- ansible-test sanity --docker --python 3.10 library/queue_manager.py
+- ansible-test units --docker --python 3.10 tests/unit/test_queue_manager.py > log.txt
+- cat log.txt
+# Docker Ubuntu Container Testing:
+- sudo docker build -t sshd_ubuntu .
+- docker run -d -P --name ansible_mq sshd_ubuntu
+#   Add SSH Keys:
+- cd ~/.ssh
+- echo "y\n" | HOSTNAME=`172.18.0.2` ssh-keygen -t rsa -C "$HOSTNAME" -f "$HOME/.ssh/id_rsa" -P ""
+- echo "y\n" | HOSTNAME=`172.18.0.2` ssh-keygen -t rsa -C "$HOSTNAME" -f "$HOME/.ssh/id_rsa_root" -P ""
+- cd ~/build/James-Page/ansible_mq
+- chmod +x copy_keys.expect
+- ./copy_keys.expect
+- cd ansible_collections/ibm/ibmmq
+- chmod 600 tests/playbooks/mq-ansible-23.pem
+- cd tests/playbooks
+#   Install MQ:
+- export ANSIBLE_ROLES_PATH=../../roles
+- export ANSIBLE_LIBRARY=../../library
+- ansible-playbook --inventory inventory_tester.ini ibmmq_travis.yml --tags "untagged, never" --extra-vars "ansible_sudo_pass=4vgju@bh9g4QZBvtjmw"
+#   Test Module:
+#   NOTE: For any tests requiring the non-root user "tester", you may need to provide the argument '--extra-vars "ansible_sudo_pass=4vgju@bh9g4QZBvtjmw"'
+- ansible-playbook --inventory inventory_tester.ini setup_test.yml --extra-vars "ansible_sudo_pass=4vgju@bh9g4QZBvtjmw"
+- ansible-playbook --inventory inventory_tester.ini test_install.yml --extra-vars "ansible_sudo_pass=4vgju@bh9g4QZBvtjmw"
+- ansible-playbook --inventory inventory_tester.ini test_web_console.yml --extra-vars "ansible_sudo_pass=4vgju@bh9g4QZBvtjmw"
+- ansible-playbook --inventory inventory_tester.ini test_absent_qmgr.yml --extra-vars "ansible_sudo_pass=4vgju@bh9g4QZBvtjmw"
+- ansible-playbook --inventory inventory_tester.ini test_present_qmgr.yml --extra-vars "ansible_sudo_pass=4vgju@bh9g4QZBvtjmw"
+- ansible-playbook --inventory inventory_tester.ini test_running_qmgr.yml --extra-vars "ansible_sudo_pass=4vgju@bh9g4QZBvtjmw"
+- ansible-playbook --inventory inventory_tester.ini test_misc.yml --extra-vars "ansible_sudo_pass=4vgju@bh9g4QZBvtjmw"
+
+#   Insert extra playbook tests here.
+- ansible-playbook --inventory inventory_tester.ini cleanup_test.yml --extra-vars "ansible_sudo_pass=4vgju@bh9g4QZBvtjmw"
+
+# Amazon Web Services (AWS) Testing. Might need to do:
+# .   Create the tester user on AWS container if not done so already.
+# .    Dynamically provision AWS VM

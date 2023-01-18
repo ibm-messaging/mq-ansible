@@ -1,0 +1,59 @@
+- name: test downloading and installing MQ
+  hosts: docker
+  become: false
+  environment:
+    PATH: /opt/mqm/bin:{{ ansible_env.PATH }}
+
+  roles:
+    - { role: ../../roles/setupconsole }
+    - { role: ../../roles/startconsole }
+
+  tasks:
+    - name: get old mqwebuser
+      stat:
+        path: /var/mqm/web/installations/Installation1/servers/mqweb/mqwebuser.old
+      register: testout_mqwebuser_old
+    - name: test old registry exists
+      assert:
+        that:
+          - testout_mqwebuser_old.stat.exists
+
+    - name: get mqwebuser
+      stat:
+        path: /var/mqm/web/installations/Installation1/servers/mqweb/mqwebuser.xml
+      register: testout_mqwebuser
+    - name: test new mqwebuser exists
+      assert:
+        that:
+          - testout_mqwebuser.stat.exists
+
+    - name: print mqwebuser
+      debug:
+        msg: testout_mqwebuser.stat.pw_name
+
+    - name: get mqwebuser file permissions
+      shell: ls -l /var/mqm/web/installations/Installation1/servers/mqweb/mqwebuser.xml
+      register: testout_mqwebuser_permissions
+    - name: test mqwebuser has correct permissions
+      assert:
+        that:
+          - '{{ testout_mqwebuser_permissions }} is search("-rw-r-----")'
+    
+    - name: test ansible user is owner of mqwebuser
+      assert:
+        that:
+          - '{{ testout_mqwebuser_permissions  }} is search("{{ ansible_ssh_user }}")'
+
+    - name: display web console status
+      shell: dspmqweb status
+      register: testout_webconsole_status
+    - name: test mq web console is running
+      assert:
+        that:
+          - '{{ testout_webconsole_status.stdout_lines }} is search("is running")'
+
+
+
+
+
+          

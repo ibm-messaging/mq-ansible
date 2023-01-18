@@ -1,0 +1,102 @@
+- name: misc tests (4)
+  hosts: all
+  become: false
+  environment:
+    PATH: /opt/mqm/bin:{{ ansible_env.PATH }}
+  tasks:
+  - name: (SETUP) create QMGR
+    queue_manager:
+      qmname: qm1_misc
+      state: present
+
+
+  - name: can delete when present
+    queue_manager:
+      qmname: qm1_misc
+      state: absent
+    register: testout_1
+    failed_when: False
+  - name: dump delete output
+    debug:
+      msg: '{{ testout_1 }}'
+  - name: Test delete output
+    assert:
+      that:
+        - testout_1.state == 'absent'
+        - testout_1.rc == 0
+        - testout_1.msg == "IBM MQ queue manager 'qm1_misc' deleted.\n"
+
+
+  - name: (CLEANUP) delete qmgr
+    retries: 3
+    delay: 1
+    queue_manager:
+      qmname: qm1_misc
+      state: 'absent'
+    register: testout_2
+    failed_when: False
+  - name: dump delete output
+    debug:
+      msg: '{{ testout_2 }}'
+
+
+  - name: can start and run straight away
+    queue_manager:
+      qmname: qm1_misc
+      state: running
+    register: testout_1
+    failed_when: False
+  - name: dump run output
+    debug:
+      msg: '{{ testout_1 }}'
+  - name: Test run output
+    assert:
+      that:
+        - testout_1.state == 'running'
+        - testout_1.rc == 0
+
+
+  - name: (CLEANUP) stop qmgr
+    until: testout_2.rc == 0
+    retries: 3
+    delay: 1
+    queue_manager:
+      qmname: qm1_misc
+      state: 'stopped'
+    register: testout_2
+    failed_when: False
+  - name: dump stop output
+    debug:
+      msg: '{{ testout_2 }}'
+
+  - name: (CLEANUP) delete qmgr
+    until: testout_2.state == 'absent'
+    retries: 3
+    delay: 1
+    queue_manager:
+      qmname: qm1_misc
+      state: 'absent'
+    register: testout_2
+    failed_when: False
+  - name: dump delete output
+    debug:
+      msg: '{{ testout_2 }}'
+
+
+  - name: can start, run and configure straight away
+    queue_manager:
+      qmname: qm1_misc_2
+      state: running
+      mqsc_file: mqsc_display
+    register: testout_1
+    failed_when: False
+  - name: dump run output
+    debug:
+      msg: '{{ testout_1 }}'
+  - name: Test run output
+    assert:
+      that:
+      # MQSC has run successfully
+        - testout_1.state == 'running'
+        - testout_1.rc == 0
+        - testout_1.msg == 'MQSC configuration successfully applied to Queue Manager'

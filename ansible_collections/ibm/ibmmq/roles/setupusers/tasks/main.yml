@@ -1,0 +1,18 @@
+---
+
+- name: Add 'mqclient' group
+  become: true
+  group:
+    name: mqclient
+    state: present
+    gid: "{{ gid }}"
+
+- name: Add the user 'app' with a specific UID
+  become: true
+  vars:
+    apppassword: "Passw0rd"
+  user:
+    name: app
+    password: "{{ 'apppassword' | password_hash('sha512', 65534 | random(seed=inventory_hostname) | string) }}"
+    uid: "{{ gid }}"
+    group: mqclient

@@ -1,0 +1,6 @@
+---
+
+- name: Copy developer config file to target
+  copy:
+    src: ../../../dev-config.mqsc
+    dest: "/home/{{ ansible_ssh_user }}"

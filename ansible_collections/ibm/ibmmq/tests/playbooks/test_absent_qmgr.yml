@@ -1,0 +1,52 @@
+- name: tests when absent (1)
+  hosts: all
+  become: false
+  environment:
+    PATH: /opt/mqm/bin:{{ ansible_env.PATH }}
+  tasks:
+
+  - name: cannot delete when already deleted
+    queue_manager:
+      qmname: qm1_does_not_exist
+      state: absent
+    register: testout_1
+    failed_when: False
+  - name: dump delete output
+    debug:
+      msg: '{{ testout_1 }}'
+  - name: Test delete output
+    assert:
+      that:
+        - testout_1.state == 'absent'
+        - testout_1.msg == 'AMQ8118E: IBM MQ queue manager does not exist.'
+
+  - name: stops QMGR unsuccessfully
+    queue_manager:
+      qmname: qm_1
+      state: stopped
+    register: testout_2
+    failed_when: False
+  - name: dump stop output
+    debug:
+      msg: '{{ testout_2 }}'
+  - name: Test stop output
+    assert:
+      that:
+        - testout_2.state == 'absent'
+        - testout_2.msg == 'AMQ8118E: IBM MQ queue manager does not exist.'
+
+  - name: creates QMGR successfully
+    queue_manager:
+      qmname: qm_1
+      state: present
+    register: testout_2
+    failed_when: False
+  - name: dump create output
+    debug:
+      msg: '{{ testout_2 }}'
+  - name: Test create output
+    assert:
+      that:
+        - testout_2.state == 'present'
+        - testout_2.rc == 0
+        - testout_2.msg == 'IBM MQ Queue Manager Created'
