@@ -30,6 +30,4 @@ Contributions.
 is maintained indefinitely and may be redistributed consistent with the license(s) involved.
 You will promptly notify the Eclipse Foundation if You become aware of any facts or circumstances that would make these commitments inaccurate in any way.
 To do so, please create an Issue in the appropriate GitHub repository.
-5) You certify that your contribution is licensed under Apache Licence Version 2.0, The MIT License, or any BSD License.
-6) Your certify that your contribution does not result in IBM MQ proprietary code being statically or dynamically linked to Ansible runtime.
 
