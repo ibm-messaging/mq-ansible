@@ -1,6 +1,6 @@
 # *MQ-Ansible*
 
-| :memo:        | Interested in contributing to this project? [Click here](contribution.md) to read our contributors' guide.       |
+| :memo:        | Interested in contributing to this project? Please read our [IBM Contributor License Agreement](CLA.md) and our [Contributing Guide](CONTRIBUTING.md).       |
 |---------------|:------------------------|
 
 A collection for automating the installation and configuration of IBM MQ using Ansible on Ubuntu 18.04 machines. Our aim is to make MQ-Ansible extensible for further and more detailed IBM MQ configuration.

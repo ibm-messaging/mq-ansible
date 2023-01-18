@@ -89,7 +89,9 @@ git merge upstream/main
 
 ### 5. Create a Pull Request 
 
-At this point, you are ready to make a pull request to the original repository. You should navigate to your forked repository and press the _New pull request_ button.
+Before creating a Pull Request, ensure you have read the [IBM Contributor License Agreement](CLA.md).
+
+Then, you are ready to make a pull request to the original repository. You should navigate to your forked repository and press the _New pull request_ button.
 
 You should add a title and a comment to the appropriate fields and then press the _Create pull request_ button. The maintainers of the original repository will then review your contribution and decide whether or not to accept your pull request.
  
