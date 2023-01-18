@@ -89,11 +89,11 @@ git merge upstream/main
 
 ### 5. Create a Pull Request 
 
-Before creating a Pull Request, ensure you have read the [IBM Contributor License Agreement](CLA.md). By creating a PR, you certify that:
-1. You certify that your contribution is licensed under Apache Licence Version 2.0, The MIT License, or any BSD License.
-2. Your certify that your contribution does not result in IBM MQ proprietary code being statically or dynamically linked to Ansible runtime.
+Before creating a Pull Request, ensure you have read the [IBM Contributor License Agreement](CLA.md). By creating a PR, you certify that your contribution:
+1. is licensed under Apache Licence Version 2.0, The MIT License, or any BSD License.
+2. does not result in IBM MQ proprietary code being statically or dynamically linked to Ansible runtime.
 
-Then, you are ready to make a pull request to the original repository. You should navigate to your forked repository and press the _New pull request_ button.
+Then, you are ready to make a pull request cd]cdto the original repository. You should navigate to your forked repository and press the _New pull request_ button.
 
 You should add a title and a comment to the appropriate fields and then press the _Create pull request_ button. The maintainers of the original repository will then review your contribution and decide whether or not to accept your pull request.
  
