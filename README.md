@@ -6,11 +6,11 @@
 A collection for automating the installation and configuration of IBM MQ using Ansible on Ubuntu machines. Our aim is to make MQ-Ansible extensible for further and more detailed IBM MQ configuration.
 
 This directory contains:
-- ansible [`roles`](https://github.ibm.com/James-Page/ansible_mq/tree/main/ansible_collections/ibm/ibmmq/roles) for the installation and configuration of IBM MQ.
+- ansible [`roles`](https://github.com/ibm-messaging/mq-ansible/tree/main/ansible_collections/ibm/ibmmq/roles) for the installation and configuration of IBM MQ.
 - module [`queue_manager.py`](ansible_collections/ibm/ibmmq/library/queue_manager.py) to create and configure a queue manager.
-- playbook [`ibmmq.yml`](https://github.ibm.com/James-Page/ansible_mq/blob/d00a7e8db925d2907c54bac16a573a1e33470187/ansible_collections/ibm/ibmmq/ibmmq.yml) which implements the roles and module.
+- playbook [`ibmmq.yml`](ansible_collections/ibm/ibmmq/ibmmq.yml) which implements the roles and module.
 
-For a detailed explanation and documentation on how MQ-Ansible works, click [here](https://github.ibm.com/James-Page/ansible_mq/wiki).
+For a detailed explanation and documentation on how MQ-Ansible works, click [here](https://github.com/ibm-messaging/mq-ansible/wiki).
 
 ## Requirements
 
@@ -19,7 +19,7 @@ For a detailed explanation and documentation on how MQ-Ansible works, click [her
 
 ## Roles for IBM MQ installation
 
-The roles in this collection carry out an installation of IBM MQ Advanced on an Ubuntu 18.04 target machine with ansible roles as yaml files. The roles have been implemented to set up the required users on the machine, download the software, install and configure IBM MQ, copy over a configurable `dev-config.mqsc` file ready to be run on the target machine, and set and start the web console. Developers can change this file to allow better configuration of their queue managers.
+The roles in this collection carry out an installation of IBM MQ Advanced on an Ubuntu target machine with ansible roles as yaml files. The roles have been implemented to set up the required users on the machine, download the software, install and configure IBM MQ, copy over a configurable `dev-config.mqsc` file ready to be run on the target machine, and set and start the web console. Developers can change this file to allow better configuration of their queue managers.
 
 
 ### Example
@@ -100,7 +100,7 @@ Before running the playbook implementing our modules and roles for IBM MQ:
 
 ### ibmmq.yml
 
-The sample playbook [`ibmmq.yml`](https://github.ibm.com/James-Page/ansible_mq/blob/d00a7e8db925d2907c54bac16a573a1e33470187/ansible_collections/ibm/ibmmq/ibmmq.yml) installs IBM MQ Advanced with our roles and configures a queue manager with the `queue_manager.py` module.
+The sample playbook [`ibmmq.yml`](ansible_collections/ibm/ibmmq/ibmmq.yml) installs IBM MQ Advanced with our roles and configures a queue manager with the `queue_manager.py` module.
 
 1. Before running the playbook, ensure that you have added the directory path to the PATH environment variable.
 
@@ -118,7 +118,7 @@ The sample playbook [`ibmmq.yml`](https://github.ibm.com/James-Page/ansible_mq/b
           $ set ANSIBLE_LIBRARY=<PATH-TO>/ansible_mq/ansible_collections/ibm/ibmmq/library
           ```
 
-2. Make sure you update the hosts in `ibmmq.yml` name to `YOUR_TARGET_MACHINES` group from your inventory file. Our playbook has as default `fyre`.
+2. Make sure you update the hosts in `ibmmq.yml` name to `YOUR_TARGET_MACHINES` group from your inventory file.
 
 3. Run the following command to execute the tasks within the playbook:
       ```shell
@@ -177,4 +177,4 @@ To run the test playbooks first:
 
 ## License
 
-[Apache 2.0 license](https://github.ibm.com/James-Page/ansible_mq/blob/more_readme_updates/LICENSE)
+[Apache 2.0 license](LICENSE)
