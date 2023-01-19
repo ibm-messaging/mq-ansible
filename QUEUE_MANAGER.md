@@ -1,6 +1,6 @@
 # `queue_manager.py` 
 
-Module to create, start, delete a queue manager and run MQSC file.
+Module to create, start, delete a queue manager and run MQSC files.
 
 ## Parameters
 
@@ -18,7 +18,7 @@ Module to create, start, delete a queue manager and run MQSC file.
 
 ## Examples for playbooks
 
-#### Creating queue manager task
+#### Creating a Queue Manager task
 
 ```
 - name: Create queue manager
@@ -27,7 +27,7 @@ Module to create, start, delete a queue manager and run MQSC file.
       state: present
 ```
 
-#### Starting queue manager task
+#### Starting a Queue Manager task
 
 ```
 - name: Start queue manager
@@ -36,7 +36,7 @@ Module to create, start, delete a queue manager and run MQSC file.
       state: running
 ```
 
-#### Delete queue manager task
+#### Deleting a Queue Manager task
 
 ```
 - name: Start queue manager
@@ -55,7 +55,7 @@ Module to create, start, delete a queue manager and run MQSC file.
       mqsc_file: 'commfile.in'
 ```
 
-## Example of unit testing of module 
+## Example of unit testing of a module 
 
 Note: Exeption classes `AnsibleExitJson` and `AnsibleFailJson` should be set. See [`test_queue_manager.py`](ansible_collections/ibm/ibmmq/tests/unit/test_queue_manager.py) for reference.
 

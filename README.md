@@ -14,7 +14,7 @@ For a detailed explanation and documentation on how MQ-Ansible works, click [her
 
 ## Requirements
 
-- `ansible` and `ansible-lint` is required on your local machine to run playbooks implementing this collection.
+- `ansible` and `ansible-lint` are required on your local machine to run playbooks implementing this collection.
 - An Ubuntu target machine is required to run MQ.
 
 ## Roles for IBM MQ installation
@@ -43,7 +43,7 @@ The roles in this collection carry out an installation of IBM MQ Advanced on an 
 
 ## Modules for IBM MQ resources' configuration
 
-- `queue_manager.py`- Creates, starts, deletes a IBM MQ queue manager and runs MQSC file. See documentation [here.](QUEUE_MANAGER.md)
+- `queue_manager.py`- Creates, starts, deletes an IBM MQ queue manager and runs an MQSC file. See the documentation [here.](QUEUE_MANAGER.md)
 
 # Run our sample playbook
 
@@ -53,7 +53,7 @@ The roles in this collection carry out an installation of IBM MQ Advanced on an 
 
 Before running the playbook implementing our modules and roles for IBM MQ:
 
-1. Check if you have an *ssh* key pair in order to access the target machines via ansible. Go to the `~/.ssh` directory in your machine and look for the `id_rsa` and `id_rsa.pub` files.
+1. Check if you have an *ssh* key pair in order to access the target machines via Ansible. Go to the `~/.ssh` directory in your machine and look for the `id_rsa` and `id_rsa.pub` files.
 
     ```shell
     $ cd ~/.ssh
@@ -71,7 +71,7 @@ Before running the playbook implementing our modules and roles for IBM MQ:
     $ ssh-copy-id -i id_rsa.pub [USER]@[YOUR_TARGET_MACHINE_IP]
     ```
     
-4. To confirm the keys have been copied succesfully, connect to your target machine by:
+4. To confirm the keys have been copied successfully, connect to your target machine by:
 
     ```shell
     $ ssh [USER]@[YOUR_TARGET_MACHINE_IP]
@@ -93,7 +93,7 @@ Before running the playbook implementing our modules and roles for IBM MQ:
     [YOUR_MACHINE_IP] ansible_ssh_user=[YOUR_USER]
     ```
 
-   - Change `YOUR_TARGET_MACHINES` to your machines group name, for example `fyre`.
+   - Change `YOUR_TARGET_MACHINES` to your machines' group name, for example `fyre`.
    - Change `YOUR_MACHINE_IP` to your target machine's public IP
    - Change `YOUR_USER` to your target machine's user.
    ##### *NOTE* : user on the target machine MUST NOT be root but MUST have `sudo` privileges.
@@ -134,7 +134,7 @@ The sample playbook [`ibmmq.yml`](ansible_collections/ibm/ibmmq/ibmmq.yml) insta
 
 # Troubleshooting
 
-If one of the following errors appear during the run of the playbook, run the following commands according to the problem:
+If one of the following errors appears during the run of the playbook, run the following commands according to the problem:
 
 - `Please add this host's fingerprint to your known_hosts file to manage this host.` - Indicates that an SSH password cannot be used instead of a key. 
   
@@ -160,7 +160,7 @@ If one of the following errors appear during the run of the playbook, run the fo
 
 ### Testing module's functionality with playbooks
 
-These playbooks test the functionality and performance of our roles and the queue_manager module in ansible plays.
+These playbooks test the functionality and performance of our roles and the queue_manager module in Ansible plays.
 
 To run the test playbooks first:
 
@@ -168,7 +168,7 @@ To run the test playbooks first:
     ```shell
     $ cd tests/playbooks
     ```
-2. export the modules to your ansible library
+2. export the modules to your Ansible library
     ```shell
     $ export ANSIBLE_LIBRARY=<PATH-TO>/ansible_mq/ansible_collections/ibm/ibmmq/library
     ```
