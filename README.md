@@ -56,33 +56,33 @@ Before running the playbook implementing our modules and roles for IBM MQ:
 1. Check if you have an *ssh* key pair in order to access the target machines via Ansible. Go to the `~/.ssh` directory in your machine and look for the `id_rsa` and `id_rsa.pub` files.
 
     ```shell
-    $ cd ~/.ssh
+     cd ~/.ssh
     ```
 
 2. If those two files are not in your `ssh` directory, you need to generate `id_rsa` and `id_rsa.pub` with the following command:
 
     ```shell
-    $ ssh-keygen
+     ssh-keygen
     ```
 
 3. Once the keys have been generated, these need to be copied to the target machine's user `ssh` directory. 
 
     ```shell
-    $ ssh-copy-id -i id_rsa.pub [USER]@[YOUR_TARGET_MACHINE_IP]
+     ssh-copy-id -i id_rsa.pub [USER]@[YOUR_TARGET_MACHINE_IP]
     ```
     
 4. To confirm the keys have been copied successfully, connect to your target machine by:
 
     ```shell
-    $ ssh [USER]@[YOUR_TARGET_MACHINE_IP]
+     ssh [USER]@[YOUR_TARGET_MACHINE_IP]
     ```
     This should connect to your target machine without asking for a password.
     
 5. Go to the `ansible_collections/ibm/ibmmq/` directory.
 
     ```shell
-    $ cd ..
-    $ cd ansible_collections/ibm/ibmmq/
+     cd ..
+     cd ansible_collections/ibm/ibmmq/
     ```
 
 
@@ -109,27 +109,27 @@ The sample playbook [`ibmmq.yml`](ansible_collections/ibm/ibmmq/ibmmq.yml) insta
     - On Mac:
 
           ```shell
-          $ export ANSIBLE_LIBRARY=<PATH-TO>/ansible_mq/ansible_collections/ibm/ibmmq/library
+           export ANSIBLE_LIBRARY=<PATH-TO>/ansible_mq/ansible_collections/ibm/ibmmq/library
           ```
 
     - On Windows: 
 
           ```shell
-          $ set ANSIBLE_LIBRARY=<PATH-TO>/ansible_mq/ansible_collections/ibm/ibmmq/library
+           set ANSIBLE_LIBRARY=<PATH-TO>/ansible_mq/ansible_collections/ibm/ibmmq/library
           ```
 
 2. Make sure you update the hosts in `ibmmq.yml` name to `YOUR_TARGET_MACHINES` group from your inventory file.
 
 3. Run the following command to execute the tasks within the playbook:
       ```shell
-      $ ansible-playbook ./ibmmq.yml -i inventory.ini -K
+       ansible-playbook ./ibmmq.yml -i inventory.ini -K
       ```
       - ##### *NOTE* : `-K` will prompt the user to enter the sudo password for [YOUR_USER] on the target machine.
 
 4. The playbook should return the result of `dspmq` with the queue manager created listed. Log into your target machine and check it manually:
 
     ```shell
-    $ dspmq
+     dspmq
     ```
 
 # Troubleshooting
@@ -166,11 +166,11 @@ To run the test playbooks first:
 
 1. make sure you are in the right directory 
     ```shell
-    $ cd tests/playbooks
+     cd tests/playbooks
     ```
 2. export the modules to your Ansible library
     ```shell
-    $ export ANSIBLE_LIBRARY=<PATH-TO>/ansible_mq/ansible_collections/ibm/ibmmq/library
+     export ANSIBLE_LIBRARY=<PATH-TO>/ansible_mq/ansible_collections/ibm/ibmmq/library
     ```
    - ##### *NOTE* : change `<PATH-TO>` to your local directory path:
 3. run all test playbooks with `main.py`
