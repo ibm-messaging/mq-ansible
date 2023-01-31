@@ -35,5 +35,5 @@
         - 'QM1'
         - 'QM2'
         state: 'running'
-        mqsc_file: '/home/{{ ansible_ssh_user }}/dev-config.mqsc'
+        mqsc_file: '/var/mqm/dev-config.mqsc'
 
