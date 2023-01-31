@@ -3,7 +3,7 @@
 | :memo:        | Interested in contributing to this project? Please read our [IBM Contributor License Agreement](CLA.md) and our [Contributing Guide](CONTRIBUTING.md).       |
 |---------------|:------------------------|
 
-A collection for automating the installation and configuration of IBM MQ using Ansible on Ubuntu machines. Our aim is to make MQ-Ansible extensible for further and more detailed IBM MQ configuration.
+A collection for automating the installation and configuration of IBM MQ using Ansible on Ubuntu machines. Our aim is to make MQ-Ansible extensible for other platforms and more detailed IBM MQ configuration.
 
 This directory contains:
 - ansible [`roles`](https://github.com/ibm-messaging/mq-ansible/tree/main/ansible_collections/ibm/ibmmq/roles) for the installation and configuration of IBM MQ.
@@ -19,7 +19,7 @@ For a detailed explanation and documentation on how MQ-Ansible works, click [her
 
 ## Roles for IBM MQ installation
 
-The roles in this collection carry out an installation of IBM MQ Advanced on an Ubuntu target machine with ansible roles as yaml files. The roles have been implemented to set up the required users on the machine, download the software, install and configure IBM MQ, copy over a configurable `dev-config.mqsc` file ready to be run on the target machine, and set and start the web console. Developers can change this file to allow better configuration of their queue managers.
+The roles in this collection carryout an installation of IBM MQ Advanced on an Ubuntu target machine. The roles have been implemented to set up the required users on the machine, download the software, install and configure IBM MQ, copy over a configurable `dev-config.mqsc` file ready to be run on the target machine, and setup and start the web console. Developers can change this file to allow better configuration of their queue managers.
 
 
 ### Example
@@ -89,14 +89,16 @@ Before running the playbook implementing our modules and roles for IBM MQ:
 6. Create a file `inventory.ini` inside the directory with the following content:
   
     ```ini
-    [YOUR_TARGET_MACHINES]
-    [YOUR_MACHINE_IP] ansible_ssh_user=[YOUR_USER]
-    ```
+    
+    [servers]
+    server-alias-n ansible_host=[YOUR_HOSTNAME_n] ansible_ssh_user=[YOUR_SSH_USER]
+    server-alias-n ansible_host=[YOUR_HOSTNAME_n] ansible_ssh_user=[YOUR_SSH_USER]
 
-   - Change `YOUR_TARGET_MACHINES` to your machines' group name, for example `fyre`.
-   - Change `YOUR_MACHINE_IP` to your target machine's public IP
-   - Change `YOUR_USER` to your target machine's user.
-   ##### *NOTE* : user on the target machine MUST NOT be root but MUST have `sudo` privileges.
+    ```
+   - Change each `server-alias-n` to an alias name that you wish to use
+   - Change each `YOUR_HOSTNAME_n` to your server/hostname, for example: `myserver-1.fyre.com`.
+   - Change `YOUR_SSH_USER` to your target machine's SSH user.
+   ##### *NOTE* : the user on the target machine MUST have `sudo` privileges.
 
 ### ibmmq.yml
 
@@ -109,13 +111,13 @@ The sample playbook [`ibmmq.yml`](ansible_collections/ibm/ibmmq/ibmmq.yml) insta
     - On Mac:
 
           ```shell
-           export ANSIBLE_LIBRARY=<PATH-TO>/ansible_mq/ansible_collections/ibm/ibmmq/library
+           export ANSIBLE_LIBRARY=${ANSIBLE_LIBRARY}:<PATH-TO>/ansible_mq/ansible_collections/ibm/ibmmq/library
           ```
 
     - On Windows: 
 
           ```shell
-           set ANSIBLE_LIBRARY=<PATH-TO>/ansible_mq/ansible_collections/ibm/ibmmq/library
+           set ANSIBLE_LIBRARY=%ANSIBLE_LIBRARY%;<PATH-TO>/ansible_mq/ansible_collections/ibm/ibmmq/library
           ```
 
 2. Make sure you update the hosts in `ibmmq.yml` name to `YOUR_TARGET_MACHINES` group from your inventory file.
@@ -173,7 +175,7 @@ To run the test playbooks first:
      export ANSIBLE_LIBRARY=<PATH-TO>/ansible_mq/ansible_collections/ibm/ibmmq/library
     ```
    - ##### *NOTE* : change `<PATH-TO>` to your local directory path:
-3. run all test playbooks with `main.py`
+3. run all test playbooks with `python3 main.py`
 
 ## License
 
