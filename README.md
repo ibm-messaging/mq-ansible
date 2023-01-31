@@ -120,15 +120,13 @@ The sample playbook [`ibmmq.yml`](ansible_collections/ibm/ibmmq/ibmmq.yml) insta
            set ANSIBLE_LIBRARY=%ANSIBLE_LIBRARY%;<PATH-TO>/ansible_mq/ansible_collections/ibm/ibmmq/library
           ```
 
-2. Make sure you update the hosts in `ibmmq.yml` name to `YOUR_TARGET_MACHINES` group from your inventory file.
-
-3. Run the following command to execute the tasks within the playbook:
+2. Run the following command to execute the tasks within the playbook:
       ```shell
-       ansible-playbook ./ibmmq.yml -i inventory.ini -K
+       ansible-playbook ./ibmmq.yml -i inventory.ini [-K]
       ```
-      - ##### *NOTE* : `-K` will prompt the user to enter the sudo password for [YOUR_USER] on the target machine.
+      - ##### *NOTE* : `-K` will prompt the user to enter the sudo password for [YOUR_SSH_USER] on the target machine, you can omit if you have setup SSH keys.
 
-4. The playbook should return the result of `dspmq` with the queue manager created listed. Log into your target machine and check it manually:
+3. The playbook should return the result of `dspmq` with the queue manager created listed. Log into your target machine and check it manually:
 
     ```shell
      dspmq
