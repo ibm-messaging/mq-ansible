@@ -17,41 +17,74 @@ For a detailed explanation and documentation on how MQ-Ansible works, click [her
 - `ansible` and `ansible-lint` are required on your local machine to run playbooks implementing this collection.
 - An Ubuntu target machine is required to run MQ.
 
-## Roles for IBM MQ installation
+## Playbooks and Roles for IBM MQ installation
 
-The roles in this collection carryout an installation of IBM MQ Advanced on an Ubuntu target machine. The roles have been implemented to set up the required users on the machine, download the software, install and configure IBM MQ, copy over a configurable `dev-config.mqsc` file ready to be run on the target machine, and setup and start the web console. Developers can change this file to allow better configuration of their queue managers.
+The playbooks and roles in this collection carryout an installation of IBM MQ Advanced on an Ubuntu target machine. The roles have been implemented to set up the required users on the machine, download the software, install and configure IBM MQ, copy over a configurable `dev-config.mqsc` file ready to be run on the target machine, and setup and start the web console. Developers can change this file to customise the configuration of their queue managers. Here we use a playbook that calls other playbooks but you can run the roles in playbooks to suit your requirements.
 
+### Example Playbooks
 
-### Example
+ibmmq.yml - this playbook calls the mq-install and mq-setup playbooks, host names are passed into the imported playbook variable as {{ ansible_play_batch }}
 
 ```yaml
-- hosts: [YOUR_TARGET_MACHINES]
+- name: Install and setup IBM MQ
+  hosts: ['servers']
+
+- name: Run the install playbook
+  import_playbook: mq-install.yml
+
+- name: Run the setup playbook
+  import_playbook: mq-setup.yml
+```
+
+mq-install.yml - this playbook installs IBM MQ with the SSH user specified in the inventory
+
+```yaml
+- hosts: "{{ ansible_play_batch }}"
+  serial: 1
   become: false
   environment:
     PATH: /opt/mqm/bin:{{ ansible_env.PATH }}
 
-  roles: 
+  roles:
     - role: setupusers
       vars:
-        gid: 989
+        gid: 909
     - downloadmq
     - installmq
+```
+mq-setup.yml - this playbook sets up IBM MQ using the 'mqm' user
+
+```yaml
+- hosts: "{{ ansible_play_hosts }}"
+  serial: 1
+  become: yes
+  become_user: mqm
+  environment:
+    PATH: /opt/mqm/bin:{{ ansible_env.PATH }}
+
+  roles:
     - getconfig
     - setupconsole
     - startconsole
-```
 
+  tasks:
+
+    - name: Create a queue manager
+      queue_manager:
+        qmname:
+        - 'QM1'
+        - 'QM2'
+        state: 'present'
+```
 ## Modules for IBM MQ resources' configuration
 
 - `queue_manager.py`- Creates, starts, deletes an IBM MQ queue manager and runs an MQSC file. See the documentation [here.](QUEUE_MANAGER.md)
 
 # Run our sample playbook
 
-### Setup (inventory.ini)
-
 ##### Note: *Ansible* must be installed on the local machine. ([Installation guide](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html))
 
-Before running the playbook implementing our modules and roles for IBM MQ:
+Before running the playbook and implementing our modules and roles for IBM MQ:
 
 1. Check if you have an *ssh* key pair in order to access the target machines via Ansible. Go to the `~/.ssh` directory in your machine and look for the `id_rsa` and `id_rsa.pub` files.
 
@@ -68,13 +101,13 @@ Before running the playbook implementing our modules and roles for IBM MQ:
 3. Once the keys have been generated, these need to be copied to the target machine's user `ssh` directory. 
 
     ```shell
-     ssh-copy-id -i id_rsa.pub [USER]@[YOUR_TARGET_MACHINE_IP]
+     ssh-copy-id -i id_rsa.pub [USER]@[YOUR_TARGET_HOST]
     ```
     
 4. To confirm the keys have been copied successfully, connect to your target machine by:
 
     ```shell
-     ssh [USER]@[YOUR_TARGET_MACHINE_IP]
+     ssh [USER]@[YOUR_TARGET_HOST]
     ```
     This should connect to your target machine without asking for a password.
     
@@ -91,20 +124,21 @@ Before running the playbook implementing our modules and roles for IBM MQ:
     ```ini
     
     [servers]
-    server-alias-n ansible_host=[YOUR_HOSTNAME_n] ansible_ssh_user=[YOUR_SSH_USER]
-    server-alias-n ansible_host=[YOUR_HOSTNAME_n] ansible_ssh_user=[YOUR_SSH_USER]
+    YOUR_HOST_ALIAS ansible_host=YOUR_HOSTNAME ansible_ssh_user=YOUR_SSH_USER
+    YOUR_HOST_ALIAS ansible_host=YOUR_HOSTNAME ansible_ssh_user=YOUR_SSH_USER
 
     ```
-   - Change each `server-alias-n` to an alias name that you wish to use
-   - Change each `YOUR_HOSTNAME_n` to your server/hostname, for example: `myserver-1.fyre.com`.
-   - Change `YOUR_SSH_USER` to your target machine's SSH user.
-   ##### *NOTE* : the user on the target machine MUST have `sudo` privileges.
+   :information_source: Note: You can specify one or more hosts.
+   - Change `YOUR_HOST_ALIAS` to an alias name that you wish to use e.g. `mq-host-1` , you can omit aliases if you prefer
+   - Change `YOUR_HOSTNAME` to your server/hostname, e.g. `myserver-1.fyre.com`
+   - Change `YOUR_SSH_USER` to your target machine's SSH user
+   ##### *NOTE* : the user on the target machine MUST have `root` or `sudo` privileges.
 
 ### ibmmq.yml
 
 The sample playbook [`ibmmq.yml`](ansible_collections/ibm/ibmmq/ibmmq.yml) installs IBM MQ Advanced with our roles and configures a queue manager with the `queue_manager.py` module.
 
-1. Before running the playbook, ensure that you have added the directory path to the PATH environment variable.
+1. Before running the playbook, ensure that you have added the following directory path to the ANSIBLE_LIBRARY environment variable.
 
     ##### *NOTE* : change `<PATH-TO>` to your local directory path:
 
@@ -124,7 +158,7 @@ The sample playbook [`ibmmq.yml`](ansible_collections/ibm/ibmmq/ibmmq.yml) insta
       ```shell
        ansible-playbook ./ibmmq.yml -i inventory.ini [-K]
       ```
-      - ##### *NOTE* : `-K` will prompt the user to enter the sudo password for [YOUR_SSH_USER] on the target machine, you can omit if you have setup SSH keys.
+      - ##### *NOTE* : The optional `-K` will prompt the user to enter the sudo password for [YOUR_SSH_USER] on the target machine, you can omit if you have setup SSH keys.
 
 3. The playbook should return the result of `dspmq` with the queue manager created listed. Log into your target machine and check it manually:
 
@@ -139,9 +173,9 @@ If one of the following errors appears during the run of the playbook, run the f
 - `Please add this host's fingerprint to your known_hosts file to manage this host.` - Indicates that an SSH password cannot be used instead of a key. 
   
   Fix:
-    ##### *NOTE* : change `[YOUR_MACHINE_IP]` to the target machine's public IP address
+    ##### *NOTE* : change `[YOUR_HOST]` to the target machine's network address
   ```shell
-  ssh-keyscan -H [YOUR_MACHINE_IP] >> ~/.ssh/known_hosts
+  ssh-keyscan -H [YOUR_HOST] >> ~/.ssh/known_hosts
   ```
 - `zsh: command not found: dspmq` - Appears that MQ environment variables have not been set.
 
