@@ -14,8 +14,10 @@ For a detailed explanation and documentation on how MQ-Ansible works, click [her
 
 ## Requirements
 
-- `ansible` and `ansible-lint` are required on your local machine to run playbooks implementing this collection.
+- `ansible`, `passlib` and `ansible-lint` are required on your local machine to run playbooks implementing this collection.
 - An Ubuntu target machine is required to run MQ.
+
+ ##### *Ansible* installation ([Installation guide](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html))
 
 ## Playbooks and Roles for IBM MQ installation
 
@@ -86,7 +88,7 @@ mq-setup.yml - this playbook sets up IBM MQ using the 'mqm' user
 
 Before running the playbook and implementing our modules and roles for IBM MQ:
 
-1. Check if you have an *ssh* key pair in order to access the target machines via Ansible. Go to the `~/.ssh` directory in your machine and look for the `id_rsa` and `id_rsa.pub` files.
+1. Check if you have an *ssh* key pair in order to access the target machines via SSH. Go to the `~/.ssh` directory in your machine and look for the public and private key files e.g. `id_rsa` and `id_rsa.pub`.
 
     ```shell
      cd ~/.ssh
@@ -111,15 +113,16 @@ Before running the playbook and implementing our modules and roles for IBM MQ:
     ```
     This should connect to your target machine without asking for a password.
     
-5. Go to the `ansible_collections/ibm/ibmmq/` directory.
+5. On your local machine clone this repository. 
+
+6. Go to the `ansible_collections/ibm/ibmmq/` directory.
 
     ```shell
-     cd ..
-     cd ansible_collections/ibm/ibmmq/
+     cd mq-ansible/ansible_collections/ibm/ibmmq/
     ```
 
 
-6. Create a file `inventory.ini` inside the directory with the following content:
+7. Create a file `inventory.ini` inside the directory with the following content:
   
     ```ini
     
@@ -140,7 +143,7 @@ The sample playbook [`ibmmq.yml`](ansible_collections/ibm/ibmmq/ibmmq.yml) insta
 
 1. Before running the playbook, ensure that you have added the following directory path to the ANSIBLE_LIBRARY environment variable.
 
-    ##### *NOTE*: change `<PATH-TO>` to your local directory path:
+    ##### *Note*: change `<PATH-TO>` to your local directory path:
 
     - On Mac:
 
@@ -156,9 +159,9 @@ The sample playbook [`ibmmq.yml`](ansible_collections/ibm/ibmmq/ibmmq.yml) insta
 
 2. Run the following command to execute the tasks within the playbook:
       ```shell
-       ansible-playbook ./ibmmq.yml -i inventory.ini [-K]
+       ansible-playbook ./ibmmq.yml -i inventory.ini
       ```
-      - ##### *Note*: the optional `-K` will prompt the user to enter the sudo password for [YOUR_SSH_USER] on the target machine, you can omit if you have setup SSH keys
+      - ##### *Note*: you can optionally add `-K` (uppercase) to the command, this will prompt the user to enter the sudo password for [YOUR_SSH_USER] on the target machine, you can omit if you have setup SSH keys
 
 3. The playbook should return the result of `dspmq` with the queue manager created listed. Log into your target machine and check it manually:
 
