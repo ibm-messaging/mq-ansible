@@ -5,9 +5,11 @@
     url: https://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/messaging/mqadv/mqadv_dev920_ubuntu_x86-64.tar.gz
     dest: /tmp/mq.tar.gz
     force: no
+  tags: download
 
 - name: Extract MQ fom TAR
   unarchive:
     src: /tmp/mq.tar.gz
     remote_src: yes
     dest: /tmp
+  tags: download
