@@ -100,7 +100,7 @@ Before running the playbook and implementing our modules and roles for IBM MQ:
      ssh-keygen
     ```
 
-3. Once the keys have been generated, these need to be copied to the target machine's user `ssh` directory. 
+3. Once the keys have been generated, you need to copy the public key to the target machine's user `ssh` directory.
 
     ```shell
      ssh-copy-id -i id_rsa.pub [USER]@[YOUR_TARGET_HOST]
@@ -207,7 +207,7 @@ To run the test playbooks first:
     ```
 2. export the modules to your Ansible library
     ```shell
-     export ANSIBLE_LIBRARY=<PATH-TO>/ansible_mq/ansible_collections/ibm/ibmmq/library
+     export ANSIBLE_LIBRARY=${ANSIBLE_LIBRARY}:<PATH-TO>/ansible_mq/ansible_collections/ibm/ibmmq/library
     ```
    - ##### *Note*: change `<PATH-TO>` to your local directory path:
 3. run all test playbooks with `python3 main.py`
