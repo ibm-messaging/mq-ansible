@@ -2,7 +2,7 @@
 
 - name: Download MQ Advanced for Developers
   get_url:
-    url: https://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/messaging/mqadv/mqadv_dev920_ubuntu_x86-64.tar.gz
+    url: https://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/messaging/mqadv/mqadv_dev931_ubuntu_x86-64.tar.gz
     dest: /tmp/mq.tar.gz
     force: no
   tags: download

@@ -44,17 +44,6 @@
     apt-get update
   changed_when: 'installed_mq_packages.stdout_lines | string is not search("ibmmq")'
 
-- name: Add the user to group mqm
-  become: true
-  shell: adduser ${SUDO_USER:-${USER}} mqm
-
-- name: Add the user to group mqm
-  become: true
-  user:
-    name: "{{ ansible_ssh_user }}"
-    groups: mqm
-    append: yes
-  
 - name: reset ssh connection
   meta: reset_connection
 

@@ -1,11 +1,28 @@
 ---
 
+- name: Create mqm group
+  group:
+    name: mqm
+    gid: "{{ mqmGid }}"
+
+- name: Create mqm user
+  user:
+    name: mqm
+    uid: "{{ mqmUid }}"
+    group: mqm
+
+- name: Create an admin user
+  user:
+    name: mqadm
+    groups: mqm
+    append: yes
+
 - name: Add 'mqclient' group
   become: true
   group:
     name: mqclient
     state: present
-    gid: "{{ gid }}"
+    gid: "{{ appGid }}"
 
 - name: Add the user 'app' with a specific UID
   become: true
@@ -14,11 +31,8 @@
   user:
     name: app
     password: "{{ 'apppassword' | password_hash('sha512', 65534 | random(seed=inventory_hostname) | string) }}"
-    uid: "{{ gid }}"
+    uid: "{{ appUid }}"
     group: mqclient
-    
-- name: Create an admin user
-  user:
-    name: mqadm
-    groups: mqm
-    append: yes
+
+
+
