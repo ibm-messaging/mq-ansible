@@ -1,0 +1,13 @@
+- hosts: "{{ ansible_play_batch }}" 
+  serial: 1
+  become: false
+  environment:
+    PATH: /opt/mqm/bin:{{ ansible_env.PATH }}
+
+  roles: 
+    - role: setupusers
+      vars:
+        appUid: 909
+        appGid: 909
+    - downloadmq
+    - installmq

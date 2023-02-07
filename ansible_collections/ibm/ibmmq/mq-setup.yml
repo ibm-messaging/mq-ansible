@@ -1,18 +1,15 @@
-- hosts: all
-  become: false
+- hosts: "{{ ansible_play_hosts }}"
+  serial: 1
+  become: yes
+  become_user: mqm 
   environment:
     PATH: /opt/mqm/bin:{{ ansible_env.PATH }}
 
   roles: 
-    - role: setupusers
-      vars:
-        gid: 989
-    - downloadmq
-    - installmq
     - getconfig
     - setupconsole
     - startconsole
- 
+
   tasks:
 
     - name: Create a queue manager
@@ -36,4 +33,3 @@
         - 'QM2'
         state: 'running'
         mqsc_file: '/var/mqm/dev-config.mqsc'
-

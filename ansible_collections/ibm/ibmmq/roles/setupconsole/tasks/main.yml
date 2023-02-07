@@ -1,46 +1,25 @@
 ---
 
-- name: Check if basic registry exists
+- name: Check if basic registry exists in the install folder
   stat:
     path: /opt/mqm/web/mq/samp/configuration/basic_registry.xml
   register: basic_registry_result
 
-- name: Moving basic registry
-  become: true
-  shell: mv /opt/mqm/web/mq/samp/configuration/basic_registry.xml /var/mqm/web/installations/Installation1/servers/mqweb/
-  when: basic_registry_result.stat.exists
-
-- name: Check if old mqwebuser exists
-  stat:
-    path: /var/mqm/web/installations/Installation1/servers/mqweb/mqwebuser.old
-  register: mqwebuser_result
-
-- name: moving mqwebuser to old mqwebuser
-  become: true
-  shell: mv /var/mqm/web/installations/Installation1/servers/mqweb/mqwebuser.xml /var/mqm/web/installations/Installation1/servers/mqweb/mqwebuser.old
-  when: not mqwebuser_result.stat.exists
-
-- name: Check if moved basic registry exists
-  stat:
-    path: /var/mqm/web/installations/Installation1/servers/mqweb/basic_registry.xml
-  register: moved_registry
-
-- name: Using basic_registry as webwebuser
-  become: true
-  shell: mv /var/mqm/web/installations/Installation1/servers/mqweb/basic_registry.xml /var/mqm/web/installations/Installation1/servers/mqweb/mqwebuser.xml
-  when: moved_registry.stat.exists
-
-- name: Check correct mqwebuser exists
+- name: Check if mqwebuser already exists in target folder
   stat:
     path: /var/mqm/web/installations/Installation1/servers/mqweb/mqwebuser.xml
-  register: final_mqwebuser
+  register: target_mqwebuser_result
 
-- name: ensure correct permissions for mqwebuser.xml
+- name: Set permissions to allow overwrite of target mqwebuser.xml if it already exists
   become: true
   shell: chmod 640 /var/mqm/web/installations/Installation1/servers/mqweb/mqwebuser.xml
-  when: final_mqwebuser.stat.exists
+  when: target_mqwebuser_result.stat.exists
 
-- name: ensure correct permissions for mqwebuser.xml
+- name: Copying basic registry
   become: true
-  shell: chown {{ ansible_ssh_user }} /var/mqm/web/installations/Installation1/servers/mqweb/mqwebuser.xml
-  when: final_mqwebuser.stat.exists
+  shell: cp /opt/mqm/web/mq/samp/configuration/basic_registry.xml /var/mqm/web/installations/Installation1/servers/mqweb/mqwebuser.xml
+  when: basic_registry_result.stat.exists
+
+- name: ensure correct permissions for mqwebuser.xml to allow setmqweb commands
+  become: true
+  shell: chmod 640 /var/mqm/web/installations/Installation1/servers/mqweb/mqwebuser.xml
