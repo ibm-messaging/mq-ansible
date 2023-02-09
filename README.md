@@ -159,7 +159,7 @@ The sample playbook [`ibmmq.yml`](ansible_collections/ibm/ibmmq/ibmmq.yml) insta
 
 2. Run the following command to execute the tasks within the playbook:
       ```shell
-       ansible-playbook ./ibmmq.yml -i inventory.ini
+       ansible-playbook ./ibmmq.yml -i inventory.ini -e 'ibmMqLicence=accept'
       ```
       - ##### *Note*: you can optionally add `-K` (uppercase) to the command, this will prompt the user to enter the sudo password for [YOUR_SSH_USER] on the target machine, you can omit if you have setup SSH keys
 
