@@ -4,3 +4,6 @@ appUid: 909
 appGid: 909
 mqmUid: 2001
 mqmGid: 2001
+mqmHome: /home/mqm
+mqmProfile: .profile
+mqmShell: /bin/bash
