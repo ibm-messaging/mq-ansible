@@ -4,6 +4,7 @@
 
 import subprocess
 subprocess.run(['ansible-playbook', '--inventory', 'inventory.ini', 'test_install.yml'])
+subprocess.run(['ansible-playbook', '--inventory', 'inventory.ini', 'setup_test.yml'])
 subprocess.run(['ansible-playbook', '--inventory', 'inventory.ini', 'test_absent_qmgr.yml'])
 subprocess.run(['ansible-playbook', '--inventory', 'inventory.ini', 'test_present_qmgr.yml'])
 subprocess.run(['ansible-playbook', '--inventory', 'inventory.ini', 'test_running_qmgr.yml'])
