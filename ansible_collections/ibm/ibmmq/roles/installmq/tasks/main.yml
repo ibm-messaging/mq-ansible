@@ -6,9 +6,8 @@
   register: license_status
 
 - name: Accept MQ license
-  become: true
   shell: |
-    /tmp/MQServer/mqlicense.sh -accept > /tmp/MQServer/licensestatus.txt
+    /tmp/MQServer/mqlicense.sh -{{ ibmMqLicence}} > /tmp/MQServer/licensestatus.txt
   changed_when: not license_status.stat.exists
 
 - name: Check if MQ is installed
@@ -18,7 +17,6 @@
     - "'FAIL' in installed_mq_packages.stderr"
 
 - name: Create list file and run apt update again to update the apt cache
-  become: true
   shell: |
     MQ_PACKAGES_LOCATION=/tmp/MQServer
     echo "deb [trusted=yes] file:$MQ_PACKAGES_LOCATION /" > /etc/apt/sources.list.d/mq-install.list
@@ -26,23 +24,22 @@
   changed_when: 'installed_mq_packages.stdout_lines | string is not search("ibmmq")'
 
 - name: Install MQ Server
-  become: true
   shell: apt-get install -y "ibmmq-*"
   changed_when: 'installed_mq_packages.stdout_lines | string is not search("ibmmq")'
 
-- name: Set MQ environment variables through profile
-  become: yes
-  lineinfile:
-    dest: /etc/profile
-    state: present
-    line: '. /opt/mqm/bin/setmqenv -s'
-
 - name: Delete .list file and run apt update again to clear the apt cache
-  become: true
   shell: |
     rm /etc/apt/sources.list.d/mq-install.list
     apt-get update
   changed_when: 'installed_mq_packages.stdout_lines | string is not search("ibmmq")'
+
+- name: Install acl
+  apt:
+    state: latest
+    update_cache: true
+    pkg:
+      - acl
+  when: ansible_facts['distribution']=="Ubuntu"
 
 - name: reset ssh connection
   meta: reset_connection
