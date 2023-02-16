@@ -11,5 +11,7 @@
         appGid: 909
         mqmHome: /home/mqm
         mqmProfile: .profile
-    - downloadmq
+    - role: downloadmq
+      vars:
+        version: 930
     - installmq

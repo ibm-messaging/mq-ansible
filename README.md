@@ -39,7 +39,7 @@ ibmmq.yml - this playbook calls the mq-install and mq-setup playbooks, host name
 ```
 
 mq-install.yml - this playbook installs IBM MQ with the SSH user specified in the inventory
-
+##### *Note*: The MQ *version* and app user's *UID and GID* can be specified here.
 ```yaml
 - hosts: "{{ ansible_play_batch }}"
   serial: 1
@@ -50,9 +50,13 @@ mq-install.yml - this playbook installs IBM MQ with the SSH user specified in th
   roles:
     - role: setupusers
       vars:
-        gid: 909
-    - downloadmq
-    - installmq
+        appUid: 909
+        appGid: 909
+        mqmHome: /home/mqm
+        mqmProfile: .profile
+    - role: downloadmq
+      vars:
+        version: 930
 ```
 mq-setup.yml - this playbook sets up IBM MQ using the 'mqm' user
 
