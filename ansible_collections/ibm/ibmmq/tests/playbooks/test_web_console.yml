@@ -1,7 +1,6 @@
 - name: test downloading and installing MQ
-  hosts: docker
-  become: yes
-  become_user: mqm
+  hosts: all
+  become: false
   environment:
     PATH: /opt/mqm/bin:{{ ansible_env.PATH }}
 

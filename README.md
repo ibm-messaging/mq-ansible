@@ -39,7 +39,7 @@ ibmmq.yml - this playbook calls the mq-install and mq-setup playbooks, host name
 ```
 
 mq-install.yml - this playbook installs IBM MQ with the SSH user specified in the inventory
-
+##### *Note*: The MQ *version* and app user's *UID and GID* can be specified here.
 ```yaml
 - hosts: "{{ ansible_play_batch }}"
   serial: 1
@@ -50,9 +50,13 @@ mq-install.yml - this playbook installs IBM MQ with the SSH user specified in th
   roles:
     - role: setupusers
       vars:
-        gid: 909
-    - downloadmq
-    - installmq
+        appUid: 909
+        appGid: 909
+        mqmHome: /home/mqm
+        mqmProfile: .profile
+    - role: downloadmq
+      vars:
+        version: 930
 ```
 mq-setup.yml - this playbook sets up IBM MQ using the 'mqm' user
 
@@ -148,13 +152,13 @@ The sample playbook [`ibmmq.yml`](ansible_collections/ibm/ibmmq/ibmmq.yml) insta
     - On Mac:
 
        ```shell
-          export ANSIBLE_LIBRARY=${ANSIBLE_LIBRARY}:<PATH-TO>/ansible_mq/ansible_collections/ibm/ibmmq/library
+          export ANSIBLE_LIBRARY=${ANSIBLE_LIBRARY}:<PATH-TO>/mq-ansible/ansible_collections/ibm/ibmmq/library
        ```
 
     - On Windows:
     
       ```shell
-          set ANSIBLE_LIBRARY=%ANSIBLE_LIBRARY%;<PATH-TO>/ansible_mq/ansible_collections/ibm/ibmmq/library
+          set ANSIBLE_LIBRARY=%ANSIBLE_LIBRARY%;<PATH-TO>/mq-ansible/ansible_collections/ibm/ibmmq/library
        ```
 
 2. Run the following command to execute the tasks within the playbook:
@@ -201,16 +205,20 @@ These playbooks test the functionality and performance of our roles and the queu
 
 To run the test playbooks first:
 
-1. make sure you are in the right directory 
+1. copy your `inventory.ini` file to the `tests/playbooks` directory 
+    ```shell
+     cp invenotry.ini tests/playbooks
+    ```
+2. go to the `tests/playbooks` directory 
     ```shell
      cd tests/playbooks
     ```
-2. export the modules to your Ansible library
+3. export the modules to your Ansible library
     ```shell
      export ANSIBLE_LIBRARY=${ANSIBLE_LIBRARY}:<PATH-TO>/ansible_mq/ansible_collections/ibm/ibmmq/library
     ```
    - ##### *Note*: change `<PATH-TO>` to your local directory path:
-3. run all test playbooks with `python3 main.py`
+4. run all test playbooks with `python3 main.py`
 
 ## License
 
