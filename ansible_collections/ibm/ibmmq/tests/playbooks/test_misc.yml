@@ -88,7 +88,7 @@
     queue_manager:
       qmname: qm1_misc_2
       state: running
-      mqsc_file: mqsc_display
+      mqsc_file: '/var/mqm/mqsc_display'
     register: testout_1
     failed_when: False
   - name: dump run output

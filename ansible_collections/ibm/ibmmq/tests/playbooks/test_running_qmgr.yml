@@ -19,7 +19,7 @@
     queue_manager:
       qmname: 'qm1_running'
       state: 'present'
-      mqsc_file: mqsc_display
+      mqsc_file: '/var/mqm/mqsc_display'
     register: testout
     failed_when: False
   - name: dump test output
@@ -36,7 +36,7 @@
     queue_manager:
       qmname: 'qm1_running'
       state: 'running'
-      mqsc_file: mqsc_display
+      mqsc_file: '/var/mqm/mqsc_display'
     register: testout
     failed_when: False
   - name: dump test output

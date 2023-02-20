@@ -21,18 +21,39 @@ if rc.returncode == 0:
                             if rc.returncode == 0:
                                 print("<---- All Tests Completed Successfully ---->")
                             else:
-                                print("<---- cleanup_test.yml failed ---->")
+                                print("<---- FATAL: cleanup_test.yml failed ---->")
                         else:
+                            rc = subprocess.run(['ansible-playbook', '--inventory', 'inventory.ini', 'cleanup_test.yml'])
                             print("<---- test_web_console.yml failed ---->")
+                            if rc.returncode != 0:
+                                print("<---- FATAL: cleanup_test.yml failed ---->")
                     else:
+                        rc = subprocess.run(['ansible-playbook', '--inventory', 'inventory.ini', 'cleanup_test.yml'])
                         print("<---- test_misc.yml failed ---->")
+                        if rc.returncode != 0:
+                            print("<---- FATAL: cleanup_test.yml failed ---->")
                 else:
+                    rc = subprocess.run(['ansible-playbook', '--inventory', 'inventory.ini', 'cleanup_test.yml'])
                     print("<---- test_running_qmgr.yml failed ---->")
+                    if rc.returncode != 0:
+                        print("<---- FATAL: cleanup_test.yml failed ---->")
             else:
+                rc = subprocess.run(['ansible-playbook', '--inventory', 'inventory.ini', 'cleanup_test.yml'])
                 print("<---- test_present_qmgr.yml failed ---->")
+                if rc.returncode != 0:
+                    print("<---- FATAL: cleanup_test.yml failed ---->")
         else:
+            rc = subprocess.run(['ansible-playbook', '--inventory', 'inventory.ini', 'cleanup_test.yml'])
             print("<---- test_absent_qmgr.yml failed ---->")
+            if rc.returncode != 0:
+                print("<---- FATAL: cleanup_test.yml failed ---->")
     else:
+        rc = subprocess.run(['ansible-playbook', '--inventory', 'inventory.ini', 'cleanup_test.yml'])
         print("<---- setup_test.yml failed ---->")
+        if rc.returncode != 0:
+            print("<---- FATAL: cleanup_test.yml failed ---->")
 else:
+    rc = subprocess.run(['ansible-playbook', '--inventory', 'inventory.ini', 'cleanup_test.yml'])
     print("<---- test_install.yml failed ---->")
+    if rc.returncode != 0:
+        print("<---- FATAL: cleanup_test.yml failed ---->")
