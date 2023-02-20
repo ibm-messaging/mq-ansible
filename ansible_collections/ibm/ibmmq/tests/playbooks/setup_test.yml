@@ -1,6 +1,7 @@
 - name: Setup for tests
   hosts: all
-  become: false
+  become: yes
+  become_user: mqm
   environment:
     PATH: /opt/mqm/bin:{{ ansible_env.PATH }}
   tasks:
@@ -8,4 +9,4 @@
   - name: Copy MQSC file to container
     copy:
       src: mqsc_display
-      dest: /home/{{ ansible_ssh_user }}
+      dest: "/var/mqm/mqsc_display"

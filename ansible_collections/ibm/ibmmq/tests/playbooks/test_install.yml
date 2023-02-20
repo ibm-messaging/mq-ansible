@@ -1,6 +1,6 @@
 - name: test downloading and installing MQ
   hosts: docker
-  become: true
+  become: yes
   environment:
     PATH: /opt/mqm/bin:{{ ansible_env.PATH }}
 
@@ -13,7 +13,7 @@
     - name: Copy developer config file to target
       copy:
         src: ../../dev-config.mqsc
-        dest: /home/{{ ansible_ssh_user }}
+        dest: "/var/mqm/dev-config.mqsc"
 
     - name: get 'mqclient' group
       shell: getent group mqclient
