@@ -1,6 +1,7 @@
 - name: cleanup after tests
   hosts: all
-  become: false
+  become: yes
+  become_user: mqm
   environment:
     PATH: /opt/mqm/bin:{{ ansible_env.PATH }}
   tasks:

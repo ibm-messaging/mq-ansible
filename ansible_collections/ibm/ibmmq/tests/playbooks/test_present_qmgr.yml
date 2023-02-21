@@ -1,6 +1,7 @@
 - name: test QMGR present
   hosts: all
-  become: false
+  become: yes
+  become_user: mqm
   environment:
     PATH: /opt/mqm/bin:{{ ansible_env.PATH }}
   tasks:
@@ -64,7 +65,7 @@
     queue_manager:
       qmname: 'qm1_present_mqsc'
       state: 'present'
-      mqsc_file: mq-dev-config.mqsc
+      mqsc_file: '/var/mqm/mq-dev-config.mqsc'
     register: testout_3
     failed_when: False
   - name: dump test output
