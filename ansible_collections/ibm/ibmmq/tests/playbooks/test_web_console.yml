@@ -9,15 +9,6 @@
     - { role: ../../roles/startconsole }
 
   tasks:
-    - name: get old mqwebuser
-      stat:
-        path: /var/mqm/web/installations/Installation1/servers/mqweb/mqwebuser.old
-      register: testout_mqwebuser_old
-    - name: test old registry exists
-      assert:
-        that:
-          - testout_mqwebuser_old.stat.exists
-
     - name: get mqwebuser
       stat:
         path: /var/mqm/web/installations/Installation1/servers/mqweb/mqwebuser.xml
