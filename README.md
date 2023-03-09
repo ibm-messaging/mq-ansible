@@ -3,7 +3,7 @@
 | :memo:        | Interested in contributing to this project? Please read our [IBM Contributor License Agreement](CLA.md) and our [Contributing Guide](CONTRIBUTING.md).       |
 |---------------|:------------------------|
 
-A collection for automating the installation and configuration of IBM MQ using Ansible on Ubuntu machines. Our aim is to make MQ-Ansible extensible for other platforms and more detailed IBM MQ configuration.
+A collection for automating the installation and configuration of IBM MQ using Ansible on Ubuntu and Windows machines. Our aim is to make MQ-Ansible extensible for other platforms and more detailed IBM MQ configuration.
 
 This directory contains:
 - ansible [`roles`](https://github.com/ibm-messaging/mq-ansible/tree/main/ansible_collections/ibm/ibmmq/roles) for the installation and configuration of IBM MQ.
@@ -15,11 +15,15 @@ For a detailed explanation and documentation on how MQ-Ansible works, click [her
 ## Requirements
 
 - `ansible`, `passlib` and `ansible-lint` are required on your local machine to run playbooks implementing this collection.
-- An Ubuntu target machine is required to run MQ.
+- An Ubuntu or Windows target machine is required to run MQ.
 
  ##### *Ansible* installation ([Installation guide](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html))
 
-## Playbooks and Roles for IBM MQ installation
+## Installation roles on Windows machines.
+
+Detailed documentation and guide for installing MQ on Windows using our roles can be found [here](ansible_collections/ibm/ibmmq/library/WINSTALL.md).
+
+## Playbooks and Roles for IBM MQ installation on Ubuntu target machines
 
 The playbooks and roles in this collection carryout an installation of IBM MQ Advanced on an Ubuntu target machine. The roles have been implemented to set up the required users on the machine, download the software, install and configure IBM MQ, copy over a configurable `dev-config.mqsc` file ready to be run on the target machine, and setup and start the web console. Developers can change this file to customise the configuration of their queue managers. Here we use a playbook that calls other playbooks but you can run the roles in playbooks to suit your requirements.
 

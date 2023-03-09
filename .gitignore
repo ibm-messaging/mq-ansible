@@ -133,3 +133,5 @@ dmypy.json
 
 # Ansible Unit Tests
 ansible_collections/tests/unit/output/
+ansible_collections/ibm/ibmmq/inventory.ini
+.vscode/settings.json
