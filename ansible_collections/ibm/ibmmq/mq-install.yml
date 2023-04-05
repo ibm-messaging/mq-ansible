@@ -14,4 +14,4 @@
     - role: downloadmq-x86-64
       vars:
         version: 930
-    # - installmq
+    - installmq-x86-64
