@@ -1,13 +1,8 @@
 - name: Install and setup IBM MQ
   hosts: VMs
 
-  tasks:
-    - name: "distribution"
-      debug: 
-        msg: "{{ ansible_distribution }}"
-
 - name: Run the install playbook
   import_playbook: mq-install.yml
 
-# - name: Run the setup playbook
-#   import_playbook: mq-setup.yml
+- name: Run the setup playbook
+  import_playbook: mq-setup.yml

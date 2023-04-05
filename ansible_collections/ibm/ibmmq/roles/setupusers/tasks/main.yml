@@ -18,6 +18,14 @@
     dest: "{{ mqmHome }}/{{mqmProfile}}"
     state: present
     line: '. /opt/mqm/bin/setmqenv -s'
+  when: ansible_distribution != 'RedHat'
+
+- name: Set MQ environment variables through profile on RedHat
+  lineinfile:
+    dest: "{{ mqmHome }}/.bashrc"
+    state: present
+    line: '. /opt/mqm/bin/setmqenv -s'
+  when: ansible_distribution == 'RedHat'
 
 - name: Create an admin user
   user:
