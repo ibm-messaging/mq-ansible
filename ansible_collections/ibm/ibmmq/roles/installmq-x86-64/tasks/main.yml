@@ -1,10 +1,12 @@
-- name: Configure yum repository
+---
+
+- name: Configure IBM-MQ.repo repository
   lineinfile:
     path: /tmp/MQServer/IBM-MQ.repo
     regexp: '^baseurl'
     line: 'baseurl=file:///tmp/MQServer'
 
-- name: Copy yum repository
+- name: Add IBM-MQ to yum repository
   copy:
     src: /tmp/MQServer/IBM-MQ.repo
     dest: /etc/yum.repos.d
@@ -20,5 +22,14 @@
     /tmp/MQServer/mqlicense.sh -{{ ibmMqLicence}} > /tmp/MQServer/licensestatus.txt
   changed_when: not license_status.stat.exists
 
+- name: Check if MQ is installed
+  shell: yum list | grep MQSeries
+  register: installed_packages
+  failed_when: installed_packages.stderr | length > 0
+
 - name: Install IBM MQ
   shell: yum -y install MQSeries*
+  changed_when: installed_packages.stdout | length == 0
+
+- name: reset ssh connection
+  meta: reset_connection
