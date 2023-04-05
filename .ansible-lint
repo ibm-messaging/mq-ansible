@@ -1,0 +1,48 @@
+# This makes linter to fully ignore rules/tags listed below
+skip_list:
+  - fqcn-builtins # For the sake of readability
+  - empty-string-compare
+
+# Any rule that has the 'opt-in' tag will not be loaded unless its 'id' is
+# mentioned in the enable_list:
+enable_list:
+  - no-log-password # opt-in
+  - no-same-owner # opt-in
+  # https://github.com/ansible/ansible-lint/issues/457
+  # add yaml here if you want to avoid ignoring yaml checks when yamllint
+  # library is missing. Normally its absence just skips using that rule.
+  - yaml
+
+# Report only a subset of tags and fully ignore any others
+# tags:
+#   - var-spacing
+
+# This makes the linter display but not fail for rules/tags listed below:
+warn_list:
+  - experimental # experimental is included in the implicit list
+  # - skip_this_tag
+  # - git-latest
+  # - role-name
+
+# Some rules can transform files to fix (or make it easier to fix) identified
+# errors. `ansible-lint --write` will reformat YAML files and run these transforms.
+# By default it will run all transforms (effectively `write_list: ["all"]`).
+# You can disable running transforms by setting `write_list: ["none"]`.
+# Or only enable a subset of rule transforms by listing rules/tags here.
+# write_list:
+#   - all
+
+# Offline mode disables installation of requirements.yml
+offline: false
+
+# Define required Ansible's variables to satisfy syntax check
+# extra_vars:
+  # foo: bar
+  # multiline_string_variable: |
+  #   line1
+  #   line2
+  # complex_variable: ":{;\t$()"
+
+# Uncomment to enforce action validation with tasks, usually is not
+# needed as Ansible syntax check also covers it.
+# skip_action_validation: false
