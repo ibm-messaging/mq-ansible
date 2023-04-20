@@ -67,6 +67,9 @@ def main():
                         else:
                             result['rc'] = 16
                             result['msg'] = 'MQSC file could not be found'
+                        
+                        if module.params['state'] == 'stopped':
+                            rc, stdout, stderr = module.run_command(['endmqm', qmname])
 
                     else:
                         result['msg'] = 'Queue Manager Needs to be running to apply MQSC configuration.'
