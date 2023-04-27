@@ -1,35 +1,71 @@
 ---
 
-- name: Configure IBM-MQ.repo repository
-  lineinfile:
-    path: /tmp/MQServer/IBM-MQ.repo
-    regexp: '^baseurl'
-    line: 'baseurl=file:///tmp/MQServer'
-
-- name: Add IBM-MQ to yum repository
-  copy:
-    src: /tmp/MQServer/IBM-MQ.repo
-    dest: /etc/yum.repos.d
-    remote_src: true
-
 - name: Check if license status file exists
   stat:
-    path: /tmp/MQServer/licensestatus.txt
+    path: /opt/MQServer/licensestatus.txt
   register: license_status
 
 - name: Accept MQ license
   shell: |
-    /tmp/MQServer/mqlicense.sh -{{ ibmMqLicence}} > /tmp/MQServer/licensestatus.txt
+    /opt/MQServer/mqlicense.sh -{{ ibmMqLicence}} > /opt/MQServer/licensestatus.txt
   changed_when: not license_status.stat.exists
 
-- name: Check if MQ is installed
-  shell: yum list | grep MQSeries
-  register: installed_packages
-  failed_when: installed_packages.stderr | length > 0
+- name: Find required rpm files
+  find:
+    paths: "/opt/MQServer"
+    patterns:
+      - MQSeriesSDK*
+      - MQSeriesSamples*
+      - MQSeriesMan*
+      - MQSeriesClient*
+      - MQSeriesGSKit*
+      - MQSeriesAMQP*
+      - MQSeriesAMS*
+      - MQSeriesServer*
+      - MQSeriesJRE*
+      - MQSeriesJava*
+      - MQSeriesRuntime*
+      - MQSeriesWeb*
+      - MQSeriesMsg_Zh_CN*
+      - MQSeriesMsg_es*
+    # - MQSeriesSFBridge-9.3.0-0.x86_64.rpm
+    # - MQSeriesMsg_Zh_TW-9.3.0-0.x86_64.rpm
+    # - MQSeriesFTTools-9.3.0-0.x86_64.rpm
+    # - MQSeriesFTAgent-9.3.0-0.x86_64.rpm
+    # - MQSeriesFTService-9.3.0-0.x86_64.rpm
+    # - MQSeriesBCBridge-9.3.0-0.x86_64.rpm
+    # - MQSeriesFTLogger-9.3.0-0.x86_64.rpm
+    # - MQSeriesXRService-9.3.0-0.x86_64.rpm
+    # - MQSeriesFTBase-9.3.0-0.x86_64.rpm
+    # - MQSeriesMsg_fr-9.3.0-0.x86_64.rpm
+    # - MQSeriesMsg_ja-9.3.0-0.x86_64.rpm
+    # - MQSeriesMsg_it-9.3.0-0.x86_64.rpm
+    # - MQSeriesMsg_ko-9.3.0-0.x86_64.rpm
+    # - MQSeriesMsg_ru-9.3.0-0.x86_64.rpm
+    # - MQSeriesMsg_pt-9.3.0-0.x86_64.rpm
+    # - MQSeriesMsg_hu-9.3.0-0.x86_64.rpm
+    # - MQSeriesMsg_pl-9.3.0-0.x86_64.rpm
+    # - MQSeriesMsg_cs-9.3.0-0.x86_64.rpm
+    # - MQSeriesMsg_fr-9.3.0-0.x86_64.rpm
+    # - MQSeriesMsg_ja-9.3.0-0.x86_64.rpm
+    # - MQSeriesMsg_it-9.3.0-0.x86_64.rpm
+    # - MQSeriesMsg_ko-9.3.0-0.x86_64.rpm
+    # - MQSeriesMsg_ru-9.3.0-0.x86_64.rpm
+    # - MQSeriesMsg_pt-9.3.0-0.x86_64.rpm
+    # - MQSeriesMsg_hu-9.3.0-0.x86_64.rpm
+    # - MQSeriesMsg_pl-9.3.0-0.x86_64.rpm
+    # - MQSeriesMsg_cs-9.3.0-0.x86_64.rpm
+  register: rpm_files
+
+- name: Create a list of paths to rpms from the found files
+  set_fact:
+    rpm_list: "{{ rpm_files.files | map(attribute='path') | list }}"
 
 - name: Install IBM MQ
-  shell: yum -y install MQSeries*
-  changed_when: installed_packages.stdout | length == 0
+  ansible.builtin.dnf:
+    name: "{{ rpm_list }}"
+    state: present
+    disable_gpg_check: true
 
 - name: reset ssh connection
   meta: reset_connection
