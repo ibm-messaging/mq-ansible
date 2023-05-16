@@ -27,8 +27,9 @@ result = dict(
 def check_status_queue_managers():
     print("Working on this")
 
-def handle_return_code():
-    print("working on this")
+def handle_return_code(module, rc, state, msg):
+    if rc == 5:
+        module.exit_json(skipped=True, state=state, msg=msg)
 
 def state_present(qmname, module):
     if module.params['unit_test'] is False:
@@ -40,8 +41,14 @@ def state_present(qmname, module):
         elif rc > 0:
             module.fail_json(**result)
 
-def run_mqsc_file():
-    print("working on this")
+def run_mqsc_file(qmname, module):
+    rc, stdout, stderr = module.run_command('runmqsc', qmname, '-f', module.params['mqsc_file'])
+    result['rc'] = rc
+    result['output'] = stdout + stderr
+
+    if rc == 0:
+        result['msg'] = 'MQSC configuration successfully applied to Queue Manager'
+
 
 def state_running(qmname, module):
     result['msg'] = 'IBM MQ queue manager \'' + str(qmname) + '\' started'
@@ -113,5 +120,6 @@ def main():
         "absent":   state_absent
     }
 
-    for qmname in module.params['qmname']:
-        ops.get("present")(qmname, module)
+    if module.params['unit_test'] is False:
+        for qmname in module.params['qmname']:
+            ops.get(module.params['state'], state_invalid)(qmname, module)
