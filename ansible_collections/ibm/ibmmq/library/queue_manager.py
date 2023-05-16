@@ -100,3 +100,13 @@ def main():
     module = AnsibleModule(
         argument_spec=qmgr_attributes
     )
+
+    ops = {
+        "present": state_present,
+        "running":  state_running,
+        "stopped":  state_stopped,
+        "absent":   state_absent
+    }
+
+    for qmname in module.params['qmname']:
+        ops.get("present")(qmname)
