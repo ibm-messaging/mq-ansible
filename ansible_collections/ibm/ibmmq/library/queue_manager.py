@@ -97,7 +97,7 @@ def state_invalid(qmname, module):
     result['state'] = ''
     result['msg'] = 'Unrecognised State'
     result['rc'] = 16
-    #module.fail_json(**result)
+    module.fail_json(**result)
 
 
 def main():
