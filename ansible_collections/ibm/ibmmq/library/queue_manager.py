@@ -123,3 +123,8 @@ def main():
     if module.params['unit_test'] is False:
         for qmname in module.params['qmname']:
             ops.get(module.params['state'], state_invalid)(qmname, module)
+    
+    module.exit_json(**result)
+
+if __name__ == '__main__':
+    main()
