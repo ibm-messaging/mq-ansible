@@ -15,7 +15,9 @@ For a detailed explanation and documentation on how MQ-Ansible works, click [her
 ## Requirements
 
 - `ansible`, `passlib` and `ansible-lint` are required on your local machine to run playbooks implementing this collection.
-- An Ubuntu or RedHat target machine is required to run MQ on.
+- a target machine of any of the supported platforms:
+  - Ubuntu
+  - RedHat
 
  ##### *Ansible* installation ([Installation guide](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html))
 
@@ -38,7 +40,7 @@ The playbooks and roles in this collection carry out an installation of IBM MQ A
   import_playbook: mq-setup.yml
 ```
 
-`mq-install.yml` - this playbook installs IBM MQ with the SSH user specified in the inventory. The `installmq-linux` role within this playbook handles platform-specific installation steps, where Ubuntu machines carry out a debian installation and RedHat machines carry out an rpm installation.
+`mq-install.yml` - this playbook installs IBM MQ with the SSH user specified in the inventory.
 ##### *Note*: The MQ *version* and app user's *UID and GID* can be specified here.
 ```yaml
 - hosts: "{{ ansible_play_batch }}"
@@ -83,9 +85,69 @@ The playbooks and roles in this collection carry out an installation of IBM MQ A
         - 'QM2'
         state: 'present'
 ```
+### Roles
+
+`setupusers` - creates the `mqm`, `admin`, and `app` users; the `mqm`, `mqclient` groups; and sets the MQ environment variables. User and group IDs can be specified when calling this role. 
+
+`downloadmq` - downloads and unzips the appropriate MQ package based on the target platform to `/var/MQServer` on the target machine. The MQ version to be installed can be specified when calling this role.
+
+`installmq-linux` - handles platform-specific installation steps, where Ubuntu machines carry out a debian installation and RedHat machines carry out an rpm installation. Core MQ components are installed as default, however further components and languages can be be added by uncommenting packages within `/roles/installmq-linux/tasks/main.yml`:
+
+```yaml
+- name: Find required package files
+  find:
+    paths: "/var/MQServer"
+    use_regex: yes
+    patterns:
+      - '(?i).*runtime.*'
+      - '(?i).*server.*'
+      - '(?i).*java.*'
+      - '(?i).*jre.*'
+      - '(?i).*sdk.*'
+      - '(?i).*samples.*'
+      - '(?i).*man.*'
+      - '(?i).*client.*'
+      - '(?i).*gskit.*'
+      - '(?i).*amqp.*'
+      - '(?i).*ams.*'
+      - '(?i).*web.*'
+      - '(?i).*(-|_)es.*'
+      - '(?i).*(-|_)cn.*'
+      # - '(?i).*ftbase.*'
+      # - '(?i).*ftlogger.*'
+      # - '(?i).*fttools.*'
+      # - '(?i).*ftagent.*'
+      # - '(?i).*ftservice.*'
+      # - '(?i).*xrservice.*'
+      # - '(?i).*sfbridge.*'
+      # - '(?i).*bcbridge.*'
+      # - '(?i).*(-|_)de.*'
+      # - '(?i).*(-|_)fr.*'
+      # - '(?i).*(-|_)ja.*'
+      # - '(?i).*(-|_)it.*'
+      # - '(?i).*(-|_)ko.*'
+      # - '(?i).*(-|_)ru.*'
+      # - '(?i).*(-|_)pt.*'
+      # - '(?i).*(-|_)hu.*'
+      # - '(?i).*(-|_)pl.*'
+      # - '(?i).*(-|_)cs.*'
+      # - '(?i).*(-|_)tw.*'
+```
+
+`getconfig` - copies the dev-config.mqsc file to the target machine.
+
+`setupconsole` - configures a target machine's environment and permissions to be able to run the MQ Web Console.
+
+`startconsole` - starts the MQ Web Console.
+
+
+
+
+
+
 ## Modules for IBM MQ resources' configuration
 
-- `queue_manager.py`- Creates, starts, deletes an IBM MQ queue manager and runs an MQSC file. See the documentation [here.](QUEUE_MANAGER.md)
+- `queue_manager.py` - Creates, starts, deletes an IBM MQ queue manager and runs an MQSC file. See the documentation [here.](QUEUE_MANAGER.md)
 
 # Run our sample playbook
 
