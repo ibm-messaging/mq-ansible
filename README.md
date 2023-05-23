@@ -140,11 +140,6 @@ The playbooks and roles in this collection carry out an installation of IBM MQ A
 
 `startconsole` - starts the MQ Web Console.
 
-
-
-
-
-
 ## Modules for IBM MQ resources' configuration
 
 - `queue_manager.py` - Creates, starts, deletes an IBM MQ queue manager and runs an MQSC file. See the documentation [here.](QUEUE_MANAGER.md)
