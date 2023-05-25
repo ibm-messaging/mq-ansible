@@ -71,7 +71,7 @@
     state: present
     disable_gpg_check: true
   when: 
-    - ansible_distribution == 'RedHat'
+    - ansible_distribution == 'RedHat' or ansible_distribution == 'SLES'
     - "'MQSeriesRuntime' not in ansible_facts.packages"
 
 - name: deb Installation

@@ -1,14 +1,18 @@
 ---
 
+- name: Distribution
+  debug:
+    msg: "{{ ansible_distribution }}"
+
 - name: Set filename of zip if target host is Ubuntu
   set_fact:
     zipFile: "mqadv_dev{{ version }}_ubuntu_x86-64.tar.gz"
   when: ansible_distribution == 'Ubuntu'
 
-- name: Set filename of zip if target host is RedHat
+- name: Set filename of zip if target host is RedHat or SLES
   set_fact:
     zipFile: "mqadv_dev{{ version }}_linux_x86-64.tar.gz"
-  when: ansible_distribution == 'RedHat'
+  when: ansible_distribution == 'RedHat' or ansible_distribution == 'SLES'
 
 - name: Download MQ Advanced for Developers
   get_url:
