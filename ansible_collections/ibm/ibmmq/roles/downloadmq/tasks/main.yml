@@ -23,7 +23,3 @@
     remote_src: yes
     dest: /var
   tags: download
-
-
-  # change to var
-  # change download to have a parameterized url after /messaging/mqadv/.........tar.gz

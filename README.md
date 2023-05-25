@@ -91,48 +91,51 @@ The playbooks and roles in this collection carry out an installation of IBM MQ A
 
 `downloadmq` - downloads and unzips the appropriate MQ package based on the target platform to `/var/MQServer` on the target machine. The MQ version to be installed can be specified when calling this role.
 
-`installmq-linux` - handles platform-specific installation steps, where Ubuntu machines carry out a debian installation and RedHat machines carry out an rpm installation. Core MQ components are installed as default, however further components and languages can be be added by uncommenting packages within `/roles/installmq-linux/tasks/main.yml`:
+`installmq-linux` - handles platform-specific installation steps, where Ubuntu machines carry out a Debian installation and RedHat machines carry out an RPM installation. Core MQ components are installed as default, however further components and languages can be be added by uncommenting packages within the `package_files` list in  `/roles/installmq-linux/tasks/main.yml`:
 
 ```yaml
 - name: Find required package files
   find:
     paths: "/var/MQServer"
     use_regex: yes
-    patterns:
-      - '(?i).*runtime.*'
-      - '(?i).*server.*'
-      - '(?i).*java.*'
-      - '(?i).*jre.*'
-      - '(?i).*sdk.*'
-      - '(?i).*samples.*'
-      - '(?i).*man.*'
-      - '(?i).*client.*'
-      - '(?i).*gskit.*'
-      - '(?i).*amqp.*'
-      - '(?i).*ams.*'
-      - '(?i).*web.*'
-      - '(?i).*(-|_)es.*'
-      - '(?i).*(-|_)cn.*'
-      # - '(?i).*ftbase.*'
-      # - '(?i).*ftlogger.*'
-      # - '(?i).*fttools.*'
-      # - '(?i).*ftagent.*'
-      # - '(?i).*ftservice.*'
-      # - '(?i).*xrservice.*'
-      # - '(?i).*sfbridge.*'
-      # - '(?i).*bcbridge.*'
-      # - '(?i).*(-|_)de.*'
-      # - '(?i).*(-|_)fr.*'
-      # - '(?i).*(-|_)ja.*'
-      # - '(?i).*(-|_)it.*'
-      # - '(?i).*(-|_)ko.*'
-      # - '(?i).*(-|_)ru.*'
-      # - '(?i).*(-|_)pt.*'
-      # - '(?i).*(-|_)hu.*'
-      # - '(?i).*(-|_)pl.*'
-      # - '(?i).*(-|_)cs.*'
-      # - '(?i).*(-|_)tw.*'
+    patterns: "{{ item }}"
+  register: package_files
+  with_items: 
+    - '(?i).*runtime.*'
+    - '(?i).*server.*'
+    - '(?i).*java.*'
+    - '(?i).*jre.*'
+    - '(?i).*sdk.*'
+    - '(?i).*samples.*'
+    - '(?i).*man.*'
+    - '(?i).*client.*'
+    - '(?i).*gskit.*'
+    - '(?i).*amqp.*'
+    - '(?i).*ams.*'
+    - '(?i).*web.*'
+    - '(?i).*(-|_)es.*'
+    - '(?i).*(-|_)cn.*'
+    # - '(?i).*ftbase.*'
+    # - '(?i).*ftlogger.*'
+    # - '(?i).*fttools.*'
+    # - '(?i).*ftagent.*'
+    # - '(?i).*ftservice.*'
+    # - '(?i).*xrservice.*'
+    # - '(?i).*sfbridge.*'
+    # - '(?i).*bcbridge.*'
+    # - '(?i).*(-|_)de.*'
+    # - '(?i).*(-|_)fr.*'
+    # - '(?i).*(-|_)ja.*'
+    # - '(?i).*(-|_)it.*'
+    # - '(?i).*(-|_)ko.*'
+    # - '(?i).*(-|_)ru.*'
+    # - '(?i).*(-|_)pt.*'
+    # - '(?i).*(-|_)hu.*'
+    # - '(?i).*(-|_)pl.*'
+    # - '(?i).*(-|_)cs.*'
+    # - '(?i).*(-|_)tw.*'
 ```
+##### *Note*: For Ubuntu, dependencies are sensitive to the order of regex-matched packages in the `with_items` attribute of the above task. 
 
 `getconfig` - copies the dev-config.mqsc file to the target machine.
 

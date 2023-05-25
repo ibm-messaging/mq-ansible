@@ -11,8 +11,8 @@
         appGid: 909
         mqmHome: /home/mqm
         mqmProfile: .profile
-    - role: downloadmq-x86-64
+    - role: downloadmq
       vars:
         version: 930
-    - installmq-redhat
-
+        downloadURL: "https://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/messaging/mqadv/"
+    - role: installmq-linux
