@@ -1,9 +1,5 @@
 ---
 
-- name: Distribution
-  debug:
-    msg: "{{ ansible_distribution }}"
-
 - name: Set filename of zip if target host is Ubuntu
   set_fact:
     zipFile: "mqadv_dev{{ version }}_ubuntu_x86-64.tar.gz"
