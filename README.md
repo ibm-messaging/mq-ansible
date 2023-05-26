@@ -3,7 +3,7 @@
 | :memo:        | Interested in contributing to this project? Please read our [IBM Contributor License Agreement](CLA.md) and our [Contributing Guide](CONTRIBUTING.md).       |
 |---------------|:------------------------|
 
-A collection for automating the installation and configuration of IBM MQ using Ansible on Ubuntu and RedHat machines. Our aim is to make MQ-Ansible extensible for other platforms and more detailed IBM MQ configuration.
+A collection for automating the installation and configuration of IBM MQ using Ansible on Ubuntu, RedHat, and SLES machines. Our aim is to make MQ-Ansible extensible for other platforms and more detailed IBM MQ configuration.
 
 This directory contains:
 - ansible [`roles`](https://github.com/ibm-messaging/mq-ansible/tree/main/ansible_collections/ibm/ibmmq/roles) for the installation and configuration of IBM MQ.
@@ -93,7 +93,7 @@ The playbooks and roles in this collection carry out an installation of IBM MQ A
 
 `downloadmq` - downloads and unzips the appropriate MQ package based on the target platform to `/var/MQServer` on the target machine. The MQ version to be installed can be specified when calling this role.
 
-`installmq-linux` - handles platform-specific installation steps, where Ubuntu machines carry out a Debian installation and RedHat machines carry out an RPM installation. Core MQ components are installed as default, however further components and languages can be be added by uncommenting packages within the `package_files` list in  `/roles/installmq-linux/tasks/main.yml`:
+`installmq-linux` - handles platform-specific installation steps, where Ubuntu machines carry out a Debian installation and RedHat and SLES machines carry out an RPM installation. Core MQ components are installed as default, however further components and languages can be be added by uncommenting packages within the `package_files` list in  `/roles/installmq-linux/tasks/main.yml`:
 
 ```yaml
 - name: Find required package files
