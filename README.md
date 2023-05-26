@@ -15,9 +15,11 @@ For a detailed explanation and documentation on how MQ-Ansible works, click [her
 ## Requirements
 
 - `ansible`, `passlib` and `ansible-lint` are required on your local machine to run playbooks implementing this collection.
+- For SLES target machines, the [`python3-rpm`](https://opensuse.pkgs.org/15.4/opensuse-oss-x86_64/python3-rpm-4.14.3-150300.46.1.x86_64.rpm.html) package must be installed on the node.
 - a target machine of any of the supported platforms:
   - Ubuntu
   - RedHat
+  - SUSE Linux Enterprise Server (SLES)
 
  ##### *Ansible* installation ([Installation guide](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html))
 
@@ -159,35 +161,34 @@ Before running the playbook and implementing our modules and roles for IBM MQ:
      cd ~/.ssh
     ```
 
-2. If those two files are not in your `ssh` directory, you need to generate `id_rsa` and `id_rsa.pub` with the following command:
+1. If those two files are not in your `ssh` directory, you need to generate `id_rsa` and `id_rsa.pub` with the following command:
 
     ```shell
      ssh-keygen
     ```
 
-3. Once the keys have been generated, you need to copy the public key to the target machine's user `ssh` directory.
+1. Once the keys have been generated, you need to copy the public key to the target machine's user `ssh` directory.
 
     ```shell
      ssh-copy-id -i id_rsa.pub [USER]@[YOUR_TARGET_HOST]
     ```
     
-4. To confirm the keys have been copied successfully, connect to your target machine by:
+1. To confirm the keys have been copied successfully, connect to your target machine by:
 
     ```shell
      ssh [USER]@[YOUR_TARGET_HOST]
     ```
-    This should connect to your target machine without asking for a password.
-    
-5. On your local machine clone this repository. 
+    This should connect to your target machine without asking for a password.   
+1. On your local machine clone this repository. 
 
-6. Go to the `ansible_collections/ibm/ibmmq/` directory.
+1. Go to the `ansible_collections/ibm/ibmmq/` directory.
 
     ```shell
      cd mq-ansible/ansible_collections/ibm/ibmmq/
     ```
 
 
-7. Create a file `inventory.ini` inside the directory with the following content:
+1. Create a file `inventory.ini` inside the directory with the following content:
   
     ```ini
     
@@ -222,13 +223,13 @@ The sample playbook [`ibmmq.yml`](ansible_collections/ibm/ibmmq/ibmmq.yml) insta
           set ANSIBLE_LIBRARY=%ANSIBLE_LIBRARY%;<PATH-TO>/mq-ansible/ansible_collections/ibm/ibmmq/library
        ```
 
-2. Run the following command to execute the tasks within the playbook:
+1. Run the following command to execute the tasks within the playbook:
       ```shell
        ansible-playbook ./ibmmq.yml -i inventory.ini -e 'ibmMqLicence=accept'
       ```
       - ##### *Note*: you can optionally add `-K` (uppercase) to the command, this will prompt the user to enter the sudo password for [YOUR_SSH_USER] on the target machine, you can omit if you have setup SSH keys
 
-3. The playbook should return the result of `dspmq` with the queue manager created listed. Log into your target machine and check it manually:
+1. The playbook should return the result of `dspmq` with the queue manager created listed. Log into your target machine and check it manually:
 
     ```shell
      dspmq
@@ -270,16 +271,16 @@ To run the test playbooks first:
     ```shell
      cp invenotry.ini tests/playbooks
     ```
-2. go to the `tests/playbooks` directory 
+1. go to the `tests/playbooks` directory 
     ```shell
      cd tests/playbooks
     ```
-3. export the modules to your Ansible library
+1. export the modules to your Ansible library
     ```shell
      export ANSIBLE_LIBRARY=${ANSIBLE_LIBRARY}:<PATH-TO>/ansible_mq/ansible_collections/ibm/ibmmq/library
     ```
    - ##### *Note*: change `<PATH-TO>` to your local directory path:
-4. run all test playbooks
+1. run all test playbooks
     ```shell
       python3 main.py
     ```

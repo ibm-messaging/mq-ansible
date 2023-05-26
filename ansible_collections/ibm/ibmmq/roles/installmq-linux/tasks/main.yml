@@ -65,16 +65,25 @@
     - "'MQSeriesRuntime' not in ansible_facts.packages"
     - "'ibmmq-runtime' not in ansible_facts.packages"
 
-- name: rpm Installation
+- name: rpm Installation (RedHat)
   dnf:
     name: "{{ package_list }}"
     state: present
     disable_gpg_check: true
   when: 
-    - ansible_distribution == 'RedHat' or ansible_distribution == 'SLES'
+    - ansible_distribution == 'RedHat'
     - "'MQSeriesRuntime' not in ansible_facts.packages"
 
-- name: deb Installation
+- name: rpm Installation (SLES)
+  zypper:
+    name: "{{ package_list }}"
+    state: present
+    disable_gpg_check: true
+  when: 
+    - ansible_distribution == 'SLES'
+    - "'MQSeriesRuntime' not in ansible_facts.packages"
+
+- name: deb Installation (Ubuntu)
   apt:
     deb: "{{ item }}"
     state: present
