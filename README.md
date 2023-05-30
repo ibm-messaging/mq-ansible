@@ -3,7 +3,7 @@
 | :memo:        | Interested in contributing to this project? Please read our [IBM Contributor License Agreement](CLA.md) and our [Contributing Guide](CONTRIBUTING.md).       |
 |---------------|:------------------------|
 
-A collection for automating the installation and configuration of IBM MQ using Ansible on Ubuntu and Windows machines. Our aim is to make MQ-Ansible extensible for other platforms and more detailed IBM MQ configuration.
+A collection for automating the installation and configuration of IBM MQ using Ansible on Ubuntu, Redhat and Windows machines. Our aim is to make MQ-Ansible extensible for other platforms and more detailed IBM MQ configuration.
 
 This directory contains:
 - ansible [`roles`](https://github.com/ibm-messaging/mq-ansible/tree/main/ansible_collections/ibm/ibmmq/roles) for the installation and configuration of IBM MQ.
@@ -15,7 +15,10 @@ For a detailed explanation and documentation on how MQ-Ansible works, click [her
 ## Requirements
 
 - `ansible`, `passlib` and `ansible-lint` are required on your local machine to run playbooks implementing this collection.
-- An Ubuntu or Windows target machine is required to run MQ.
+- a target machine of any of the supported platforms:
+  - Ubuntu
+  - RedHat
+  - Windows
 
  ##### *Ansible* installation ([Installation guide](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html))
 
