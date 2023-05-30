@@ -14,4 +14,5 @@
     - role: downloadmq
       vars:
         version: 930
-    - installmq
+        downloadURL: "https://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/messaging/mqadv/"
+    - role: installmq-linux

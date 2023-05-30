@@ -1,15 +1,25 @@
 ---
 
+- name: Set filename of zip if target host is Ubuntu
+  set_fact:
+    zipFile: "mqadv_dev{{ version }}_ubuntu_x86-64.tar.gz"
+  when: ansible_distribution == 'Ubuntu'
+
+- name: Set filename of zip if target host is RedHat
+  set_fact:
+    zipFile: "mqadv_dev{{ version }}_linux_x86-64.tar.gz"
+  when: ansible_distribution == 'RedHat'
+
 - name: Download MQ Advanced for Developers
   get_url:
-    url: "https://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/messaging/mqadv/mqadv_dev{{ version }}_ubuntu_x86-64.tar.gz"
-    dest: /tmp/mq.tar.gz
+    url: "{{ downloadURL }}{{ zipFile }}"
+    dest: /var/mq.tar.gz
     force: no
   tags: download
 
 - name: Extract MQ fom TAR
   unarchive:
-    src: /tmp/mq.tar.gz
+    src: /var/mq.tar.gz
     remote_src: yes
-    dest: /tmp
+    dest: /var
   tags: download

@@ -28,11 +28,11 @@ Detailed documentation and guide for installing MQ on Windows using our roles ca
 
 ## Playbooks and Roles for IBM MQ installation on Ubuntu target machines
 
-The playbooks and roles in this collection carryout an installation of IBM MQ Advanced on an Ubuntu target machine. The roles have been implemented to set up the required users on the machine, download the software, install and configure IBM MQ, copy over a configurable `dev-config.mqsc` file ready to be run on the target machine, and setup and start the web console. Developers can change this file to customise the configuration of their queue managers. Here we use a playbook that calls other playbooks but you can run the roles in playbooks to suit your requirements.
+The playbooks and roles in this collection carry out an installation of IBM MQ Advanced on a target machine. The roles have been implemented to set up the required users on the machine, download the software, install and configure IBM MQ, copy over a configurable `dev-config.mqsc` file ready to be run on the target machine, and setup and start the web console. Developers can change this file to customise the configuration of their queue managers. Here we use a playbook that calls other playbooks but you can run the roles in playbooks to suit your requirements.
 
 ### Example Playbooks
 
-ibmmq.yml - this playbook calls the mq-install and mq-setup playbooks, host names are passed into the imported playbook variable as {{ ansible_play_batch }}
+`ibmmq.yml` - this playbook calls the mq-install and mq-setup playbooks, host names are passed into the imported playbook variable as {{ ansible_play_batch }}
 
 ```yaml
 - name: Install and setup IBM MQ
@@ -45,7 +45,7 @@ ibmmq.yml - this playbook calls the mq-install and mq-setup playbooks, host name
   import_playbook: mq-setup.yml
 ```
 
-mq-install.yml - this playbook installs IBM MQ with the SSH user specified in the inventory
+`mq-install.yml` - this playbook installs IBM MQ with the SSH user specified in the inventory.
 ##### *Note*: The MQ *version* and app user's *UID and GID* can be specified here.
 ```yaml
 - hosts: "{{ ansible_play_batch }}"
@@ -64,8 +64,9 @@ mq-install.yml - this playbook installs IBM MQ with the SSH user specified in th
     - role: downloadmq
       vars:
         version: 930
+    - role: installmq-linux
 ```
-mq-setup.yml - this playbook sets up IBM MQ using the 'mqm' user
+`mq-setup.yml` - this playbook sets up IBM MQ using the 'mqm' user
 
 ```yaml
 - hosts: "{{ ansible_play_hosts }}"
@@ -89,9 +90,67 @@ mq-setup.yml - this playbook sets up IBM MQ using the 'mqm' user
         - 'QM2'
         state: 'present'
 ```
+### Roles
+
+`setupusers` - creates the `mqm`, `admin`, and `app` users; the `mqm`, `mqclient` groups; and sets the MQ environment variables. User and group IDs can be specified when calling this role. 
+
+`downloadmq` - downloads and unzips the appropriate MQ package based on the target platform to `/var/MQServer` on the target machine. The MQ version to be installed can be specified when calling this role.
+
+`installmq-linux` - handles platform-specific installation steps, where Ubuntu machines carry out a Debian installation and RedHat machines carry out an RPM installation. Core MQ components are installed as default, however further components and languages can be be added by uncommenting packages within the `package_files` list in  `/roles/installmq-linux/tasks/main.yml`:
+
+```yaml
+- name: Find required package files
+  find:
+    paths: "/var/MQServer"
+    use_regex: yes
+    patterns: "{{ item }}"
+  register: package_files
+  with_items: 
+    - '(?i).*runtime.*'
+    - '(?i).*server.*'
+    - '(?i).*java.*'
+    - '(?i).*jre.*'
+    - '(?i).*sdk.*'
+    - '(?i).*samples.*'
+    - '(?i).*man.*'
+    - '(?i).*client.*'
+    - '(?i).*gskit.*'
+    - '(?i).*amqp.*'
+    - '(?i).*ams.*'
+    - '(?i).*web.*'
+    - '(?i).*(-|_)es.*'
+    - '(?i).*(-|_)cn.*'
+    # - '(?i).*ftbase.*'
+    # - '(?i).*ftlogger.*'
+    # - '(?i).*fttools.*'
+    # - '(?i).*ftagent.*'
+    # - '(?i).*ftservice.*'
+    # - '(?i).*xrservice.*'
+    # - '(?i).*sfbridge.*'
+    # - '(?i).*bcbridge.*'
+    # - '(?i).*(-|_)de.*'
+    # - '(?i).*(-|_)fr.*'
+    # - '(?i).*(-|_)ja.*'
+    # - '(?i).*(-|_)it.*'
+    # - '(?i).*(-|_)ko.*'
+    # - '(?i).*(-|_)ru.*'
+    # - '(?i).*(-|_)pt.*'
+    # - '(?i).*(-|_)hu.*'
+    # - '(?i).*(-|_)pl.*'
+    # - '(?i).*(-|_)cs.*'
+    # - '(?i).*(-|_)tw.*'
+```
+##### *Note*: For Ubuntu, dependencies are sensitive to the order of regex-matched packages in the `with_items` attribute of the above task. 
+
+`getconfig` - copies the dev-config.mqsc file to the target machine.
+
+`setupconsole` - configures a target machine's environment and permissions to be able to run the MQ Web Console.
+
+`startconsole` - starts the MQ Web Console.
+
 ## Modules for IBM MQ resources' configuration
 
-- `queue_manager.py`- Creates, starts, deletes an IBM MQ queue manager and runs an MQSC file. See the documentation [here.](QUEUE_MANAGER.md)
+- `queue_manager.py` - Creates, starts, deletes an IBM MQ queue manager and runs an MQSC file. See the documentation [here.](QUEUE_MANAGER.md)
 
 # Run our sample playbook
 
@@ -150,7 +209,7 @@ Before running the playbook and implementing our modules and roles for IBM MQ:
 
 ### ibmmq.yml
 
-The sample playbook [`ibmmq.yml`](ansible_collections/ibm/ibmmq/ibmmq.yml) installs IBM MQ Advanced with our roles and configures a queue manager with the `queue_manager.py` module.
+The sample playbook [`ibmmq.yml`](ansible_collections/ibm/ibmmq/ibmmq.yml) installs IBM MQ Advanced with our roles and configures a queue manager with the `queue_manager.py` module. 
 
 1. Before running the playbook, ensure that you have added the following directory path to the ANSIBLE_LIBRARY environment variable.
 
@@ -225,7 +284,10 @@ To run the test playbooks first:
      export ANSIBLE_LIBRARY=${ANSIBLE_LIBRARY}:<PATH-TO>/ansible_mq/ansible_collections/ibm/ibmmq/library
     ```
    - ##### *Note*: change `<PATH-TO>` to your local directory path:
-4. run all test playbooks with `python3 main.py`
+4. run all test playbooks
+    ```shell
+      python3 main.py
+    ```
 
 ## License
 
