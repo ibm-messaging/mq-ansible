@@ -6,7 +6,7 @@
   roles: 
     - downloadmq
     - setupusers
-    - installmq
+    - installmq-linux
     - configenv
     - setupenv
  

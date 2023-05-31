@@ -78,6 +78,7 @@
     - ansible_distribution == 'RedHat'
     - "'MQSeriesRuntime' not in ansible_facts.packages"
 
+
 - name: rpm Installation (SLES)
   zypper:
     name: "{{ package_list }}"

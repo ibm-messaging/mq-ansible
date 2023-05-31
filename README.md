@@ -5,6 +5,7 @@
 
 A collection for automating the installation and configuration of IBM MQ using Ansible on Ubuntu, RedHat, and SLES machines. Our aim is to make MQ-Ansible extensible for other platforms and more detailed IBM MQ configuration.
 
+
 This directory contains:
 - ansible [`roles`](https://github.com/ibm-messaging/mq-ansible/tree/main/ansible_collections/ibm/ibmmq/roles) for the installation and configuration of IBM MQ.
 - module [`queue_manager.py`](ansible_collections/ibm/ibmmq/library/queue_manager.py) to create and configure a queue manager.
@@ -94,6 +95,7 @@ The playbooks and roles in this collection carry out an installation of IBM MQ A
 `downloadmq` - downloads and unzips the appropriate MQ package based on the target platform to `/var/MQServer` on the target machine. The MQ version to be installed can be specified when calling this role.
 
 `installmq-linux` - handles platform-specific installation steps, where Ubuntu machines carry out a Debian installation and RedHat and SLES machines carry out an RPM installation. Core MQ components are installed as default, however further components and languages can be be added by uncommenting packages within the `package_files` list in  `/roles/installmq-linux/tasks/main.yml`:
+
 
 ```yaml
 - name: Find required package files
@@ -280,7 +282,9 @@ To run the test playbooks first:
      export ANSIBLE_LIBRARY=${ANSIBLE_LIBRARY}:<PATH-TO>/ansible_mq/ansible_collections/ibm/ibmmq/library
     ```
    - ##### *Note*: change `<PATH-TO>` to your local directory path:
+
 1. run all test playbooks
+
     ```shell
       python3 main.py
     ```
