@@ -10,6 +10,10 @@
     /var/MQServer/mqlicense.sh -{{ ibmMqLicence}} > /var/MQServer/licensestatus.txt
   changed_when: not license_status.stat.exists
 
+- name: Install python3-rpm (SLES)
+  shell: zypper install python3-rpm
+  when: ansible_distribution == 'SLES'
+
 - name: Gather package facts
   package_facts:
     manager: auto
