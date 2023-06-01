@@ -33,9 +33,7 @@ def check_status_queue_managers(qmname, module):
     
     return False
 
-def handle_return_code(module, rc, state, msg):
-    if rc == 5:
-        module.exit_json(skipped=True, state=state, msg=msg)
+
 
 def state_present(qmname, module):
     if module.params['unit_test'] is False:
