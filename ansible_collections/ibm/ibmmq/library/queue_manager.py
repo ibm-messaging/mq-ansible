@@ -30,7 +30,7 @@ def check_status_queue_managers(qmname, module):
     if stdout is not None:
         if 'Running' in stdout:
             return True
-    
+   
     return False
 
 
@@ -55,14 +55,14 @@ def run_mqsc_file(qmname, module):
 
     if exists is True:
         if is_running:
-            rc, stdout, stderr = module.run_command('runmqsc', qmname, '-f', module.params['mqsc_file'])
+            rc, stdout, stderr = module.run_command(["runmqsc", qmname, "-f", module.params['mqsc_file']])
             result['rc'] = rc
             result['output'] = stdout + stderr
             if rc == 0:
                 result['msg'] = 'MQSC configuration successfully applied to Queue Manager'
         else:
             rc, stdout, stderr = module.run_command(['strmqm', qmname])
-            rc, stdout, stderr = module.run_command('runmqsc', qmname, '-f', module.params['mqsc_file'])
+            rc, stdout, stderr = module.run_command(["runmqsc", qmname, "-f", module.params['mqsc_file']])
             result['rc'] = rc
             result['output'] = stdout + stderr
             rc, stdout, stderr = module.run_command(['endmqm', qmname])
