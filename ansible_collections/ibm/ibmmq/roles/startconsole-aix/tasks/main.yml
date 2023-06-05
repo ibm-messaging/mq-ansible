@@ -1,0 +1,31 @@
+---
+
+- name: Move to mqweb directory
+  shell: cd /var/mqm/web/installations/Installation1/servers/mqweb
+
+- name: Change owner and permissions on mqwebuser.xml
+  become: true
+  shell: |
+    cd /var/mqm/web/installations/Installation1/servers/mqweb
+    chown mqm mqwebuser.xml
+    chmod u+w mqwebuser.xml
+
+- name: Allow console to be accessed from anywhere
+  become: true
+  become_user: mqm
+  shell: setmqweb properties -k httpHost -v "*"
+
+- name: Start web console
+  become: true
+  become_user: mqm
+  shell:  nohup strmqweb
+
+- name: Check if Web Console is Running
+  become: true
+  become_user: mqm
+  shell:  dspmqweb
+  ignore_errors:  true
+  #no_log: true 
+  register: console_status
+  failed_when:
+  - console_status.rc != 0
