@@ -22,6 +22,7 @@
   register: package_files
   with_items: 
     - '(?i).*runtime.*'
+    - '(?i).*gskit.*'
     - '(?i).*server.*'
     - '(?i).*java.*'
     - '(?i).*jre.*'
@@ -29,7 +30,6 @@
     - '(?i).*samples.*'
     - '(?i).*man.*'
     - '(?i).*client.*'
-    - '(?i).*gskit.*'
     - '(?i).*amqp.*'
     - '(?i).*ams.*'
     - '(?i).*web.*'
