@@ -79,7 +79,7 @@ def state_running(qmname, module):
         rc, stdout, stderr = module.run_command(['dspmq', '-m', qmname])
 
         if rc == 72:
-            rc, stdout, stderr = module.run_command(['crtmqm', qmname])
+            module.exit_json(skipped=True, state='absent', msg='IBM MQ queue manager does not exist. Please create it first to set it running.')
             
         rc, stdout, stderr = module.run_command(['strmqm', qmname])
         result['rc'] = rc
