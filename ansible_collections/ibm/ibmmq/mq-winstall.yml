@@ -1,8 +1,5 @@
 - hosts: windows
 
   roles:
-    - role: windownloadmq
-      vars:
-        directory: C:\Users\Administrator
-        version: 930
-    - role: winstallmq
+    - role: downloadmq
+    - role: installmq-windows

@@ -37,10 +37,10 @@ Our collection now also allows you to automate the download and install of IBM M
     - Change `YOUR_HOSTNAME` to your server/hostname, e.g. `myserver-windows.fyre.com`
     - Change `YOUR_PASSWORD` to your target machine *Administrator*'s password.
 
-## Roles
+## Roles for windows installation
 
-  - ``windownloadmq``: Downloads the IBM MQ Advanced developer package to an specified directory. Default directory in our sample playbook is `C:\Users\Administrator`.
-  - ``winstallmq``: Installs the package.
+  - ``downloadmq``: For Windows, downloads the IBM MQ Advanced developer package to an specified directory. Default directory in our sample playbook is `C:\Users\Administrator`.
+  - ``installmq-windows``: Installs the package.
 
 ## Implementing the roles on your playbook
 
@@ -50,11 +50,11 @@ Our collection now also allows you to automate the download and install of IBM M
   - hosts: windows
 
     roles:
-      - role: windownloadmq
+      - role: downloadmq
         vars:
           directory: C:\Users\Administrator
           version: 930
-      - role: winstallmq
+      - role: installmq-windows
 ```
 
   To run the playbook, issue the following command on your local host:
