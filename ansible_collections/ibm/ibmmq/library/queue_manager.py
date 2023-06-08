@@ -43,8 +43,11 @@ def state_present(qmname, module):
         if module.params['mqsc_file'] is not None:
             run_mqsc_file(qmname, module)
 
-
-        if rc == 8:
+        if rc == 0:
+            result['rc'] = rc
+            result['msg'] = 'IBM MQ Queue Manager Created'
+            result['state'] = 'present'
+        elif rc == 8:
             module.exit_json(skipped=True, state='present', msg='IBM MQ Queue Manager already exists')
         elif rc > 0:
             module.fail_json(**result)
