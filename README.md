@@ -12,6 +12,14 @@ This directory contains:
 
 For a detailed explanation and documentation on how MQ-Ansible works, click [here](https://github.com/ibm-messaging/mq-ansible/wiki).
 
+| Section |
+| :------ |
+| [Requirements](https://github.com/ibm-messaging/mq-ansible/tree/aix-support#requirements) |
+| [Playbooks and Roles for IBM MQ installation](https://github.com/ibm-messaging/mq-ansible/tree/aix-support#requirements) |
+| [Run our sample playbook](https://github.com/ibm-messaging/mq-ansible/tree/aix-support#run-our-sample-playbook) |
+| [Troubleshooting](https://github.com/ibm-messaging/mq-ansible/tree/aix-support#troubleshooting) |
+| [Testing Framework](https://github.com/ibm-messaging/mq-ansible/tree/aix-support#testing-framework) |
+
 ## Requirements
 
 - `ansible`, `passlib` and `ansible-lint` are required on your local machine to run playbooks implementing this collection.
@@ -258,7 +266,7 @@ If one of the following errors appears during the run of the playbook, run the f
   Restart the SSH session.
 
 
-# Testing framework
+# Testing Framework
 
 ### Testing module's functionality with playbooks
 
