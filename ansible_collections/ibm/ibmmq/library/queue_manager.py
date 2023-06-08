@@ -17,6 +17,123 @@
 from ansible.module_utils.basic import AnsibleModule
 import os.path
 
+result = dict(
+    rc=0,
+    msg='',
+    state='',
+    output=''
+)
+
+def check_status_queue_managers(qmname, module):
+    rc, stdout, stderr = module.run_command(['dspmq', '-m', qmname])
+
+    if stdout is not None:
+        if 'Running' in stdout:
+            return True
+   
+    return False
+
+
+
+def state_present(qmname, module):
+    if module.params['unit_test'] is False:
+        rc, stdout, stderr = module.run_command(['crtmqm', qmname])
+        result['rc'] = rc
+
+        if module.params['mqsc_file'] is not None:
+            run_mqsc_file(qmname, module)
+
+        if rc == 0:
+            result['rc'] = rc
+            result['msg'] = 'IBM MQ Queue Manager Created'
+            result['state'] = 'present'
+        elif rc == 8:
+            module.exit_json(skipped=True, state='present', msg='IBM MQ Queue Manager already exists')
+        elif rc > 0:
+            module.fail_json(**result)
+
+def run_mqsc_file(qmname, module):
+    is_running = check_status_queue_managers(qmname, module)
+    exists = os.path.isfile(module.params['mqsc_file'])
+
+    if exists is True:
+        if is_running:
+            rc, stdout, stderr = module.run_command(["runmqsc", qmname, "-f", module.params['mqsc_file']])
+            result['rc'] = rc
+            result['output'] = stdout + stderr
+            if rc == 0:
+                result['msg'] = 'MQSC configuration successfully applied to Queue Manager'
+        else:
+            rc, stdout, stderr = module.run_command(['strmqm', qmname])
+            rc, stdout, stderr = module.run_command(["runmqsc", qmname, "-f", module.params['mqsc_file']])
+            result['rc'] = rc
+            result['output'] = stdout + stderr
+            rc, stdout, stderr = module.run_command(['endmqm', qmname])
+            if rc == 0:
+                result['msg'] = 'MQSC configuration successfully applied to Queue Manager'
+    else:
+        result['rc'] = 16    
+        result['msg'] = 'MQSC file could not be found'
+
+
+def state_running(qmname, module):
+    result['msg'] = 'IBM MQ queue manager \'' + str(qmname) + '\' started'
+    if module.params['unit_test'] is False:
+        rc, stdout, stderr = module.run_command(['dspmq', '-m', qmname])
+
+        if rc == 72:
+            module.exit_json(skipped=True, state='absent', msg='IBM MQ queue manager does not exist. Please create it first to set it running.')
+            
+        rc, stdout, stderr = module.run_command(['strmqm', qmname])
+        result['rc'] = rc
+
+        if module.params['mqsc_file'] is not None:
+            run_mqsc_file(qmname, module)
+
+        if rc == 5 and module.params['mqsc_file'] is None:
+            module.exit_json(skipped=True, state='running', msg='IBM MQ queue manager running')
+        elif rc ==5 and module.params['mqsc_file'] is not None:
+            result['msg'] += 'IBM MQ queue manager is running'
+        elif rc > 0:
+            module.fail_json(**result)
+
+def state_stopped(qmname, module):
+    if module.params['unit_test'] is False:
+        
+        if module.params['mqsc_file'] is not None:
+            run_mqsc_file(qmname, module)
+
+        rc, stdout, stderr = module.run_command(['endmqm', qmname])
+        result['msg'] = stdout + stderr
+
+        if rc == 16:
+            result['state'] = 'absent'
+            module.fail_json(**result)
+        elif rc == 40:
+            module.exit_json(skipped=True, state='present', msg = stdout + stderr)
+        elif rc > 0:
+            module.fail_json(**result)
+
+def state_absent(qmname, module):
+    result['msg'] = 'IBM MQ queue manager deleted.'
+    if module.params['unit_test'] is False:
+        rc, stdout, stderr = module.run_command(['dltmqm', qmname])
+        result['msg'] = stdout + stderr
+        result['rc'] = rc
+        if rc == 5:
+            module.exit_json(skipped=True, state='running', msg='IBM MQ queue manager running.')
+        elif rc == 16:
+            # Queue Manager does not exist
+            module.exit_json(skipped=True, state='absent', msg='AMQ8118E: IBM MQ queue manager does not exist.')
+        elif rc > 0:
+            module.fail_json(**result)
+
+def state_invalid(qmname, module):
+    result['state'] = ''
+    result['msg'] = 'Unrecognised State'
+    result['rc'] = 16
+    module.fail_json(**result)
+
 
 def main():
     qmgr_attributes = dict(
@@ -31,113 +148,18 @@ def main():
         argument_spec=qmgr_attributes
     )
 
-    result = dict(
-        rc=0,
-        msg='',
-        state='',
-        output=''
-    )
+    ops = {
+        "present": state_present,
+        "running":  state_running,
+        "stopped":  state_stopped,
+        "absent":   state_absent
+    }
 
-    result['state'] = module.params['state']
-    if module.params['state'] != 'absent' and module.params['mqsc_file'] is not None:
-        result['msg'] = 'runmqsc command ran successfully'
-        result['rc'] = 0
+    if module.params['unit_test'] is False:
         for qmname in module.params['qmname']:
-            if module.params['unit_test'] is False:
-                rc, stdout, stderr = module.run_command(['dspmq', '-m', qmname])
-
-                if rc == 72:
-                    rc, stdout, stderr = module.run_command(['crtmqm', qmname])
-                if module.params['state'] == 'running':
-                    rc, stdout, stderr = module.run_command(['strmqm', qmname])
-                rc, stdout, stderr = module.run_command(['dspmq', '-m', qmname])
-
-                if stdout is not None:
-                    if 'Running' in stdout:
-                        exists = os.path.isfile(module.params['mqsc_file'])
-
-                        if exists is True:
-                            rc_runmqsc, stdout_runmqsc, stderr_runmqsc = module.run_command(["runmqsc", qmname, "-f", module.params['mqsc_file']])
-                            result['rc'] = rc_runmqsc
-                            result['output'] = stdout_runmqsc + stderr_runmqsc
-
-                            if rc == 0:
-                                result['msg'] = 'MQSC configuration successfully applied to Queue Manager'
-
-                        else:
-                            result['rc'] = 16
-                            result['msg'] = 'MQSC file could not be found'
-
-                    else:
-                        result['msg'] = 'Queue Manager Needs to be running to apply MQSC configuration.'
-                        result['rc'] = 8
-                else:
-                    result['msg'] = 'Queue Manager does not exist.'
-                    result['rc'] = 8
-
-    elif module.params['state'] == 'running':
-        for qmname in module.params['qmname']:
-            result['msg'] = 'IBM MQ queue manager \'' + str(qmname) + '\' started'
-            if module.params['unit_test'] is False:
-                rc, stdout, stderr = module.run_command(['dspmq', '-m', qmname])
-                if rc == 72:
-                    rc, stdout, stderr = module.run_command(['crtmqm', qmname])
-                rc, stdout, stderr = module.run_command(['strmqm', qmname])
-                result['rc'] = rc
-                if rc == 5:
-                    module.exit_json(skipped=True, state='running', msg='IBM MQ queue manager running')
-                elif rc > 0:
-                    module.fail_json(**result)
-
-    elif module.params['state'] == 'present':
-        result['msg'] = 'IBM MQ Queue Manager Created'
-        for qmname in module.params['qmname']:
-            if module.params['unit_test'] is False:
-                rc, stdout, stderr = module.run_command(['crtmqm', qmname])
-                result['rc'] = rc
-
-                if rc == 8:
-                    module.exit_json(skipped=True, state='present', msg='IBM MQ Queue Manager already exists')
-                elif rc > 0:
-                    module.fail_json(**result)
-
-    elif module.params['state'] == 'absent':
-        result['msg'] = 'IBM MQ queue manager deleted.'
-        for qmname in module.params['qmname']:
-            if module.params['unit_test'] is False:
-                rc, stdout, stderr = module.run_command(['dltmqm', qmname])
-                result['msg'] = stdout + stderr
-                result['rc'] = rc
-                if rc == 5:
-                    module.exit_json(skipped=True, state='running', msg='IBM MQ queue manager running.')
-                elif rc == 16:
-                    # Queue Manager does not exist
-                    module.exit_json(skipped=True, state='absent', msg='AMQ8118E: IBM MQ queue manager does not exist.')
-                elif rc > 0:
-                    module.fail_json(**result)
-
-    elif module.params['state'] == 'stopped':
-        result['msg'] = 'Quiesce request accepted. The queue manager will stop when all outstanding work\nis complete.\n'
-        for qmname in module.params['qmname']:
-            if module.params['unit_test'] is False:
-                rc, stdout, stderr = module.run_command(['endmqm', qmname])
-                result['msg'] = stdout + stderr
-                if rc == 16:
-                    result['state'] = 'absent'
-                    module.fail_json(**result)
-                elif rc == 40:
-                    module.exit_json(skipped=True, state='present', msg=stdout + stderr)
-                elif rc > 0:
-                    module.fail_json(**result)
-    else:
-        # State Unrecognized, fail_json
-        result['state'] = ''
-        result['msg'] = 'Unrecognised State'
-        result['rc'] = 16
-        module.fail_json(**result)
-
+            ops.get(module.params['state'], state_invalid)(qmname, module)
+    
     module.exit_json(**result)
-
 
 if __name__ == '__main__':
     main()
