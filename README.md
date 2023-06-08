@@ -273,7 +273,7 @@ To run the test playbooks first:
 
 1. copy your `inventory.ini` file to the `tests/playbooks` directory 
     ```shell
-     cp invenotry.ini tests/playbooks
+     cp inventory.ini tests/playbooks
     ```
 2. go to the `tests/playbooks` directory 
     ```shell

@@ -1,5 +1,6 @@
 - hosts: windows
 
   roles:
-    - role: downloadmq
-    - role: installmq-windows
+    - downloadmq
+    - installmq-windows
+    - setupconsole-windows
