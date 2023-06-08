@@ -1,0 +1,7 @@
+---
+
+- name: Copy developer config file to target
+  become: true
+  copy:
+    src: ../../../dev-config.mqsc
+    dest: "/tmp/dev-config.mqsc"

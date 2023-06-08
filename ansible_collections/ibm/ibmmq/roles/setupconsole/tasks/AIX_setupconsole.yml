@@ -35,12 +35,7 @@
     path: /var/mqm/web/installations/Installation1/servers/mqweb/mqwebuser.xml
   register: final_mqwebuser
 
-- name: ensure correct permissions for mqwebuser.xml
+- name: Ensure correct permissions for mqwebuser.xml
   become: true
   shell: chmod 640 /var/mqm/web/installations/Installation1/servers/mqweb/mqwebuser.xml
-  when: final_mqwebuser.stat.exists
-
-- name: ensure correct permissions for mqwebuser.xml
-  become: true
-  shell: chown {{ ansible_ssh_user }} /var/mqm/web/installations/Installation1/servers/mqweb/mqwebuser.xml
   when: final_mqwebuser.stat.exists

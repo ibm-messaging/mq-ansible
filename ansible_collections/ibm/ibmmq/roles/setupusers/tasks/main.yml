@@ -1,53 +1,7 @@
 ---
 
-- name: Create mqm group
-  group:
-    name: mqm
-    gid: "{{ mqmGid }}"
+- name: Including the task list for this platform
+  include_tasks: "{{ ansible_system }}_{{ role_name }}.yml"
 
-- name: Create mqm user
-  user:
-    name: mqm
-    uid: "{{ mqmUid }}"
-    group: mqm
-    home: "{{ mqmHome }}"
-    shell: "{{ mqmShell }}"
 
-- name: Set MQ environment variables through profile
-  lineinfile:
-    dest: "{{ mqmHome }}/{{mqmProfile}}"
-    state: present
-    line: '. /opt/mqm/bin/setmqenv -s'
-  when: ansible_distribution != 'RedHat'
 
-- name: Set MQ environment variables through profile on RedHat
-  lineinfile:
-    dest: "{{ mqmHome }}/.bashrc"
-    state: present
-    line: '. /opt/mqm/bin/setmqenv -s'
-  when: ansible_distribution == 'RedHat'
-
-- name: Create an admin user
-  user:
-    name: mqadm
-    groups: mqm
-    append: yes
-    home: "{{ mqmHome }}"
-    shell: "{{ mqmShell }}"
-
-- name: Add 'mqclient' group
-  become: true
-  group:
-    name: mqclient
-    state: present
-    gid: "{{ appGid }}"
-
-- name: Add the user 'app' with a specific UID
-  become: true
-  vars:
-    apppassword: "Passw0rd"
-  user:
-    name: app
-    password: "{{ 'apppassword' | password_hash('sha512', 65534 | random(seed=inventory_hostname) | string) }}"
-    uid: "{{ appUid }}"
-    group: mqclient

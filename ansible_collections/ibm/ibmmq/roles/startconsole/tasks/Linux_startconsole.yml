@@ -1,0 +1,20 @@
+---
+
+- name: Move to mqweb directory
+  shell: cd /var/mqm/web/installations/Installation1/servers/mqweb
+
+- name: Allow console to be accessed from anywhere
+  shell:  setmqweb properties -k httpHost -v "*"
+
+- name: Check if Web Console is Running
+  shell:  dspmqweb
+  ignore_errors:  true
+  #no_log: true
+  register: console_status
+  failed_when:  
+  - console_status.rc != 0
+  - "'is not running.' not in console_status.stderr"
+
+- name: Start web console
+  shell:  nohup strmqweb
+  when: "'is not running.' in console_status.stderr"
