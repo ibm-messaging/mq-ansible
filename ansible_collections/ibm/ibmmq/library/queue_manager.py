@@ -78,6 +78,7 @@ def run_mqsc_file(qmname, module):
 
 def state_running(qmname, module):
     result['msg'] = 'IBM MQ queue manager \'' + str(qmname) + '\' started'
+    result['state'] = 'running'
     if module.params['unit_test'] is False:
         rc, stdout, stderr = module.run_command(['dspmq', '-m', qmname])
 
@@ -89,10 +90,8 @@ def state_running(qmname, module):
 
         if module.params['mqsc_file'] is not None:
             run_mqsc_file(qmname, module)
-
-        if rc == 0:
-            'IBM MQ queue manager \'qm1_present_start\' started'
-        elif rc == 5 and module.params['mqsc_file'] is None:
+        
+        if rc == 5 and module.params['mqsc_file'] is None:
             module.exit_json(skipped=True, state='running', msg='IBM MQ queue manager running')
         elif rc ==5 and module.params['mqsc_file'] is not None:
             result['msg'] += 'IBM MQ queue manager is running'
