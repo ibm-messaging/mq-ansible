@@ -110,6 +110,7 @@ The playbooks and roles in this collection carry out an installation of IBM MQ A
   register: package_files
   with_items: 
     - '(?i).*runtime.*'
+    - '(?i).*gskit.*'
     - '(?i).*server.*'
     - '(?i).*java.*'
     - '(?i).*jre.*'
@@ -117,7 +118,6 @@ The playbooks and roles in this collection carry out an installation of IBM MQ A
     - '(?i).*samples.*'
     - '(?i).*man.*'
     - '(?i).*client.*'
-    - '(?i).*gskit.*'
     - '(?i).*amqp.*'
     - '(?i).*ams.*'
     - '(?i).*web.*'
