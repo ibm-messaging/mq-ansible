@@ -1,0 +1,70 @@
+---
+
+- name: Check if license status file exists
+  stat:
+    path: /tmp/MQServer/licensestatus.txt
+  register: license_status
+
+# - name: Accept MQ license
+#  become: true
+#  shell: |
+#    /tmp/MQServer/mqlicense.sh -accept > /tmp/MQServer/licensestatus.txt
+#  changed_when: not license_status.stat.exists
+
+- name: Check if MQ is installed
+  shell: apt list | grep ibmmq
+  register: installed_mq_packages
+  failed_when:
+    - "'FAIL' in installed_mq_packages.stderr"
+
+- name: Set MQ Packages Location
+  set_fact:
+    MQ_PACKAGES_LOCATION: "/tmp/MQServer"
+
+- name: Check if IBM MQ is already installed
+  shell: dspmqver
+  register: mq_installed
+  ignore_errors: yes
+
+- name: Run IBM MQ installation script if MQ is not installed
+  shell: |
+    ./mq_install_script.sh
+  args:
+    chdir: "{{ MQ_PACKAGES_LOCATION }}"
+  when: mq_installed.rc != 0
+  become: yes
+  become_user: root
+
+- name: Install MQ Server
+  become: true
+  shell: |
+    installp -acgXd . all
+  args:
+    chdir: "/tmp/MQServer"
+  register: installed_mq_packages
+  changed_when: "'ibmmq' not in installed_mq_packages.stdout"
+
+- name: Set MQ environment variables through profile
+  become: true
+  lineinfile:
+    dest: /etc/profile
+    state: present
+    line: '. /opt/mqm/bin/setmqenv -s'
+
+- name: Cleanup after installation
+  become: true
+  command: echo "No cleanup required."
+  changed_when: False
+
+- name: Add the user to group mqm
+  become: true
+  shell: |
+    chuser groups=mqm ${SUDO_USER:-${USER}}
+
+- name: Add the ansible ssh user to group mqm
+  become: true
+  shell: |
+    chuser groups=mqm "{{ ansible_ssh_user }}"
+  
+- name: reset ssh connection
+  meta: reset_connection
