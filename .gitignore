@@ -112,7 +112,7 @@ venv/
 ENV/
 env.bak/
 venv.bak/
-inventory.ini
+*.ini
 
 # Spyder project settings
 .spyderproject
