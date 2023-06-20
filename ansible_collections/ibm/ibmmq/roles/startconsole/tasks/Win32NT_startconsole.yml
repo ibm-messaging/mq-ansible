@@ -1,0 +1,13 @@
+---
+
+- name: Enable remote connections to the mqweb
+  ansible.windows.win_command:
+    cmd: '.\setmqweb.bat properties -k httpHost -v "*"'
+    chdir: C:\Program Files\IBM\MQ\bin
+
+- name: Start console
+  ansible.windows.win_command: 
+    cmd: '.\strmqweb.bat'
+    chdir: C:\Program Files\IBM\MQ\bin
+  async: 180
+  poll: 0

@@ -20,21 +20,3 @@
     dest: '{{ directory }}\mq-install'
   tags: download
   when: ansible_os_family == 'Windows'
-
-- name: Download MQ Advanced for Developers on Unix based platforms
-  get_url:
-    url: "{{ downloadURL }}{{ zipFile }}"
-    dest: /var/mq.tar.gz
-    force: no
-  tags: download
-  when: 
-    ansible_os_family != 'Windows'
-
-- name: Extract MQ fom TAR on Unix based platforms
-  unarchive:
-    src: /var/mq.tar.gz
-    remote_src: yes
-    dest: /var
-    tags: download
-  when:
-    ansible_os_family != 'Windows'

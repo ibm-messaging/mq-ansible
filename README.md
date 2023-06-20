@@ -3,7 +3,7 @@
 | :memo:        | Interested in contributing to this project? Please read our [IBM Contributor License Agreement](CLA.md) and our [Contributing Guide](CONTRIBUTING.md).       |
 |---------------|:------------------------|
 
-A collection for automating the installation and configuration of IBM MQ using Ansible on Ubuntu and RedHat machines. Our aim is to make MQ-Ansible extensible for other platforms and more detailed IBM MQ configuration.
+A collection for automating the installation and configuration of IBM MQ using Ansible on Ubuntu, Redhat and Windows machines. Our aim is to make MQ-Ansible extensible for other platforms and more detailed IBM MQ configuration.
 
 This directory contains:
 - ansible [`roles`](https://github.com/ibm-messaging/mq-ansible/tree/main/ansible_collections/ibm/ibmmq/roles) for the installation and configuration of IBM MQ.
@@ -26,11 +26,15 @@ For a detailed explanation and documentation on how MQ-Ansible works, click [her
 - a target machine of any of the supported platforms:
   - Ubuntu
   - RedHat
+  - Windows
 
  ##### *Ansible* installation ([Installation guide](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html))
 
-## Playbooks and Roles for IBM MQ installation
+## Installation roles on Windows machines.
 
+Detailed documentation and guide for installing MQ on Windows using our roles can be found [here](ansible_collections/ibm/ibmmq/library/WINSTALL.md).
+
+## Playbooks and Roles for IBM MQ installation on Ubuntu target machines
 The playbooks and roles in this collection carry out an installation of IBM MQ Advanced on a target machine. The roles have been implemented to set up the required users on the machine, download the software, install and configure IBM MQ, copy over a configurable `dev-config.mqsc` file ready to be run on the target machine, and setup and start the web console. Developers can change this file to customise the configuration of their queue managers. Here we use a playbook that calls other playbooks but you can run the roles in playbooks to suit your requirements.
 
 ### Example Playbooks
@@ -276,7 +280,7 @@ To run the test playbooks first:
 
 1. copy your `inventory.ini` file to the `tests/playbooks` directory 
     ```shell
-     cp invenotry.ini tests/playbooks
+     cp inventory.ini tests/playbooks
     ```
 2. go to the `tests/playbooks` directory 
     ```shell

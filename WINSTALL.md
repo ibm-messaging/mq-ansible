@@ -40,21 +40,27 @@ Our collection now also allows you to automate the download and install of IBM M
 ## Roles for windows installation
 
   - ``downloadmq``: For Windows, downloads the IBM MQ Advanced developer package to an specified directory. Default directory in our sample playbook is `C:\Users\Administrator`.
-  - ``installmq-windows``: Installs the package.
+  - ``installmq``: Installs the package.
+  - ``setupconsole``: Sets up the web console.
+  - ``startconsole``: Starts the web console.
 
 ## Implementing the roles on your playbook
 
-  Example based in our sample playbook `mq-winstall.yml`:
+  Example based in our sample playbook `mq-winstall.yml`, specifying the directory, version and download URL:
 
   ```yaml
   - hosts: windows
 
     roles:
-      - role: downloadmq
-        vars:
-          directory: C:\Users\Administrator
-          version: 930
-      - role: installmq-windows
+    - role: downloadmq
+      vars:
+        directory: C:\Users\Administrator
+        version: 930
+        downloadURL: "https://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/messaging/mqadv/"
+    - installmq
+    - setupconsole
+    - startconsole
+
 ```
 
   To run the playbook, issue the following command on your local host:
