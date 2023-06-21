@@ -79,5 +79,3 @@ If one of the following errors appears during the run of the playbook, run the f
   ```shell
     export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
   ```
-
-
