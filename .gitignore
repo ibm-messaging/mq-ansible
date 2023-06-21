@@ -134,3 +134,4 @@ dmypy.json
 
 # Ansible Unit Tests
 ansible_collections/tests/unit/output/
+groups_vars/windows.yml
