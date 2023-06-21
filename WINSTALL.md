@@ -37,7 +37,7 @@ Our collection now also allows you to automate the download and install of IBM M
     - Change `YOUR_HOSTNAME` to your server/hostname, e.g. `myserver-windows.fyre.com`
     - Change `YOUR_PASSWORD` to your target machine *Administrator*'s password.
 
-## Roles for windows installation
+## Roles for Windows installation
 
   - ``downloadmq``: For Windows, downloads the IBM MQ Advanced developer package to an specified directory. Default directory in our sample playbook is `C:\Users\Administrator`.
   - ``installmq``: Installs the package.
@@ -79,5 +79,3 @@ If one of the following errors appears during the run of the playbook, run the f
   ```shell
     export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
   ```
-
-

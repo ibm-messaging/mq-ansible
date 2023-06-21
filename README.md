@@ -3,7 +3,7 @@
 | :memo:        | Interested in contributing to this project? Please read our [IBM Contributor License Agreement](CLA.md) and our [Contributing Guide](CONTRIBUTING.md).       |
 |---------------|:------------------------|
 
-A collection for automating the installation and configuration of IBM MQ using Ansible on Ubuntu, Redhat and Windows machines. Our aim is to make MQ-Ansible extensible for other platforms and more detailed IBM MQ configuration.
+A collection for automating the installation and configuration of IBM MQ using Ansible on Ubuntu, Redhat, Windows and IBM AIX machines. Our aim is to make MQ-Ansible extensible for other platforms and more detailed IBM MQ configuration.
 
 This directory contains:
 - ansible [`roles`](https://github.com/ibm-messaging/mq-ansible/tree/main/ansible_collections/ibm/ibmmq/roles) for the installation and configuration of IBM MQ.
@@ -27,17 +27,14 @@ For a detailed explanation and documentation on how MQ-Ansible works, click [her
   - Ubuntu
   - RedHat
   - Windows
+  - IBM AIX
 
  ##### *Ansible* installation ([Installation guide](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html))
 
-## Installation roles on Windows machines.
-
-Detailed documentation and guide for installing MQ on Windows using our roles can be found [here](ansible_collections/ibm/ibmmq/library/WINSTALL.md).
-
-## Playbooks and Roles for IBM MQ installation on Ubuntu target machines
+# Playbooks and Roles for IBM MQ installation on Ubuntu target machines
 The playbooks and roles in this collection carry out an installation of IBM MQ Advanced on a target machine. The roles have been implemented to set up the required users on the machine, download the software, install and configure IBM MQ, copy over a configurable `dev-config.mqsc` file ready to be run on the target machine, and setup and start the web console. Developers can change this file to customise the configuration of their queue managers. Here we use a playbook that calls other playbooks but you can run the roles in playbooks to suit your requirements.
 
-### Example Playbooks
+## Example Playbooks
 
 `ibmmq.yml` - this playbook calls the mq-install and mq-setup playbooks, host names are passed into the imported playbook variable as {{ ansible_play_batch }}
 
@@ -97,56 +94,14 @@ The playbooks and roles in this collection carry out an installation of IBM MQ A
         - 'QM2'
         state: 'present'
 ```
-### Roles
+## Roles
 
 `setupusers` - creates the `mqm`, `admin`, and `app` users; the `mqm`, `mqclient` groups; and sets the MQ environment variables. User and group IDs can be specified when calling this role. 
 
 `downloadmq` - downloads and unzips the appropriate MQ package based on the target platform to `/var/MQServer` on the target machine. The MQ version to be installed can be specified when calling this role.
 
-`installmq-linux` - handles platform-specific installation steps, where Ubuntu machines carry out a Debian installation and RedHat machines carry out an RPM installation. Core MQ components are installed as default, however further components and languages can be be added by uncommenting packages within the `package_files` list in  `/roles/installmq-linux/tasks/main.yml`:
+`installmq-linux` - handles platform-specific installation steps, where Ubuntu machines carry out a Debian installation and RedHat machines carry out an RPM installation. Core MQ components are installed as default, however further components and languages can be be added by uncommenting packages within the `package_files` list in  `/roles/installmq-linux/tasks/main.yml`.
 
-```yaml
-- name: Find required package files
-  find:
-    paths: "/var/MQServer"
-    use_regex: yes
-    patterns: "{{ item }}"
-  register: package_files
-  with_items: 
-    - '(?i).*runtime.*'
-    - '(?i).*gskit.*'
-    - '(?i).*server.*'
-    - '(?i).*java.*'
-    - '(?i).*jre.*'
-    - '(?i).*sdk.*'
-    - '(?i).*samples.*'
-    - '(?i).*man.*'
-    - '(?i).*client.*'
-    - '(?i).*amqp.*'
-    - '(?i).*ams.*'
-    - '(?i).*web.*'
-    - '(?i).*(-|_)es.*'
-    - '(?i).*(-|_)cn.*'
-    # - '(?i).*ftbase.*'
-    # - '(?i).*ftlogger.*'
-    # - '(?i).*fttools.*'
-    # - '(?i).*ftagent.*'
-    # - '(?i).*ftservice.*'
-    # - '(?i).*xrservice.*'
-    # - '(?i).*sfbridge.*'
-    # - '(?i).*bcbridge.*'
-    # - '(?i).*(-|_)de.*'
-    # - '(?i).*(-|_)fr.*'
-    # - '(?i).*(-|_)ja.*'
-    # - '(?i).*(-|_)it.*'
-    # - '(?i).*(-|_)ko.*'
-    # - '(?i).*(-|_)ru.*'
-    # - '(?i).*(-|_)pt.*'
-    # - '(?i).*(-|_)hu.*'
-    # - '(?i).*(-|_)pl.*'
-    # - '(?i).*(-|_)cs.*'
-    # - '(?i).*(-|_)tw.*'
-```
 ##### *Note*: For Ubuntu, dependencies are sensitive to the order of regex-matched packages in the `with_items` attribute of the above task. 
 
 `getconfig` - copies the dev-config.mqsc file to the target machine.
@@ -158,6 +113,10 @@ The playbooks and roles in this collection carry out an installation of IBM MQ A
 ## Modules for IBM MQ resources' configuration
 
 - `queue_manager.py` - Creates, starts, deletes an IBM MQ queue manager and runs an MQSC file. See the documentation [here.](QUEUE_MANAGER.md)
+
+## Installation roles on Windows machines
+
+Detailed documentation and guide for installing MQ on Windows using our roles can be found [here](https://github.com/ibm-messaging/mq-ansible/blob/main/WINSTALL.md).
 
 # Run our sample playbook
 
@@ -296,6 +255,6 @@ To run the test playbooks first:
       python3 main.py
     ```
 
-## License
+# License
 
-[Apache 2.0 license](LICENSE)
+[Apache 2.0 license](LICENSE) 
