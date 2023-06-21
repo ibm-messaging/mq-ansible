@@ -1,0 +1,14 @@
+---
+
+- name: Check if basic registry exists
+  ansible.windows.win_stat:
+    path: C:\Program Files\IBM\MQ\web\mq\samp\configuration\basic_registry.xml
+  register: basic_registry
+
+- name: Replace the existing config file with basic registry
+  ansible.windows.win_copy:
+    src: C:\Program Files\IBM\MQ\web\mq\samp\configuration\basic_registry.xml
+    dest: C:\ProgramData\IBM\MQ\web\installations\Installation1\servers\mqweb\mqwebuser.xml
+    remote_src: true
+  when: basic_registry.stat.exists
+  
