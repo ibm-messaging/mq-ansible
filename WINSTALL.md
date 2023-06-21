@@ -26,7 +26,7 @@ Our collection now also allows you to automate the download and install of IBM M
      cd mq-ansible/ansible_collections/ibm/ibmmq/
     ```
 
-    **Option 1: Plantext variables in inventory file**
+    **Option 1: Plaintext variables in inventory file**
 
       To indicate the Ansible Engine to use a WinRM connection, you must configure your ```ansible_connection``` host variable to ```winrm```. If you have set up your target machine with self-sigend certificates, you will also need to configure your host var to ignore certificate validtion. An example inventory file:
 
