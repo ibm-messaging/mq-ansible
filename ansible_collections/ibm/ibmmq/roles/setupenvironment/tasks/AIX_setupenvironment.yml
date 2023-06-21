@@ -1,11 +1,12 @@
 ---
-
 - name: Incrase ssh connection timeout
-  shell: /usr/sbin/sshd -o ClientAliveInterval=3000 
+  command: /usr/sbin/sshd -o ClientAliveInterval=3000
+  changed_when: true
 
 - name: Increase space on the disk
-  shell: chfs -a size=+4G /tmp
+  command: chfs -a size=+4G /tmp
+  changed_when: true
 
 - name: Increase max_file
-  shell: huser fsize=-1 root
-
+  command: huser fsize=-1 root
+  changed_when: true

@@ -1,6 +1,6 @@
+---
 - name: Install and setup IBM MQ
-  hosts: ['ubuntu']
-
+  hosts: [ubuntu]
 - name: Run the install playbook
   import_playbook: mq-install.yml
 

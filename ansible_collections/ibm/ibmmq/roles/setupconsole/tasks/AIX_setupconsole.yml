@@ -1,5 +1,4 @@
 ---
-
 - name: Check if basic registry exists
   stat:
     path: /opt/mqm/web/mq/samp/configuration/basic_registry.xml
@@ -7,7 +6,17 @@
 
 - name: Moving basic registry
   become: true
-  shell: mv /opt/mqm/web/mq/samp/configuration/basic_registry.xml /var/mqm/web/installations/Installation1/servers/mqweb/
+  copy:
+    src: /opt/mqm/web/mq/samp/configuration/basic_registry.xml
+    dest: /var/mqm/web/installations/Installation1/servers/mqweb/
+    remote_src: true
+    mode: "{{ basic_registry_result.stat.mode }}"
+  when: basic_registry_result.stat.exists
+
+- name: Remove old basic registry
+  file:
+    path: /var/mqm/web/installations/Installation1/servers/mqweb/
+    state: absent
   when: basic_registry_result.stat.exists
 
 - name: Check if old mqwebuser exists
@@ -15,9 +24,18 @@
     path: /var/mqm/web/installations/Installation1/servers/mqweb/mqwebuser.old
   register: mqwebuser_result
 
-- name: moving mqwebuser to old mqwebuser
+- name: Stat mqwebuser
+  stat:
+    path: /var/mqm/web/installations/Installation1/servers/mqweb/mqwebuser.xml
+  register: mqwebuser_current_result
+
+- name: Moving mqwebuser to old mqwebuser
   become: true
-  shell: mv /var/mqm/web/installations/Installation1/servers/mqweb/mqwebuser.xml /var/mqm/web/installations/Installation1/servers/mqweb/mqwebuser.old
+  copy:
+    src: /var/mqm/web/installations/Installation1/servers/mqweb/mqwebuser.xml
+    dest: /var/mqm/web/installations/Installation1/servers/mqweb/mqwebuser.old
+    remote_src: true
+    mode: "{{ mqwebuser_current_result.stat.mode }}"
   when: not mqwebuser_result.stat.exists
 
 - name: Check if moved basic registry exists
@@ -27,7 +45,17 @@
 
 - name: Using basic_registry as webwebuser
   become: true
-  shell: mv /var/mqm/web/installations/Installation1/servers/mqweb/basic_registry.xml /var/mqm/web/installations/Installation1/servers/mqweb/mqwebuser.xml
+  copy:
+    src: /var/mqm/web/installations/Installation1/servers/mqweb/basic_registry.xml
+    dest: /var/mqm/web/installations/Installation1/servers/mqweb/mqwebuser.xml
+    remote_src: true
+    mode: "{{ moved_registry.stat.mode }}"
+  when: moved_registry.stat.exists
+
+- name: Remove old basic_registry
+  file:
+    path: /var/mqm/web/installations/Installation1/servers/mqweb/basic_registry.xml
+    state: absent
   when: moved_registry.stat.exists
 
 - name: Check correct mqwebuser exists
@@ -37,5 +65,7 @@
 
 - name: Ensure correct permissions for mqwebuser.xml
   become: true
-  shell: chmod 640 /var/mqm/web/installations/Installation1/servers/mqweb/mqwebuser.xml
+  file:
+    path: /var/mqm/web/installations/Installation1/servers/mqweb/mqwebuser.xml
+    mode: 0640
   when: final_mqwebuser.stat.exists

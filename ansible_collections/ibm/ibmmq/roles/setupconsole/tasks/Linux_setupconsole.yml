@@ -1,5 +1,4 @@
 ---
-
 - name: Check if basic registry exists in the install folder
   stat:
     path: /opt/mqm/web/mq/samp/configuration/basic_registry.xml
@@ -12,14 +11,22 @@
 
 - name: Set permissions to allow overwrite of target mqwebuser.xml if it already exists
   become: true
-  shell: chmod 640 /var/mqm/web/installations/Installation1/servers/mqweb/mqwebuser.xml
+  file:
+    path: /var/mqm/web/installations/Installation1/servers/mqweb/mqwebuser.xml
+    mode: 0640
   when: target_mqwebuser_result.stat.exists
 
 - name: Copying basic registry
   become: true
-  shell: cp /opt/mqm/web/mq/samp/configuration/basic_registry.xml /var/mqm/web/installations/Installation1/servers/mqweb/mqwebuser.xml
+  copy:
+    src: /opt/mqm/web/mq/samp/configuration/basic_registry.xml
+    dest: /var/mqm/web/installations/Installation1/servers/mqweb/mqwebuser.xml
+    remote_src: true
+    mode: 0644
   when: basic_registry_result.stat.exists
 
 - name: ensure correct permissions for mqwebuser.xml to allow setmqweb commands
   become: true
-  shell: chmod 640 /var/mqm/web/installations/Installation1/servers/mqweb/mqwebuser.xml
+  path:
+    path: /var/mqm/web/installations/Installation1/servers/mqweb/mqwebuser.xml
+    mode: 0640

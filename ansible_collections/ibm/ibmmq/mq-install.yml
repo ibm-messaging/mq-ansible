@@ -1,19 +1,20 @@
-- hosts: "{{ ansible_play_batch }}" 
+---
+- hosts: "{{ ansible_play_batch }}"
   serial: 1
-  become: yes 
+  become: true
   environment:
     PATH: /opt/mqm/bin:{{ ansible_env.PATH }}
 
-  roles: 
+  roles:
     - role: setupusers
       vars:
-        appUid: 909
+        app_uid: 909
         gid: 909
-        appGid: 909
-        mqmHome: /home/mqm
-        mqmProfile: .profile
+        app_gid: 909
+        mqm_home: /home/mqm
+        mqm_profile: .profile
     - role: downloadmq
       vars:
         version: 930
-        downloadURL: "https://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/messaging/mqadv/"
+        download_url: https://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/messaging/mqadv/
     - role: installmq

@@ -1,29 +1,28 @@
+---
 - hosts: fyre
   become: true
   environment:
     PATH: /opt/mqm/bin:{{ ansible_env.PATH }}
 
-  roles: 
+  roles:
     - downloadmq
     - setupusers
-    - installmq-linux
-    - configenv
-    - setupenv
- 
-  tasks:
+    - installmq
+    - setupenvironment
 
+  tasks:
     - name: Create a queue manager
       queue_manager:
-        qmname: 'queue_manager_1'
-        state:  'present'
- 
+        qmname: queue_manager_1
+        state: present
+
     - name: Start a queue manager
       queue_manager:
-        qmname: 'queue_manager_1'
-        state:  'running'
+        qmname: queue_manager_1
+        state: running
 
     - name: Run MQSC File
       queue_manager:
-        qmname: 'queue_manager_1'
-        state:  'running'
-        mqsc_file:  'temp_file.mqsc'
+        qmname: queue_manager_1
+        state: running
+        mqsc_file: temp_file.mqsc

@@ -1,11 +1,12 @@
+---
 - name: test downloading and installing MQ
   hosts: all
   become: true
   environment:
     PATH: /opt/mqm/bin:{{ ansible_env.PATH }}
 
-  roles: 
-    - { role: ../../roles/setupusers, appUid: 909, appGid: 909, mqmHome: /home/mqm, mqmProfile: .profile}
+  roles:
+    - { role: ../../roles/setupusers, app_uid: 909, app_gid: 909, mqm_home: /home/mqm, mqm_profile: .profile }
     - { role: ../../roles/downloadmq, version: 930 }
     - { role: ../../roles/installmq }
 
@@ -13,19 +14,23 @@
     - name: Copy developer config file to target
       copy:
         src: ../../dev-config.mqsc
-        dest: "/var/mqm/dev-config.mqsc"
+        dest: /var/mqm/dev-config.mqsc
+        mode: 0644
 
     - name: get 'mqclient' group
-      shell: getent group mqclient
+      command: getent group mqclient
+      changed_when: false
       register: testout_mqclient_group
     - name: test 'mqclient' group exists
       assert:
         that:
           - '{{ testout_mqclient_group.stdout_lines }} is search("mqclient")'
-    
+
     - name: get 'app' user
-      shell: cat /etc/passwd
+      command: cat /etc/passwd
+      changed_when: false
       register: testout_app_user
+
     - name: test 'app' user exists
       assert:
         that:
@@ -46,30 +51,30 @@
       register: testout_mq_unarchived
     - name: test mq is unarchived
       assert:
-        that:
-          testout_mq_unarchived.stat.isdir
+        that: testout_mq_unarchived.stat.isdir
 
     - name: Check license status
-      shell: cat /tmp/MQServer/licensestatus.txt
+      command: cat /tmp/MQServer/licensestatus.txt
       register: test_out_accepted
+      changed_when: false
 
     - name: test licence accepted
       assert:
         that: '{{ test_out_accepted }} is search("Proceed with install")'
 
     - name: get mq version
-      shell: dspmqver
+      command: dspmqver
       register: testout_mq_version
+      changed_when: false
+
     - name: test mq installed and environment variables set
       assert:
         that: '{{ testout_mq_version }} is search("LicenseType: Developer")'
 
     - name: get dev config
-      stat: 
-        path: "/var/mqm/dev-config.mqsc"
+      stat:
+        path: /var/mqm/dev-config.mqsc
       register: testout_dev_config_copied
     - name: test dev config exists
       assert:
-        that:
-          testout_dev_config_copied.stat.exists
-    
+        that: testout_dev_config_copied.stat.exists
