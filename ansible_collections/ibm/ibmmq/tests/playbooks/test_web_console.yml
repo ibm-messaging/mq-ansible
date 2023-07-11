@@ -5,8 +5,8 @@
     PATH: /opt/mqm/bin:{{ ansible_env.PATH }}
 
   roles:
-    - { role: ../../roles/setupconsole }
-    - { role: ../../roles/startconsole }
+    - setupconsole
+    - startconsole
 
   tasks:
     - name: get mqwebuser
