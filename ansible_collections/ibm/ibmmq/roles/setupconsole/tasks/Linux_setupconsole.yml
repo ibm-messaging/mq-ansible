@@ -27,6 +27,6 @@
 
 - name: Ensure correct permissions for mqwebuser.xml to allow setmqweb commands
   become: true
-  path:
+  file:
     path: /var/mqm/web/installations/Installation1/servers/mqweb/mqwebuser.xml
     mode: "0640"

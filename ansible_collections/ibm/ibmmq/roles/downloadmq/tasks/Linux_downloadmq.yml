@@ -11,7 +11,7 @@
 
 - name: Download MQ Advanced for Developers
   get_url:
-    url: "{{ download_url }}{{ zip_file }}"
+    url: "{{ downloadURL }}{{ zip_file }}"
     dest: /var/mq.tar.gz
     force: false
     mode: "0644"
