@@ -5,17 +5,22 @@
   environment:
     PATH: /opt/mqm/bin:{{ ansible_env.PATH }}
 
-  roles:
-    - { role: ../../roles/setupusers, app_uid: 909, app_gid: 909, mqm_home: /home/mqm, mqm_profile: .profile }
-    - { role: ../../roles/downloadmq, version: 930 }
-    - { role: ../../roles/installmq }
+  roles: 
+    - role: setupusers
+      vars:
+        appUid: 909
+        gid: 909
+        appGid: 909
+        mqmHome: /home/mqm
+        mqmProfile: .profile
+    - role: downloadmq
+      vars:
+        version: 930
+        downloadURL: "https://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/messaging/mqadv/"
+    - installmq
+    - getconfig
 
   tasks:
-    - name: Copy developer config file to target
-      copy:
-        src: ../../dev-config.mqsc
-        dest: /var/mqm/dev-config.mqsc
-        mode: 0644
 
     - name: get 'mqclient' group
       command: getent group mqclient
@@ -38,7 +43,7 @@
 
     - name: get mq download zip
       stat:
-        path: /tmp/mq.tar.gz
+        path: /var/mq.tar.gz
       register: testout_mq_downloaded
     - name: test mq is downloaded
       assert:
@@ -47,14 +52,14 @@
 
     - name: get mq unarchived directory
       stat:
-        path: /tmp/MQServer
+        path: /var/MQServer
       register: testout_mq_unarchived
     - name: test mq is unarchived
       assert:
         that: testout_mq_unarchived.stat.isdir
 
     - name: Check license status
-      command: cat /tmp/MQServer/licensestatus.txt
+      command: cat /var/MQServer/licensestatus.txt
       register: test_out_accepted
       changed_when: false
 
@@ -71,10 +76,19 @@
       assert:
         that: '{{ testout_mq_version }} is search("LicenseType: Developer")'
 
-    - name: get dev config
-      stat:
-        path: /var/mqm/dev-config.mqsc
-      register: testout_dev_config_copied
+    - name: get dev config (Linux)
+      stat: 
+        path: "/var/mqm/dev-config.mqsc"
+      register: testout_dev_config_copied_linux
+      when: ansible_system == 'Linux'
+    - name: get dev config (AIX)
+      stat: 
+        path: "/tmp/dev-config.mqsc"
+      register: testout_dev_config_copied_aix
+      when: ansible_system != 'Linux'
+    
     - name: test dev config exists
       assert:
-        that: testout_dev_config_copied.stat.exists
+        that:
+          testout_dev_config_copied_linux.stat.exists or testout_dev_config_copied_aix.stat.exists
+    
