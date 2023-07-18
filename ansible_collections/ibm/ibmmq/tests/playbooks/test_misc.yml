@@ -1,5 +1,5 @@
 ---
-- name: misc tests (4)
+- name: Misc tests (4)
   hosts: all
   become: true
   become_user: mqm
@@ -11,13 +11,13 @@
         qmname: qm1_misc
         state: present
 
-    - name: can delete when present
+    - name: Can delete when present
       queue_manager:
         qmname: qm1_misc
         state: absent
       register: testout_1
       failed_when: false
-    - name: dump delete output
+    - name: Dump delete output
       debug:
         msg: "{{ testout_1 }}"
     - name: Test delete output
@@ -35,17 +35,17 @@
         state: absent
       register: testout_2
       failed_when: false
-    - name: dump delete output
+    - name: Dump delete output
       debug:
         msg: "{{ testout_2 }}"
 
-    - name: can start and run straight away
+    - name: Can start and run straight away
       queue_manager:
         qmname: qm1_misc
         state: running
       register: testout_1
       failed_when: false
-    - name: dump run output
+    - name: Dump run output
       debug:
         msg: "{{ testout_1 }}"
     - name: Test run output
@@ -63,7 +63,7 @@
         state: stopped
       register: testout_2
       failed_when: false
-    - name: dump stop output
+    - name: Dump stop output
       debug:
         msg: "{{ testout_2 }}"
 
@@ -76,18 +76,18 @@
         state: absent
       register: testout_2
       failed_when: false
-    - name: dump delete output
+    - name: Dump delete output
       debug:
         msg: "{{ testout_2 }}"
 
-    - name: can start, run and configure straight away
+    - name: Can start, run and configure straight away
       queue_manager:
         qmname: qm1_misc_2
         state: running
         mqsc_file: /var/mqm/mqsc_display
       register: testout_1
       failed_when: false
-    - name: dump run output
+    - name: Dump run output
       debug:
         msg: "{{ testout_1 }}"
     - name: Test run output

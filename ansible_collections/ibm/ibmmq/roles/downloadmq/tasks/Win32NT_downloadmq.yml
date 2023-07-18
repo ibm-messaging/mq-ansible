@@ -1,22 +1,21 @@
 ---
-
 - name: Set filename of zip if target host is Windows
   set_fact:
-    zipFile: "mqadv_dev{{ version }}_windows.zip"
+    zipFile: mqadv_dev{{ version }}_windows.zip
   when: ansible_os_family == 'Windows'
 
 - name: Download MQ Advanced for Developers on Windows
   ansible.windows.win_get_url:
     url: "{{ downloadURL }}{{ zipFile }}"
-    dest: '{{ directory }}\mq.zip'
-    force: no
+    dest: "{{ directory }}\\mq.zip"
+    force: false
   tags: download
   when: ansible_os_family == 'Windows'
 
 - name: Unzip MQ on Windows
   community.windows.win_unzip:
-    src: '{{ directory }}\mq.zip'
-    remote_src: yes
-    dest: '{{ directory }}\mq-install'
+    src: "{{ directory }}\\mq.zip"
+    remote_src: true
+    dest: "{{ directory }}\\mq-install"
   tags: download
   when: ansible_os_family == 'Windows'

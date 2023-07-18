@@ -4,4 +4,4 @@
   copy:
     src: ../../../dev-config.mqsc
     dest: /tmp/dev-config.mqsc
-    mode: 0644
+    mode: "0644"

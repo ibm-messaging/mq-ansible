@@ -71,5 +71,5 @@
   shell: |
     chuser groups=mqm "{{ ansible_ssh_user }}"
 
-- name: reset ssh connection
+- name: Reset ssh connection
   meta: reset_connection

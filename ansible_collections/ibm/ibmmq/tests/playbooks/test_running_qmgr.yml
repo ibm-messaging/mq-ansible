@@ -1,5 +1,5 @@
 ---
-- name: tests when running (3)
+- name: Tests when running (3)
   hosts: all
   become: true
   become_user: mqm
@@ -15,14 +15,14 @@
         qmname: qm1_running
         state: running
 
-    - name: can run mqsc when running (given state:present)
+    - name: Can run mqsc when running (given state:present)
       queue_manager:
         qmname: qm1_running
         state: present
         mqsc_file: /var/mqm/mqsc_display
       register: testout
       failed_when: false
-    - name: dump test output
+    - name: Dump test output
       debug:
         msg: "{{ testout }}"
     - name: Test mqsc output (given state:present)
@@ -32,14 +32,14 @@
           - testout.rc == 0
           - testout.msg == 'MQSC configuration successfully applied to Queue Manager'
 
-    - name: can run mqsc when running (given state:running)
+    - name: Can run mqsc when running (given state:running)
       queue_manager:
         qmname: qm1_running
         state: running
         mqsc_file: /var/mqm/mqsc_display
       register: testout
       failed_when: false
-    - name: dump test output
+    - name: Dump test output
       debug:
         msg: "{{ testout }}"
     - name: Test mqsc output (given state:running)
@@ -49,14 +49,14 @@
           - testout.rc == 0
           - testout.msg == 'MQSC configuration successfully applied to Queue Manager'
 
-    - name: cannot run mqsc when file does not exist (given state:running)
+    - name: Cannot run mqsc when file does not exist (given state:running)
       queue_manager:
         qmname: qm1_running
         state: running
         mqsc_file: mqsc_display_does_not_exist
       register: testout
       failed_when: false
-    - name: dump test output
+    - name: Dump test output
       debug:
         msg: "{{ testout }}"
     - name: Test mqsc output (given state:running)
@@ -66,13 +66,13 @@
           - testout.rc == 16
           - testout.msg == 'MQSC file could not be found'
 
-    - name: cannot create when already running
+    - name: Cannot create when already running
       queue_manager:
         qmname: qm1_running
         state: present
       register: testout
       failed_when: false
-    - name: dump test output
+    - name: Dump test output
       debug:
         msg: "{{ testout }}"
     - name: Test create output
@@ -80,13 +80,13 @@
         that:
           - testout.msg == 'IBM MQ Queue Manager already exists'
 
-    - name: cannot start when already running
+    - name: Cannot start when already running
       queue_manager:
         qmname: qm1_running
         state: running
       register: testout
       failed_when: false
-    - name: dump test output
+    - name: Dump test output
       debug:
         msg: "{{ testout }}"
     - name: Test start output
@@ -95,13 +95,13 @@
           - testout.state == 'running'
           - testout.msg == 'IBM MQ queue manager running'
 
-    - name: cannot delete when running
+    - name: Cannot delete when running
       queue_manager:
         qmname: qm1_running
         state: absent
       register: testout
       failed_when: false
-    - name: dump test output
+    - name: Dump test output
       debug:
         msg: "{{ testout }}"
     - name: Test delete output
@@ -110,13 +110,13 @@
           - testout.state == 'running'
           - testout.msg == 'IBM MQ queue manager running.'
 
-    - name: can stop when running
+    - name: Can stop when running
       queue_manager:
         qmname: qm1_running
         state: stopped
       register: testout
       failed_when: false
-    - name: dump test output
+    - name: Dump test output
       debug:
         msg: "{{ testout }}"
     - name: Test stop output

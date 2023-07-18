@@ -3,4 +3,4 @@
   copy:
     src: ../../../dev-config.mqsc
     dest: /var/mqm
-    mode: 0644
+    mode: "0644"

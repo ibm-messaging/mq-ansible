@@ -13,7 +13,7 @@
   become: true
   file:
     path: /var/mqm/web/installations/Installation1/servers/mqweb/mqwebuser.xml
-    mode: 0640
+    mode: "0640"
   when: target_mqwebuser_result.stat.exists
 
 - name: Copying basic registry
@@ -22,11 +22,11 @@
     src: /opt/mqm/web/mq/samp/configuration/basic_registry.xml
     dest: /var/mqm/web/installations/Installation1/servers/mqweb/mqwebuser.xml
     remote_src: true
-    mode: 0644
+    mode: "0644"
   when: basic_registry_result.stat.exists
 
-- name: ensure correct permissions for mqwebuser.xml to allow setmqweb commands
+- name: Ensure correct permissions for mqwebuser.xml to allow setmqweb commands
   become: true
   path:
     path: /var/mqm/web/installations/Installation1/servers/mqweb/mqwebuser.xml
-    mode: 0640
+    mode: "0640"

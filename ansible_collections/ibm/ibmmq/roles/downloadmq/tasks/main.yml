@@ -1,5 +1,4 @@
 ---
-
 - name: Including the vars for this platform
   include_vars: "{{ ansible_system }}_{{ role_name }}.yml"
 

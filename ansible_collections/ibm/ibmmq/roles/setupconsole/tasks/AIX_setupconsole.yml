@@ -67,5 +67,5 @@
   become: true
   file:
     path: /var/mqm/web/installations/Installation1/servers/mqweb/mqwebuser.xml
-    mode: 0640
+    mode: "0640"
   when: final_mqwebuser.stat.exists

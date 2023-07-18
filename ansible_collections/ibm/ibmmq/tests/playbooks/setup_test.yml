@@ -10,4 +10,4 @@
       copy:
         src: mqsc_display
         dest: /var/mqm/mqsc_display
-        mode: 0644
+        mode: "0644"
