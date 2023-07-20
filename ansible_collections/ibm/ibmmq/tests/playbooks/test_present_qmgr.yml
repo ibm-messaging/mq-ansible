@@ -1,79 +1,79 @@
-- name: test QMGR present
+---
+- name: Test QMGR present
   hosts: all
-  become: yes
+  become: true
   become_user: mqm
   environment:
     PATH: /opt/mqm/bin:{{ ansible_env.PATH }}
   tasks:
+    - name: (SETUP) create QMGR
+      queue_manager:
+        qmname: qm1_present_start
+        state: present
+    - name: (SETUP) create QMGR 2
+      queue_manager:
+        qmname: qm1_present_mqsc
+        state: present
 
-  - name: (SETUP) create QMGR
-    queue_manager:
-      qmname: qm1_present_start
-      state: present
-  - name: (SETUP) create QMGR 2
-    queue_manager:
-      qmname: qm1_present_mqsc
-      state: present
+    - name: Cannot stop when queue manager is already stopped
+      queue_manager:
+        qmname: qm1_present_start
+        state: stopped
+      register: testout_1
+      failed_when: false
+    - name: Dump test output
+      debug:
+        msg: "{{ testout_1 }}"
+    - name: Test the output for present when Queue Manager exists
+      assert:
+        that:
+          - testout_1.state == 'present'
+          - testout_1.msg == 'AMQ8146E: IBM MQ queue manager not available.\n'
 
-  - name: cannot stop when queue manager is already stopped
-    queue_manager:
-      qmname: 'qm1_present_start'
-      state: 'stopped'
-    register: testout_1
-    failed_when:  False
-  - name: dump test output
-    debug:
-      msg: '{{ testout_1 }}'
-  - name: Test the output for present when Queue Manager exists
-    assert:
-      that:
-        - testout_1.state == 'present'
-        - testout_1.msg == 'AMQ8146E: IBM MQ queue manager not available.\n'
+    - name: Cannot create when queue manager already exists
+      queue_manager:
+        qmname: qm1_present_start
+        state: present
+      register: testout_1
+      failed_when: false
+    - name: Dump test output
+      debug:
+        msg: "{{ testout_1 }}"
+    - name: Test the output for present when Queue Manager exists
+      assert:
+        that:
+          - testout_1.state == 'present'
+          - testout_1.msg == 'IBM MQ Queue Manager already exists'
 
-  - name: cannot create when queue manager already exists
-    queue_manager:
-      qmname: 'qm1_present_start'
-      state: 'present'
-    register: testout_1
-    failed_when:  False
-  - name: dump test output
-    debug:
-      msg: '{{ testout_1 }}'
-  - name: Test the output for present when Queue Manager exists
-    assert:
-      that:
-        - testout_1.state == 'present'
-        - testout_1.msg == 'IBM MQ Queue Manager already exists'
+    - name: Set queue manager running when it is in present state
+      queue_manager:
+        qmname: qm1_present_start
+        state: running
+      register: testout_2
+      failed_when: false
+    - name: Test the output for present when Queue Manager does exist
+      assert:
+        that:
+          - testout_2.state == 'running'
+          - testout_2.rc == 0
+          - testout_2.msg == 'IBM MQ queue manager \'qm1_present_start\' started'
+    - name: Dump test output
+      debug:
+        msg: "{{ testout_2 }}"
 
-  - name: set queue manager running when it is in present state
-    queue_manager:
-      qmname: 'qm1_present_start'
-      state: 'running'
-    register: testout_2
-    failed_when:  False
-  - name: Test the output for present when Queue Manager does exist
-    assert:
-      that:
-        - testout_2.state == 'running'
-        - testout_2.rc == 0
-        - testout_2.msg == 'IBM MQ queue manager \'qm1_present_start\' started'
-  - name: dump test output
-    debug:
-      msg: '{{ testout_2 }}'
-
-  - name: run module to test present
-    queue_manager:
-      qmname: 'qm1_present_mqsc'
-      state: 'present'
-      mqsc_file: '/var/mqm/mq-dev-config.mqsc'
-    register: testout_3
-    failed_when: False
-  - name: dump test output
-    debug:
-      msg:  '{{ testout_3 }}'
-  - name: Test the output for present when MQSC file is supplied
-    assert:
-      that:
-        - testout_3.state == 'present'
-        - testout_3.rc == 8
-        - testout_3.msg == 'Queue Manager Needs to be running to apply MQSC configuration.'
+    - name: Run module to test present
+      queue_manager:
+        qmname: qm1_present_mqsc
+        state: present
+        mqsc_file: /var/mqm/mq-dev-config.mqsc
+      register: testout_3
+      failed_when: false
+    - name: Dump test output
+      debug:
+        msg: "{{ testout_3 }}"
+    - name: Test the output for present when MQSC file is supplied
+      assert:
+        that:
+          - testout_3.state == 'present'
+          - testout_3.rc == 8
+          - testout_3.msg == 'Queue Manager Needs to be running to apply MQSC configuration.'

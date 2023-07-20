@@ -1,4 +1,5 @@
-profile: null # min, basic, moderate,safety, shared, production
+---
+profile: # min, basic, moderate,safety, shared, production
 
 # Allows dumping of results in SARIF format
 # sarif_file: result.sarif
@@ -7,6 +8,7 @@ profile: null # min, basic, moderate,safety, shared, production
 # and not relative to the CWD of execution. CLI arguments passed to the --exclude
 # option are parsed relative to the CWD of execution.
 exclude_paths:
+  - .ansible-lint
   - .cache/ # implicit unless exclude_paths is defined in config
   - .github/
   # - test/fixtures/formatting-before/
@@ -23,17 +25,17 @@ mock_modules:
   # - fake_namespace.fake_collection.fake_module
   # - fake_namespace.fake_collection.fake_module.fake_submodule
 # mock_roles:
-  # - mocked_role
-  # - author.role_name # old standalone galaxy role
-  # - fake_namespace.fake_collection.fake_role # role within a collection
+# - mocked_role
+# - author.role_name # old standalone galaxy role
+# - fake_namespace.fake_collection.fake_role # role within a collection
 
 # Enable checking of loop variable prefixes in roles
-loop_var_prefix: "^(__|{role}_)"
+# loop_var_prefix: ^(__|{role}_)
 
 # Enforce variable names to follow pattern below, in addition to Ansible own
 # requirements, like avoiding python identifiers. To disable add `var-naming`
 # to skip_list.
-var_naming_pattern: "^[a-z_][a-z0-9_]*$"
+var_naming_pattern: ^[a-z_][a-z0-9_]*$
 
 use_default_rules: true
 # Load custom rules from this specific folder

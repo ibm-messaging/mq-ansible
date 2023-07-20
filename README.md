@@ -61,14 +61,13 @@ The playbooks and roles in this collection carry out an installation of IBM MQ A
   roles:
     - role: setupusers
       vars:
-        appUid: 909
-        appGid: 909
-        mqmHome: /home/mqm
-        mqmProfile: .profile
+        app_uid: 909
+        app_gid: 909
+        mqm_home: /home/mqm
+        mqm_profile: .profile
     - role: downloadmq
       vars:
         version: 930
-    - role: installmq-linux
 ```
 `mq-setup.yml` - this playbook sets up IBM MQ using the 'mqm' user
 
@@ -100,7 +99,7 @@ The playbooks and roles in this collection carry out an installation of IBM MQ A
 
 `downloadmq` - downloads and unzips the appropriate MQ package based on the target platform to `/var/MQServer` on the target machine. The MQ version to be installed can be specified when calling this role.
 
-`installmq-linux` - handles platform-specific installation steps, where Ubuntu machines carry out a Debian installation and RedHat machines carry out an RPM installation. Core MQ components are installed as default, however further components and languages can be be added by uncommenting packages within the `package_files` list in  `/roles/installmq-linux/tasks/main.yml`.
+`installmq` - handles platform-specific installation steps, where Ubuntu machines carry out a Debian installation and RedHat machines carry out an RPM installation. Core MQ components are installed as default, however further components and languages can be be added by uncommenting packages within the `package_files` list in  `/roles/installmq/tasks/main.yml`:
 
 ##### *Note*: For Ubuntu, dependencies are sensitive to the order of regex-matched packages in the `with_items` attribute of the above task. 
 

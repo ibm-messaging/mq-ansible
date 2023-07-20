@@ -1,10 +1,11 @@
-- name: test downloading and installing MQ
+---
+- name: Test downloading and installing MQ
   hosts: all
   become: true
   environment:
     PATH: /opt/mqm/bin:{{ ansible_env.PATH }}
 
-  roles: 
+  roles:
     - role: setupusers
       vars:
         appUid: 909
@@ -15,74 +16,76 @@
     - role: downloadmq
       vars:
         version: 930
-        downloadURL: "https://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/messaging/mqadv/"
+        downloadURL: https://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/messaging/mqadv/
     - installmq
     - getconfig
 
   tasks:
-
-    - name: get 'mqclient' group
-      shell: getent group mqclient
+    - name: Get 'mqclient' group
+      command: getent group mqclient
+      changed_when: false
       register: testout_mqclient_group
-    - name: test 'mqclient' group exists
+    - name: Test 'mqclient' group exists
       assert:
         that:
           - '{{ testout_mqclient_group.stdout_lines }} is search("mqclient")'
-    
-    - name: get 'app' user
-      shell: cat /etc/passwd
+
+    - name: Get 'app' user
+      command: cat /etc/passwd
+      changed_when: false
       register: testout_app_user
-    - name: test 'app' user exists
+
+    - name: Test 'app' user exists
       assert:
         that:
           - '{{ testout_app_user.stdout_lines }} is search("app")'
 
-    - name: get mq download zip
+    - name: Get mq download zip
       stat:
         path: /var/mq.tar.gz
       register: testout_mq_downloaded
-    - name: test mq is downloaded
+    - name: Test mq is downloaded
       assert:
         that:
           - testout_mq_downloaded.stat.exists
 
-    - name: get mq unarchived directory
+    - name: Get mq unarchived directory
       stat:
         path: /var/MQServer
       register: testout_mq_unarchived
-    - name: test mq is unarchived
+    - name: Test mq is unarchived
       assert:
-        that:
-          testout_mq_unarchived.stat.isdir
+        that: testout_mq_unarchived.stat.isdir
 
     - name: Check license status
-      shell: cat /var/MQServer/licensestatus.txt
+      command: cat /var/MQServer/licensestatus.txt
       register: test_out_accepted
+      changed_when: false
 
-    - name: test licence accepted
+    - name: Test licence accepted
       assert:
         that: '{{ test_out_accepted }} is search("Proceed with install")'
 
-    - name: get mq version
-      shell: dspmqver
+    - name: Get mq version
+      command: dspmqver
       register: testout_mq_version
-    - name: test mq installed and environment variables set
+      changed_when: false
+
+    - name: Test mq installed and environment variables set
       assert:
         that: '{{ testout_mq_version }} is search("LicenseType: Developer")'
 
-    - name: get dev config (Linux)
-      stat: 
-        path: "/var/mqm/dev-config.mqsc"
+    - name: Get dev config (Linux)
+      stat:
+        path: /var/mqm/dev-config.mqsc
       register: testout_dev_config_copied_linux
       when: ansible_system == 'Linux'
-    - name: get dev config (AIX)
-      stat: 
-        path: "/tmp/dev-config.mqsc"
+    - name: Get dev config (AIX)
+      stat:
+        path: /tmp/dev-config.mqsc
       register: testout_dev_config_copied_aix
       when: ansible_system != 'Linux'
-    
-    - name: test dev config exists
+
+    - name: Test dev config exists
       assert:
-        that:
-          testout_dev_config_copied_linux.stat.exists or testout_dev_config_copied_aix.stat.exists
-    
+        that: testout_dev_config_copied_linux.stat.exists or testout_dev_config_copied_aix.stat.exists

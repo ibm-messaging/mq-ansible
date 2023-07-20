@@ -1,53 +1,52 @@
 ---
-
 - name: Create mqm group
   group:
     name: mqm
-    gid: "{{ mqmGid }}"
+    gid: "{{ mqm_gid }}"
 
 - name: Create mqm user
   user:
     name: mqm
-    uid: "{{ mqmUid }}"
+    uid: "{{ mqm_uid }}"
     group: mqm
-    home: "{{ mqmHome }}"
-    shell: "{{ mqmShell }}"
+    home: "{{ mqm_home }}"
+    shell: "{{ mqm_shell }}"
 
 - name: Set MQ environment variables through profile
   lineinfile:
-    dest: "{{ mqmHome }}/{{mqmProfile}}"
+    dest: "{{ mqm_home }}/{{ mqm_profile }}"
     state: present
-    line: '. /opt/mqm/bin/setmqenv -s'
+    line: . /opt/mqm/bin/setmqenv -s
   when: ansible_distribution != 'RedHat'
 
 - name: Set MQ environment variables through profile on RedHat
   lineinfile:
-    dest: "{{ mqmHome }}/.bashrc"
+    dest: "{{ mqm_home }}/.bashrc"
     state: present
-    line: '. /opt/mqm/bin/setmqenv -s'
+    line: . /opt/mqm/bin/setmqenv -s
   when: ansible_distribution == 'RedHat'
 
 - name: Create an admin user
   user:
     name: mqadm
     groups: mqm
-    append: yes
-    home: "{{ mqmHome }}"
-    shell: "{{ mqmShell }}"
+    append: true
+    home: "{{ mqm_home }}"
+    shell: "{{ mqm_shell }}"
 
 - name: Add 'mqclient' group
   become: true
   group:
     name: mqclient
     state: present
-    gid: "{{ appGid }}"
+    gid: "{{ app_gid }}"
 
 - name: Add the user 'app' with a specific UID
   become: true
   vars:
-    apppassword: "Passw0rd"
+    apppassword: Passw0rd
   user:
     name: app
     password: "{{ 'apppassword' | password_hash('sha512', 65534 | random(seed=inventory_hostname) | string) }}"
-    uid: "{{ appUid }}"
+    uid: "{{ app_uid }}"
     group: mqclient

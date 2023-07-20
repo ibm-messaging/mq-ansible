@@ -12,7 +12,7 @@ Our collection now also allows you to automate the download and install of IBM M
     - Have PowerShell 3.0 or newer and at least .NET 4.0
     - Have WinRM configured to have a listener created and activated.
 
-    For more information on how to set up your Windows host, please refer to [Ansible documentation](https://docs.ansible.com/ansible/latest/os_guide/windows_setup.html#winrm-listener). You can also run a [_Configure Remoting for Ansible_](https://raw.githubusercontent.com/ansible/ansible/devel/examples/scripts/ConfigureRemotingForAnsible.ps1) script to set up your Windows machine and turn on WinRM. For more details of the script, refer to the official Ansible blog [here](https://www.ansible.com/blog/connecting-to-a-windows-host). 
+    For more information on how to set up your Windows host, please refer to [Ansible documentation](https://docs.ansible.com/ansible/latest/os_guide/windows_setup.html#winrm-listener). You can also run a [_Configure Remoting for Ansible_](https://raw.githubusercontent.com/ansible/ansible-documentation/devel/examples/scripts/ConfigureRemotingForAnsible.ps1) script to set up your Windows machine and turn on WinRM. For more details of the script, refer to the official Ansible blog [here](https://www.ansible.com/blog/connecting-to-a-windows-host). 
 
 2. Set up your local machine
 

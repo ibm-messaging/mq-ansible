@@ -1,5 +1,6 @@
-
+---
 - name: Copy developer config file to target
   copy:
     src: ../../../dev-config.mqsc
-    dest: "/var/mqm"
+    dest: /var/mqm
+    mode: "0644"

@@ -1,9 +1,8 @@
 ---
-
-appUid: 909
-appGid: 909
-mqmUid: 2001
-mqmGid: 2001
-mqmHome: /home/mqm
-mqmProfile: .profile
-mqmShell: /bin/bash
+app_uid: 909
+app_gid: 909
+mqm_uid: 2001
+mqm_gid: 2001
+mqm_home: /home/mqm
+mqm_profile: .profile
+mqm_shell: /bin/bash

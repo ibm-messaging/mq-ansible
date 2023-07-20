@@ -1,8 +1,6 @@
 ---
-
 - name: Download MQ Advanced for Developers
-  copy:    
-    src : /Users/moalatoum/Downloads/mq-ansible/9.3.0.0-IBM-MQTRIAL-AixPPC64.tar.Z
+  copy:
+    src: /Users/<your-user>/Downloads/9.3.0.0-IBM-MQTRIAL-AixPPC64.tar.Z
     dest: ~/tmp/
-    
- 
+    mode: "0644"

@@ -1,5 +1,4 @@
 ---
-
 - name: Check if MQ is already installed
   ansible.windows.win_shell: Get-ItemProperty HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\* | sort-object -property DisplayName | Select-Object DisplayName | findstr 'IBM MQ'
   register: is_mq_installed
@@ -8,7 +7,8 @@
 
 - name: Silent Install
   ansible.windows.win_command:
-    cmd: msiexec /i "{{ directory }}\mq-install\MQServer\MSI\IBM MQ.msi" /l*v C:\install.log /q USEINI="{{ directory }}\mq-install\MQServer\Response.ini" TRANSFORMS="1033.mst" AGREETOLICENSE="{{ ibmMqLicense }}" ADDLOCAL="Server"
+    cmd: msiexec /i "{{ directory }}\mq-install\MQServer\MSI\IBM MQ.msi" /l*v C:\install.log /q USEINI="{{ directory }}\mq-install\MQServer\Response.ini" TRANSFORMS="1033.mst"
+      AGREETOLICENSE="{{ ibmMqLicense }}" ADDLOCAL="Server"
   when: is_mq_installed.rc == 1
 
 - name: Set MQ environment variable
