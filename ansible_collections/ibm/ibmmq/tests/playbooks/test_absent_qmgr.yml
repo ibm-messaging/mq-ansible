@@ -5,6 +5,7 @@
   become_user: mqm
   environment:
     PATH: /opt/mqm/bin:{{ ansible_env.PATH }}
+    
   tasks:
     - name: Cannot delete when already deleted
       queue_manager:
@@ -12,9 +13,11 @@
         state: absent
       register: testout_1
       failed_when: false
+    
     - name: Dump delete output
       debug:
         msg: "{{ testout_1 }}"
+    
     - name: Test delete output
       assert:
         that:
@@ -27,9 +30,11 @@
         state: stopped
       register: testout_2
       failed_when: false
+    
     - name: Dump stop output
       debug:
         msg: "{{ testout_2 }}"
+    
     - name: Test stop output
       assert:
         that:
@@ -42,9 +47,11 @@
         state: present
       register: testout_2
       failed_when: false
+    
     - name: Dump create output
       debug:
         msg: "{{ testout_2 }}"
+    
     - name: Test create output
       assert:
         that:

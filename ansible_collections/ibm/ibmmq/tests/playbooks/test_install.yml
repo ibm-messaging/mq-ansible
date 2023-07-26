@@ -1,30 +1,14 @@
 ---
-- name: Test downloading and installing MQ
+- name: Test downloading and installing MQ - Ubuntu, RedHat, AIX
   hosts: all
   become: true
-  environment:
-    PATH: /opt/mqm/bin:{{ ansible_env.PATH }}
-
-  roles:
-    - role: setupusers
-      vars:
-        appUid: 909
-        gid: 909
-        appGid: 909
-        mqmHome: /home/mqm
-        mqmProfile: .profile
-    - role: downloadmq
-      vars:
-        version: 930
-        downloadURL: https://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/messaging/mqadv/
-    - installmq
-    - getconfig
 
   tasks:
     - name: Get 'mqclient' group
       command: getent group mqclient
       changed_when: false
       register: testout_mqclient_group
+
     - name: Test 'mqclient' group exists
       assert:
         that:
@@ -80,6 +64,7 @@
         path: /var/mqm/dev-config.mqsc
       register: testout_dev_config_copied_linux
       when: ansible_system == 'Linux'
+    
     - name: Get dev config (AIX)
       stat:
         path: /tmp/dev-config.mqsc

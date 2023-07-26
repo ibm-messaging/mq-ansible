@@ -1,15 +1,17 @@
 ---
 - name: Tests when running (3)
   hosts: all
-  become: true
+  become: false
   become_user: mqm
   environment:
     PATH: /opt/mqm/bin:{{ ansible_env.PATH }}
+  
   tasks:
     - name: (SETUP) create QMGR
       queue_manager:
         qmname: qm1_running
         state: present
+    
     - name: (SETUP) start QMGR
       queue_manager:
         qmname: qm1_running
@@ -22,9 +24,11 @@
         mqsc_file: /var/mqm/mqsc_display
       register: testout
       failed_when: false
+    
     - name: Dump test output
       debug:
         msg: "{{ testout }}"
+    
     - name: Test mqsc output (given state:present)
       assert:
         that:
@@ -39,9 +43,11 @@
         mqsc_file: /var/mqm/mqsc_display
       register: testout
       failed_when: false
+    
     - name: Dump test output
       debug:
         msg: "{{ testout }}"
+    
     - name: Test mqsc output (given state:running)
       assert:
         that:
@@ -56,9 +62,11 @@
         mqsc_file: mqsc_display_does_not_exist
       register: testout
       failed_when: false
+   
     - name: Dump test output
       debug:
         msg: "{{ testout }}"
+    
     - name: Test mqsc output (given state:running)
       assert:
         that:
@@ -72,9 +80,11 @@
         state: present
       register: testout
       failed_when: false
+    
     - name: Dump test output
       debug:
         msg: "{{ testout }}"
+    
     - name: Test create output
       assert:
         that:
@@ -86,9 +96,11 @@
         state: running
       register: testout
       failed_when: false
+    
     - name: Dump test output
       debug:
         msg: "{{ testout }}"
+    
     - name: Test start output
       assert:
         that:
@@ -101,9 +113,11 @@
         state: absent
       register: testout
       failed_when: false
+    
     - name: Dump test output
       debug:
         msg: "{{ testout }}"
+    
     - name: Test delete output
       assert:
         that:
@@ -116,9 +130,11 @@
         state: stopped
       register: testout
       failed_when: false
+    
     - name: Dump test output
       debug:
         msg: "{{ testout }}"
+    
     - name: Test stop output
       assert:
         that:

@@ -1,19 +1,16 @@
 - name: test downloading and installing MQ
   hosts: all
-  become: true
+  become: false
   become_user: mqm
   environment:
     PATH: /opt/mqm/bin:{{ ansible_env.PATH }}
-
-  roles:
-    - setupconsole
-    - startconsole
 
   tasks:
     - name: get mqwebuser
       stat:
         path: /var/mqm/web/installations/Installation1/servers/mqweb/mqwebuser.xml
       register: testout_mqwebuser
+    
     - name: test new mqwebuser exists
       assert:
         that:
@@ -26,6 +23,7 @@
     - name: get mqwebuser file permissions
       shell: ls -l /var/mqm/web/installations/Installation1/servers/mqweb/mqwebuser.xml
       register: testout_mqwebuser_permissions
+   
     - name: test mqwebuser has correct permissions
       assert:
         that:
@@ -39,6 +37,7 @@
     - name: display web console status
       shell: dspmqweb status
       register: testout_webconsole_status
+    
     - name: test mq web console is running
       assert:
         that:
