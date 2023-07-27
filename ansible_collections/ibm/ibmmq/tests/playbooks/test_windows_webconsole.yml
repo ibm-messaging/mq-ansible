@@ -20,11 +20,9 @@
       chdir: C:\Program Files\IBM\MQ\bin
     register: webconsole_status
     changed_when: false
-  
-  - name: dump msg
-    debug:
-      msg: '{{ webconsole_status }}'
 
   - name: test web console is running
     ansible.builtin.assert:
       that: '" is running." in webconsole_status.stdout'
+      fail_msg: "<<FAILED>> MQ web console is not running."
+      success_msg: "<<SUCCESS>> MQ web console running"

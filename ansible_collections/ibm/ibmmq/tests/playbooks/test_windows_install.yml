@@ -27,6 +27,8 @@
     ansible.builtin.assert:
       that:
       - "'mqm' in windows_groups.stdout"
+      fail_msg: "<<FAILED>> mqm group does not exist."
+      success_msg: "<<SUCCESS>> mqm group exists."
 
   - name: Get users
     ansible.windows.win_shell: Get-LocalUser
@@ -37,6 +39,8 @@
     ansible.builtin.assert:
       that:
       - "'mqmuser' in windows_users.stdout"
+      fail_msg: "<<FAILED>> mqm user does not exist."
+      success_msg: "<<SUCCESS>> mqm user exists."
 
   - name: Get MQ version
     ansible.windows.win_command: dspmqver
@@ -47,4 +51,7 @@
     ansible.builtin.assert:
       that:
       - "'Version:     9.3.0.0' in dspmqver_results.stdout_lines"
+      fail_msg: "<<FAILED>> incorrect MQ version."
+      success_msg: "<<SUCCESS>> correct MQ version"
+      
 
