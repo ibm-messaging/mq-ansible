@@ -74,6 +74,12 @@
     - name: Test mq installed and environment variables set
       assert:
         that: '{{ testout_mq_version }} is search("LicenseType: Developer")'
+      when: ansible_architecture == 'x86_64'
+
+    - name: Test mq installed and environment variables set
+      assert:
+        that: '{{ testout_mq_version }} is search("LicenseType: Trial")'
+      when: ansible_architecture != 'x86_64'
 
     - name: Get dev config (Linux)
       stat:
