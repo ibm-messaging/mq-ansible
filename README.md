@@ -256,9 +256,41 @@ To run the test playbooks first:
 
 ## Installation as ansible galaxy module
 
-```
-ansible-galaxy collection install git+https://github.com/carlobongiovanni/mq-ansible.git,main
-```
+1. first be sure that you have installed the latest version
+    ```
+    ansible-galaxy collection install git+https://github.com/carlobongiovanni/mq-ansible.git,main
+    ```
+2. create now a playbook file `setup-playbook.yml` with this content
+    ```
+    ---
+    - name: prepares MQ server
+      hosts: all
+      become: true
+      collections:
+        - ibm.ibmmq
+
+      tasks:
+
+        - name: Import downloadmq role
+          ansible.builtin.import_role:
+            name: downloadmq
+
+        - name: Import setupusers role
+          ansible.builtin.import_role:
+            name: setupusers
+
+        - name: Import installmq role
+          ansible.builtin.import_role:
+            name: installmq
+
+        - name: Import setupenvironment role
+          ansible.builtin.import_role:
+            name: setupenvironment
+    ```
+3. run it with
+    ```
+    ansible-playbook setup-playbook.yml -i ./inventory.yaml -e 'ibmMqLicence=accept'
+    ```
 
 # License
 
