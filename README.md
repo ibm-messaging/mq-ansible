@@ -254,6 +254,12 @@ To run the test playbooks first:
       python3 main.py
     ```
 
+## Installation as ansible galaxy module
+
+```
+ansible-galaxy collection install git+https://github.com/carlobongiovanni/mq-ansible.git,main
+```
+
 # License
 
 [Apache 2.0 license](LICENSE) 

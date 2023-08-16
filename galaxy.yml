@@ -34,7 +34,14 @@ license_file: 'LICENSE'
 
 # A list of tags you want to associate with the collection for indexing/searching. A tag name has the same character
 # requirements as 'namespace' and 'name'
-tags: ['ibm', 'ibmmq', 'mq', 'queue']
+tags: 
+  - ibm
+  - ibmmq
+  - mq
+  - queue
+  - Linux
+  - AIX
+  - Windows
 
 # Collections that this collection requires to be installed for it to be usable. The key of the dict is the
 # collection label 'namespace.name'. The value is a version range
@@ -58,7 +65,18 @@ issues: https://github.com/ibm-messaging/mq-ansible/issues
 # artifact. A pattern is matched from the relative path of the file or directory of the collection directory. This
 # uses 'fnmatch' to match the files or directories. Some directories and files like 'galaxy.yml', '*.pyc', '*.retry',
 # and '.git' are always filtered. Mutually exclusive with 'manifest'
-build_ignore: []
+build_ignore:
+  - ansible.cfg
+  - .gitignore
+  - .github
+  - .git
+  - .cache
+  - '*.tar.gz'
+  - docs
+  - collections
+  - venv
+  - .idea
+  - meta/context
 
 # A dict controlling use of manifest directives used in building the collection artifact. The key 'directives' is a
 # list of MANIFEST.in style
