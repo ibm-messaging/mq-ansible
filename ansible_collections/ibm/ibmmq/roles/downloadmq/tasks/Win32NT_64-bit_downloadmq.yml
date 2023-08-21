@@ -1,4 +1,7 @@
 ---
+- name: Including specific vars for Windows
+  include_vars: "{{ ansible_system }}_{{ ansible_architecture }}_{{ role_name }}.yml"
+
 - name: Set filename of zip if target host is Windows
   set_fact:
     zipFile: mqadv_dev{{ version }}_windows.zip

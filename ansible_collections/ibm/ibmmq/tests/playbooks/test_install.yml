@@ -73,8 +73,16 @@
       assert:
         that: '{{ testout_mq_version }} is search("LicenseType: Developer")'
         fail_msg: "<<FAILED>> MQ might not be installed or environment variables have not been set"
-        success_msg: "<<SUCCESS>> MQ environment variables correctly set."
-        
+        success_msg: "<<SUCCESS>> MQ environment variables correctly set."      
+      when: ansible_architecture == 'x86_64'
+
+    - name: Test mq installed and environment variables set
+      assert:
+        that: '{{ testout_mq_version }} is search("LicenseType: Trial")'
+        fail_msg: "<<FAILED>> MQ might not be installed or environment variables have not been set"
+        success_msg: "<<SUCCESS>> MQ environment variables correctly set."      
+      when: ansible_architecture != 'x86_64'
+
 
     - name: Get dev config (Linux)
       stat:

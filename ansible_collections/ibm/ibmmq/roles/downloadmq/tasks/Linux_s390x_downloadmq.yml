@@ -1,0 +1,13 @@
+---
+- name: Copy MQ Trial from Control to Z Worker
+  copy:
+    src: /Users/<your-user>/Downloads/9.3.0.0-IBM-MQTRIAL-<OperatingSystem>S390X.tar.gz
+    dest: /var/mq.tar.gz
+    mode: "0644"
+
+- name: Extract MQ fom TAR
+  unarchive:
+    src: /var/mq.tar.gz
+    remote_src: true
+    dest: /var
+  tags: download

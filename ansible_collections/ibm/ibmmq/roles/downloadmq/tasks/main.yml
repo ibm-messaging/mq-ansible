@@ -1,6 +1,6 @@
 ---
-- name: Including the vars for this platform
-  include_vars: "{{ ansible_system }}_{{ role_name }}.yml"
+- name: Including common vars for each platform
+  include_vars: "common_{{ role_name }}.yml"
 
 - name: Including the task list for this platform
-  include_tasks: "{{ ansible_system }}_{{ role_name }}.yml"
+  include_tasks: "{{ ansible_system }}_{{ ansible_architecture }}_{{ role_name }}.yml"
