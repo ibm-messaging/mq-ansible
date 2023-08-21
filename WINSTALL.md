@@ -20,22 +20,68 @@ Our collection now also allows you to automate the download and install of IBM M
 
 3. Set up Inventory file
 
-    To indicate the Ansible Engine to use a WinRM connection, you must configure your ```ansible_connection``` host variable to ```winrm``. If you have set up your target machine with self-sigend certificates, you will also need to configure your host var to ignore certificate validtion. An example inventory file:
+    Your inventory file should be located within the ibmmq directory:
 
-    ```ini
-      [windows]
-      YOUR_HOSTNAME
-
-      [windows:vars]
-      ansible_user=Administator
-      ansible_password=YOUR_PASSWORD
-      ansible_connection=winrm
-      ansible_winrm_server_cert_validation=ignore
+    ```shell
+     cd mq-ansible/ansible_collections/ibm/ibmmq/
     ```
 
-    *Note*: As installs modify Window's registry, the install can only be performed by the Administrator user. 
-    - Change `YOUR_HOSTNAME` to your server/hostname, e.g. `myserver-windows.fyre.com`
-    - Change `YOUR_PASSWORD` to your target machine *Administrator*'s password.
+    **Option 1: Plaintext variables in inventory file**
+
+      To indicate the Ansible Engine to use a WinRM connection, you must configure your ```ansible_connection``` host variable to ```winrm```. If you have set up your target machine with self-sigend certificates, you will also need to configure your host var to ignore certificate validtion. An example inventory file:
+
+      ```ini
+        [windows]
+        YOUR_HOSTNAME
+
+        [windows:vars]
+        ansible_user=Administrator
+        ansible_password=YOUR_PASSWORD
+        ansible_connection=winrm
+        ansible_winrm_server_cert_validation=ignore
+      ```
+
+      *Note*: As installs modify Windows' registry, the install can only be performed by the Administrator user. 
+
+      - Change `YOUR_HOSTNAME` to your server/hostname, e.g. `myserver-windows.fyre.com`
+      - Change `YOUR_PASSWORD` to your target machine *Administrator*'s password.
+
+    **Option 2:** Encrypted variables for host in inventory file
+
+      To avoid storing plaintext passwords, we recommend using `ansible-vault` to store the Windows host variables. Your `inventory.ini` file would only consist on:
+
+      ```ini
+        [windows]
+        YOUR_HOSTNAME
+      ```
+
+      Now you can encrypt the windows variables with `ansible-vault`. In your terminal, execute the following commands:
+
+      ```shell
+      ansible-vault create groups_vars/windows.yml
+      ```
+
+      This command will prompt you to create a new vault password to decrypt the variables if you haven't set one previously. 
+
+      ```shell
+      New Vault password: 
+      Confirm New Vault password: 
+      ```
+
+      It will then launch your system editor where you can paste the windows host variables below:
+
+      ```
+      ansible_user: Administrator
+      ansible_password: "YOUR_PASSWORD"
+      ansible_connection: winrm
+      ansible_winrm_server_cert_validation: ignore
+      ```
+      - Change `"YOUR_PASSWORD"` to your target machine *Administrator*'s password in quotes. Example: _"ansiblepassword"_ 
+
+      After you close your editor, the file will be saved with the encrypted content. The variables will be automatically applied for the the Windows host group when targeted on a playbook.
+
+      More information about ansible-vault and content encryption can be found [here](https://docs.ansible.com/ansible/latest/vault_guide/vault_encrypting_content.html#encrypting-individual-variables-with-ansible-vault).
+
 
 ## Roles for Windows installation
 
