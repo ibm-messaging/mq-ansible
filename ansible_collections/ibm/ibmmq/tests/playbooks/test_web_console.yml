@@ -43,6 +43,7 @@
       shell: dspmqweb status
       register: testout_webconsole_status
       changed_when: false
+      ignore_errors: true
     
     - name: test mq web console is running
       assert:

@@ -20,6 +20,7 @@
       chdir: C:\Program Files\IBM\MQ\bin
     register: webconsole_status
     changed_when: false
+    ignore_errors: true
 
   - name: test web console is running
     ansible.builtin.assert:
