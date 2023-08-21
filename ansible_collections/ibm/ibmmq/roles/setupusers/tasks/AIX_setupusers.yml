@@ -1,7 +1,7 @@
 ---
 - name: Add 'mqclient' group
   become: true
-  group:
+  ansible.builtin.group:
     name: mqclient
     state: present
     gid: "{{ gid }}"
@@ -10,7 +10,7 @@
   become: true
   vars:
     apppassword: Passw0rd
-  user:
+  ansible.builtin.user:
     name: app
     password: "{{ 'apppassword' | password_hash('sha512', 65534 | random(seed=inventory_hostname) | string) }}"
     uid: "{{ gid }}"

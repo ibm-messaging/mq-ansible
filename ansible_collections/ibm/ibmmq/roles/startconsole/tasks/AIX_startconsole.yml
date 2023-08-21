@@ -1,13 +1,13 @@
 ---
 - name: Change owner and permissions on mqwebuser.xml
   become: true
-  file:
+  ansible.builtin.file:
     path: mqwebuser.xml
     owner: mqm
     attributes: u+w
 
 - name: Allow console to be accessed from anywhere
-  command:
+  ansible.builtin.command:
     cmd: setmqweb properties -k httpHost -v "*"
     chdir: /var/mqm/web/installations/Installation1/servers/mqweb
   become: true
@@ -15,7 +15,7 @@
   changed_when: true
 
 - name: Start web console
-  command:
+  ansible.builtin.command:
     cmd: nohup strmqweb
     chdir: /var/mqm/web/installations/Installation1/servers/mqweb
   become: true
@@ -25,7 +25,7 @@
 - name: Check if Web Console is Running
   become: true
   become_user: mqm
-  command:
+  ansible.builtin.command:
     cmd: dspmqweb
     chdir: /var/mqm/web/installations/Installation1/servers/mqweb
   changed_when: false

@@ -1,22 +1,22 @@
 ---
 - name: Check if license status file exists
-  stat:
+  ansible.builtin.stat:
     path: /var/MQServer/licensestatus.txt
   register: license_status
 
 - name: Accept MQ license
-  shell: >-
+  ansible.builtin.shell: >-
     /var/MQServer/mqlicense.sh
     -{{ ibmMqLicence }} >
     /var/MQServer/licensestatus.txt
   changed_when: not license_status.stat.exists
 
 - name: Gather package facts
-  package_facts:
+  ansible.builtin.package_facts:
     manager: auto
 
 - name: Find required package files
-  find:
+  ansible.builtin.find:
     paths: /var/MQServer
     use_regex: true
     patterns: "{{ item }}"
@@ -60,14 +60,14 @@
     - '"ibmmq-runtime" not in ansible_facts.packages'
 
 - name: Create a list of paths to the packages from found files
-  set_fact:
+  ansible.builtin.set_fact:
     package_list: "{{ package_files.results | map(attribute='files.0.path') | list }}"
   when:
     - "'MQSeriesRuntime' not in ansible_facts.packages"
     - "'ibmmq-runtime' not in ansible_facts.packages"
 
 - name: Rpm Installation
-  dnf:
+  ansible.builtin.dnf:
     name: "{{ package_list }}"
     state: present
     disable_gpg_check: true
@@ -76,7 +76,7 @@
     - "'MQSeriesRuntime' not in ansible_facts.packages"
 
 - name: Deb Installation
-  apt:
+  ansible.builtin.apt:
     deb: "{{ item }}"
     state: present
   when:
@@ -85,4 +85,4 @@
   loop: "{{ package_list }}"
 
 - name: Reset ssh connection
-  meta: reset_connection
+  ansible.builtin.meta: reset_connection
