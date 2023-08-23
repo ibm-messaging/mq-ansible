@@ -251,7 +251,7 @@ To run the test playbooks first:
    - ##### *Note*: change `<PATH-TO>` to your local directory path:
 4. run all test playbooks
     ```shell
-      python3 main.py
+      ansible-playbook --inventory 'inventory.ini' main_test.yml
     ```
 
 # License
