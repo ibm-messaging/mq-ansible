@@ -286,6 +286,13 @@ To run the test playbooks first:
         - name: Import setupenvironment role
           ansible.builtin.import_role:
             name: setupenvironment
+
+        - name: Create a queue manager
+          become_user: mqm
+          tags: ["queue"]
+          queue_manager:
+            qmname: queue_manager_12
+            state: present
     ```
 3. run it with
     ```
