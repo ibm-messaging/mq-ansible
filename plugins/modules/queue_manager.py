@@ -37,7 +37,7 @@ def check_status_queue_managers(qmname, module):
 
 def state_present(qmname, module):
     if module.params['unit_test'] is False:
-        rc, stdout, stderr = module.run_command(['/opt/mqm/bin/crtmqm', qmname])
+        rc, stdout, stderr = module.run_command(['crtmqm', qmname])
         result['rc'] = rc
 
         if module.params['mqsc_file'] is not None:
