@@ -45,10 +45,10 @@ def state_present(qmname, module):
 
         if rc == 0:
             result['rc'] = rc
-            result['msg'] = 'IBM MQ Queue Manager Created'
+            result['msg'] = 'IBM MQ Queue Manager Created. '
             result['state'] = 'present'
         elif rc == 8:
-            module.exit_json(skipped=True, state='present', msg='IBM MQ Queue Manager already exists')
+            module.exit_json(skipped=True, state='present', msg='IBM MQ Queue Manager already exists. ')
         elif rc > 0:
             module.fail_json(**result)
 
@@ -62,7 +62,7 @@ def run_mqsc_file(qmname, module):
             result['rc'] = rc
             result['output'] = stdout + stderr
             if rc == 0:
-                result['msg'] = 'MQSC configuration successfully applied to Queue Manager'
+                result['msg'] = 'MQSC configuration successfully applied to Queue Manager. '
         else:
             rc, stdout, stderr = module.run_command(['strmqm', qmname])
             rc, stdout, stderr = module.run_command(["runmqsc", qmname, "-f", module.params['mqsc_file']])
@@ -70,19 +70,19 @@ def run_mqsc_file(qmname, module):
             result['output'] = stdout + stderr
             rc, stdout, stderr = module.run_command(['endmqm', qmname])
             if rc == 0:
-                result['msg'] = 'MQSC configuration successfully applied to Queue Manager'
+                result['msg'] = 'MQSC configuration successfully applied to Queue Manager. '
     else:
         result['rc'] = 16    
-        result['msg'] = 'MQSC file could not be found'
+        result['msg'] = 'MQSC file could not be found. '
 
 
 def state_running(qmname, module):
-    result['msg'] = 'IBM MQ queue manager \'' + str(qmname) + '\' started'
+    result['msg'] = 'IBM MQ queue manager \'' + str(qmname) + '\' started. '
     if module.params['unit_test'] is False:
         rc, stdout, stderr = module.run_command(['dspmq', '-m', qmname])
 
         if rc == 72:
-            module.exit_json(skipped=True, state='absent', msg='IBM MQ queue manager does not exist. Please create it first to set it running.')
+            module.exit_json(skipped=True, state='absent', msg='IBM MQ queue manager does not exist. Please create it first to set it running. ')
             
         rc, stdout, stderr = module.run_command(['strmqm', qmname])
         result['rc'] = rc
@@ -91,9 +91,9 @@ def state_running(qmname, module):
             run_mqsc_file(qmname, module)
 
         if rc == 5 and module.params['mqsc_file'] is None:
-            module.exit_json(skipped=True, state='running', msg='IBM MQ queue manager running')
+            module.exit_json(skipped=True, state='running', msg='IBM MQ queue manager running. ')
         elif rc ==5 and module.params['mqsc_file'] is not None:
-            result['msg'] += 'IBM MQ queue manager is running'
+            result['msg'] += 'IBM MQ queue manager is running. '
         elif rc > 0:
             module.fail_json(**result)
 
@@ -115,22 +115,22 @@ def state_stopped(qmname, module):
             module.fail_json(**result)
 
 def state_absent(qmname, module):
-    result['msg'] = 'IBM MQ queue manager deleted.'
+    result['msg'] = 'IBM MQ queue manager deleted. '
     if module.params['unit_test'] is False:
         rc, stdout, stderr = module.run_command(['dltmqm', qmname])
         result['msg'] = stdout + stderr
         result['rc'] = rc
         if rc == 5:
-            module.exit_json(skipped=True, state='running', msg='IBM MQ queue manager running.')
+            module.exit_json(skipped=True, state='running', msg='IBM MQ queue manager running. ')
         elif rc == 16:
             # Queue Manager does not exist
-            module.exit_json(skipped=True, state='absent', msg='AMQ8118E: IBM MQ queue manager does not exist.')
+            module.exit_json(skipped=True, state='absent', msg='AMQ8118E: IBM MQ queue manager does not exist. ')
         elif rc > 0:
             module.fail_json(**result)
 
 def state_invalid(qmname, module):
     result['state'] = ''
-    result['msg'] = 'Unrecognised State'
+    result['msg'] = 'Unrecognised State. '
     result['rc'] = 16
     module.fail_json(**result)
 
