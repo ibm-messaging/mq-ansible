@@ -258,14 +258,23 @@ To run the test playbooks first:
 
 1. first be sure that you have installed the latest version
     ```
-    ansible-galaxy collection install git+https://github.com/carlobongiovanni/mq-ansible.git,main
+    ansible-galaxy collection install git+https://github.com/ibm-messaging/mq-ansible.git,main
     ```
+2. Be sure to update your ansible inventory `inventory.yaml` with the proper target hosts, as you'll refer to them while running the playbook:
+    ```
+    [mqservers]
+    my.mqserver-001.dev
+    my.mqserver-002.dev
+    ```
+ 
 2. create now a playbook file `setup-playbook.yml` with this content
     ```
     ---
     - name: prepares MQ server
-      hosts: all
+      hosts: mqservers
       become: true
+      environment:
+        PATH: /opt/mqm/bin:{{ ansible_env.PATH }}
       collections:
         - ibm.ibmmq
 
@@ -293,6 +302,13 @@ To run the test playbooks first:
           queue_manager:
             qmname: queue_manager_12
             state: present
+
+        - name: Use MQSC File
+          become_user: mqm
+          queue_manager:
+            qmname: queue_manager_12
+            state: running
+            mqsc_file: files/dev-config.mqsc
     ```
 3. run it with
     ```

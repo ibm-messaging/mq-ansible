@@ -16,7 +16,11 @@ readme: README.md
 # A list of the collection's content authors. Can be just the name or in the format 'Full Name <email> (url)
 # @nicks:irc/im.site#channel'
 authors:
-- Carlo Bongiovanni <carlo.bongiovanni@gmail.com>
+  - James Page <James.Page@ibm.com>
+  - Stewart Mclaughlin <StewartMcLaughlin@ibm.com>
+  - Mariana Villar Pacheco <marianavillarp@ibm.com>
+  - Bimsara Pilapitiya <Bimsara.Pilapitiya@ibm.com>
+  - Mohammad Alatoum <Mohammad.Alatoum@ibm.com>
 
 
 ### OPTIONAL but strongly recommended
