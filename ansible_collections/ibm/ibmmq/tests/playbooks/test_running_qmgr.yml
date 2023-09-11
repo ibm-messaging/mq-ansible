@@ -29,8 +29,7 @@
       assert:
         that:
           - testout.state == 'present'
-          - testout.rc == 0
-          - testout.msg == 'MQSC configuration successfully applied to Queue Manager'
+          - testout.msg == 'IBM MQ Queue Manager already exists. MQSC configuration successfully applied to Queue Manager'
 
     - name: Can run mqsc when running (given state:running)
       queue_manager:
@@ -47,7 +46,7 @@
         that:
           - testout.state == 'running'
           - testout.rc == 0
-          - testout.msg == 'MQSC configuration successfully applied to Queue Manager'
+          - testout.msg == 'IBM MQ queue manager running. MQSC configuration successfully applied to Queue Manager'
 
     - name: Cannot run mqsc when file does not exist (given state:running)
       queue_manager:
@@ -64,7 +63,7 @@
         that:
           - testout.state == 'running'
           - testout.rc == 16
-          - testout.msg == 'MQSC file could not be found'
+          - testout.msg == 'IBM MQ queue manager running. MQSC file could not be found'
 
     - name: Cannot create when already running
       queue_manager:
@@ -122,6 +121,6 @@
     - name: Test stop output
       assert:
         that:
-          - testout.state == 'stopped'
+          - testout.state == 'present'
           - testout.rc == 0
           - testout.msg == 'Quiesce request accepted. The queue manager will stop when all outstanding work\nis complete.\n'

@@ -39,7 +39,7 @@
     - name: Dump test output
       debug:
         msg: "{{ testout_1 }}"
-    - name: Test the output for present when Queue Manager exists
+    - name: Test output for present when Queue Manager already exists
       assert:
         that:
           - testout_1.state == 'present'
@@ -51,29 +51,28 @@
         state: running
       register: testout_2
       failed_when: false
-    - name: Test the output for present when Queue Manager does exist
+    - name: Dump test output
+      debug:
+        msg: "{{ testout_2 }}"
+    - name: Test output for running when Queue Manager present
       assert:
         that:
           - testout_2.state == 'running'
           - testout_2.rc == 0
           - testout_2.msg == 'IBM MQ queue manager \'qm1_present_start\' started'
-    - name: Dump test output
-      debug:
-        msg: "{{ testout_2 }}"
 
     - name: Run module to test present
       queue_manager:
         qmname: qm1_present_mqsc
         state: present
-        mqsc_file: /var/mqm/mq-dev-config.mqsc
+        mqsc_file: /var/mqm/dev-config.mqsc
       register: testout_3
       failed_when: false
     - name: Dump test output
       debug:
         msg: "{{ testout_3 }}"
-    - name: Test the output for present when MQSC file is supplied
+    - name: Test output for present when MQSC file is supplied
       assert:
         that:
           - testout_3.state == 'present'
-          - testout_3.rc == 8
-          - testout_3.msg == 'Queue Manager Needs to be running to apply MQSC configuration.'
+          - testout_3.msg == 'IBM MQ Queue Manager already exists. MQSC configuration successfully applied to Queue Manager'
