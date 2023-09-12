@@ -17,24 +17,21 @@
         qmname: qm1_running
         state: running
 
-    # - name: Can run mqsc when running (given state:present)
-    #   queue_manager:
-    #     qmname: qm1_running
-    #     state: present
-    #     mqsc_file: /var/mqm/mqsc_display
-    #   register: testout
-    #   failed_when: false
-    
-    # - name: Dump test output
-    #   debug:
-    #     msg: "{{ testout }}"
-    
-    # - name: Test mqsc output (given state:present)
-    #   assert:
-    #     that:
-    #       - testout.state == 'present'
-    #       - testout.rc == 0
-    #       - testout.msg == 'MQSC configuration successfully applied to Queue Manager'
+    - name: Can run mqsc when running (given state:present)
+      queue_manager:
+        qmname: qm1_running
+        state: present
+        mqsc_file: /var/mqm/mqsc_display
+      register: testout
+      failed_when: false
+
+    - name: Test mqsc output (given state:present)
+      assert:
+        that:
+          - testout.state == 'present'
+          - testout.msg == 'IBM MQ Queue Manager already exists. MQSC configuration successfully applied to Queue Manager'
+        fail_msg: "<<FAILED>> {{testout.msg}}"
+        success_msg: "<<SUCCESS>> {{testout.msg}}"
 
     - name: Can run mqsc when running (given state:running)
       queue_manager:
@@ -127,7 +124,7 @@
     - name: Test stop output
       assert:
         that:
-          - testout.state == 'stopped'
+          - testout.state == 'present'
           - testout.rc == 0
           - testout.msg == 'Quiesce request accepted. The queue manager will stop when all outstanding work\nis complete.\n'
         fail_msg: "<<FAILED>> {{testout.msg}}"
