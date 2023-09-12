@@ -96,4 +96,4 @@
           # MQSC has run successfully
           - testout_1.state == 'running'
           - testout_1.rc == 0
-          - testout_1.msg == 'MQSC configuration successfully applied to Queue Manager'
+          - testout_1.msg == 'IBM MQ queue manager running. MQSC configuration successfully applied to Queue Manager'

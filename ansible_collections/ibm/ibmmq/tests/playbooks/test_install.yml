@@ -19,6 +19,7 @@
         downloadURL: https://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/messaging/mqadv/
     - installmq
     - getconfig
+    - setupenvironment
 
   tasks:
     - name: Get 'mqclient' group
