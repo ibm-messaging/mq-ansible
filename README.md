@@ -251,7 +251,7 @@ To run the test playbooks first:
    - ##### *Note*: change `<PATH-TO>` to your local directory path:
 4. run all test playbooks
     ```shell
-      ansible-playbook --inventory 'inventory.ini' main_test.yml
+      ansible-playbook --inventory 'inventory.ini' main_test.yml --extra-vars ibmMqLicense=accept
     ```
 
 # License
