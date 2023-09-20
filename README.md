@@ -254,6 +254,67 @@ To run the test playbooks first:
       python3 main.py
     ```
 
+## Installation as ansible galaxy module
+
+1. first be sure that you have installed the latest version
+    ```
+    ansible-galaxy collection install git+https://github.com/ibm-messaging/mq-ansible.git,main
+    ```
+2. Be sure to update your ansible inventory `inventory.ini` with the proper target hosts, as you'll refer to them while running the playbook:
+    ```
+    [mqservers]
+    my.mqserver-001.dev
+    my.mqserver-002.dev
+    ```
+ 
+2. create now a playbook file `setup-playbook.yml` with this content
+    ```
+    ---
+    - name: prepares MQ server
+      hosts: mqservers
+      become: true
+      environment:
+        PATH: /opt/mqm/bin:{{ ansible_env.PATH }}
+      collections:
+        - ibm.ibmmq
+
+      tasks:
+
+        - name: Import downloadmq role
+          ansible.builtin.import_role:
+            name: downloadmq
+
+        - name: Import setupusers role
+          ansible.builtin.import_role:
+            name: setupusers
+
+        - name: Import installmq role
+          ansible.builtin.import_role:
+            name: installmq
+
+        - name: Import setupenvironment role
+          ansible.builtin.import_role:
+            name: setupenvironment
+
+        - name: Create a queue manager
+          become_user: mqm
+          tags: ["queue"]
+          queue_manager:
+            qmname: queue_manager_12
+            state: present
+
+        - name: Use MQSC File
+          become_user: mqm
+          queue_manager:
+            qmname: queue_manager_12
+            state: running
+            mqsc_file: files/dev-config.mqsc
+    ```
+3. run it with
+    ```
+    ansible-playbook setup-playbook.yml -i ./inventory.ini -e 'ibmMqLicence=accept'
+    ```
+
 # License
 
 [Apache 2.0 license](LICENSE) 
