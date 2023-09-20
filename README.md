@@ -260,7 +260,7 @@ To run the test playbooks first:
     ```
     ansible-galaxy collection install git+https://github.com/ibm-messaging/mq-ansible.git,main
     ```
-2. Be sure to update your ansible inventory `inventory.yaml` with the proper target hosts, as you'll refer to them while running the playbook:
+2. Be sure to update your ansible inventory `inventory.ini` with the proper target hosts, as you'll refer to them while running the playbook:
     ```
     [mqservers]
     my.mqserver-001.dev
@@ -312,7 +312,7 @@ To run the test playbooks first:
     ```
 3. run it with
     ```
-    ansible-playbook setup-playbook.yml -i ./inventory.yaml -e 'ibmMqLicence=accept'
+    ansible-playbook setup-playbook.yml -i ./inventory.ini -e 'ibmMqLicence=accept'
     ```
 
 # License
