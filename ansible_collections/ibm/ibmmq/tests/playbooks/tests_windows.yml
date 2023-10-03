@@ -1,9 +1,0 @@
----
-- name: Testing - Windows
-  hosts: all
-
-- name: Test install - Windows
-  import_playbook: test_windows_install.yml
-
-- name: Test web console
-  import_playbook: test_windows_webconsole.yml
