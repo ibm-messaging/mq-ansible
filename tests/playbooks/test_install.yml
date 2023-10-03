@@ -1,35 +1,22 @@
 ---
-- name: Test downloading and installing MQ
+- name: Test downloading and installing MQ - Ubuntu, RedHat, AIX
   hosts: all
   become: true
   environment:
     PATH: /opt/mqm/bin:{{ ansible_env.PATH }}
-
-  roles:
-    - role: setupusers
-      vars:
-        appUid: 909
-        gid: 909
-        appGid: 909
-        mqmHome: /home/mqm
-        mqmProfile: .profile
-    - role: downloadmq
-      vars:
-        version: 930
-        downloadURL: https://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/messaging/mqadv/
-    - installmq
-    - getconfig
-    - setupenvironment
 
   tasks:
     - name: Get 'mqclient' group
       command: getent group mqclient
       changed_when: false
       register: testout_mqclient_group
+
     - name: Test 'mqclient' group exists
       assert:
         that:
           - '{{ testout_mqclient_group.stdout_lines }} is search("mqclient")'
+        fail_msg: "<<FAILED>> 'MQclient' group does not exist."
+        success_msg: "<<SUCCESS>> 'MQclient' group exists."
 
     - name: Get 'app' user
       command: cat /etc/passwd
@@ -40,23 +27,31 @@
       assert:
         that:
           - '{{ testout_app_user.stdout_lines }} is search("app")'
+        fail_msg: "<<FAILED>> 'app' user does not exist."
+        success_msg: "<<SUCCESS>> 'app' user exists."
 
-    - name: Get mq download zip
+    - name: Get MQ installation package
       stat:
         path: /var/mq.tar.gz
       register: testout_mq_downloaded
-    - name: Test mq is downloaded
+    
+    - name: Test if MQ is downloaded
       assert:
         that:
           - testout_mq_downloaded.stat.exists
+        fail_msg: "<<FAILED>> MQ installation tar not found."
+        success_msg: "<<SUCCESS>> MQ installation tar found."
 
-    - name: Get mq unarchived directory
+    - name: Get MQ unarchived directory
       stat:
         path: /var/MQServer
       register: testout_mq_unarchived
-    - name: Test mq is unarchived
+    
+    - name: Test MQ is unarchived
       assert:
         that: testout_mq_unarchived.stat.isdir
+        fail_msg: "<<FAILED>> MQ Server is not a directory."
+        success_msg: "<<SUCCESS>> MQServer is a directory."
 
     - name: Check license status
       command: cat /var/MQServer/licensestatus.txt
@@ -66,8 +61,10 @@
     - name: Test licence accepted
       assert:
         that: '{{ test_out_accepted }} is search("Proceed with install")'
+        fail_msg: "<<FAILED>> License has not been accepted"
+        success_msg: "<<SUCCESS>> License has been accepted"
 
-    - name: Get mq version
+    - name: Get MQ version
       command: dspmqver
       register: testout_mq_version
       changed_when: false
@@ -75,18 +72,24 @@
     - name: Test mq installed and environment variables set
       assert:
         that: '{{ testout_mq_version }} is search("LicenseType: Developer")'
+        fail_msg: "<<FAILED>> MQ might not be installed or environment variables have not been set"
+        success_msg: "<<SUCCESS>> MQ environment variables correctly set."      
       when: ansible_architecture == 'x86_64'
 
     - name: Test mq installed and environment variables set
       assert:
         that: '{{ testout_mq_version }} is search("LicenseType: Trial")'
+        fail_msg: "<<FAILED>> MQ might not be installed or environment variables have not been set"
+        success_msg: "<<SUCCESS>> MQ environment variables correctly set."      
       when: ansible_architecture != 'x86_64'
+
 
     - name: Get dev config (Linux)
       stat:
         path: /var/mqm/dev-config.mqsc
       register: testout_dev_config_copied_linux
       when: ansible_system == 'Linux'
+    
     - name: Get dev config (AIX)
       stat:
         path: /tmp/dev-config.mqsc
@@ -96,3 +99,5 @@
     - name: Test dev config exists
       assert:
         that: testout_dev_config_copied_linux.stat.exists or testout_dev_config_copied_aix.stat.exists
+        fail_msg: "<<FAILED>> MQSC dev config file does not exist."
+        success_msg: "<<SUCCESS>> MQSC dev config file exists."

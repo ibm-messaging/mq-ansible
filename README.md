@@ -6,9 +6,9 @@
 A collection for automating the installation and configuration of IBM MQ using Ansible on Ubuntu, Redhat, Windows and IBM AIX machines. Our aim is to make MQ-Ansible extensible for other platforms and more detailed IBM MQ configuration.
 
 This directory contains:
-- ansible [`roles`](https://github.com/ibm-messaging/mq-ansible/tree/main/ansible_collections/ibm/ibmmq/roles) for the installation and configuration of IBM MQ.
-- module [`queue_manager.py`](ansible_collections/ibm/ibmmq/library/queue_manager.py) to create and configure a queue manager.
-- playbook [`ibmmq.yml`](ansible_collections/ibm/ibmmq/ibmmq.yml) which implements the roles and module.
+- ansible [`roles`](https://github.com/ibm-messaging/mq-ansible/tree/main/roles) for the installation and configuration of IBM MQ.
+- module [`queue_manager.py`](plugins/modules/queue_manager.py) to create and configure a queue manager.
+- playbook [`ibmmq.yml`](playbooks/ibmmq.yml) which implements the roles and module.
 
 For a detailed explanation and documentation on how MQ-Ansible works, click [here](https://github.com/ibm-messaging/mq-ansible/wiki).
 
@@ -111,11 +111,11 @@ The playbooks and roles in this collection carry out an installation of IBM MQ A
 
 ## Modules for IBM MQ resources' configuration
 
-- `queue_manager.py` - Creates, starts, deletes an IBM MQ queue manager and runs an MQSC file. See the documentation [here.](QUEUE_MANAGER.md)
+- `queue_manager.py` - Creates, starts, deletes an IBM MQ queue manager and runs an MQSC file. See the documentation [here.](docs/QUEUE_MANAGER.md)
 
 ## Installation roles on Windows machines
 
-Detailed documentation and guide for installing MQ on Windows using our roles can be found [here](https://github.com/ibm-messaging/mq-ansible/blob/main/WINSTALL.md).
+Detailed documentation and guide for installing MQ on Windows using our roles can be found [here](docs/WINSTALL.md).
 
 # Run our sample playbook
 
@@ -150,10 +150,10 @@ Before running the playbook and implementing our modules and roles for IBM MQ:
     
 5. On your local machine clone this repository. 
 
-6. Go to the `ansible_collections/ibm/ibmmq/` directory.
+6. Go to the `playbooks` directory.
 
     ```shell
-     cd mq-ansible/ansible_collections/ibm/ibmmq/
+     cd playbooks
     ```
 
 
@@ -174,7 +174,7 @@ Before running the playbook and implementing our modules and roles for IBM MQ:
 
 ### ibmmq.yml
 
-The sample playbook [`ibmmq.yml`](ansible_collections/ibm/ibmmq/ibmmq.yml) installs IBM MQ Advanced with our roles and configures a queue manager with the `queue_manager.py` module. 
+The sample playbook [`ibmmq.yml`](playbooks/ibmmq.yml) installs IBM MQ Advanced with our roles and configures a queue manager with the `queue_manager.py` module. 
 
 1. Before running the playbook, ensure that you have added the following directory path to the ANSIBLE_LIBRARY environment variable.
 
@@ -183,13 +183,13 @@ The sample playbook [`ibmmq.yml`](ansible_collections/ibm/ibmmq/ibmmq.yml) insta
     - On Mac:
 
        ```shell
-          export ANSIBLE_LIBRARY=${ANSIBLE_LIBRARY}:<PATH-TO>/mq-ansible/ansible_collections/ibm/ibmmq/library
+          export ANSIBLE_LIBRARY=${ANSIBLE_LIBRARY}:<PATH-TO>/mq-ansible/plugins/modules
        ```
 
     - On Windows:
     
       ```shell
-          set ANSIBLE_LIBRARY=%ANSIBLE_LIBRARY%;<PATH-TO>/mq-ansible/ansible_collections/ibm/ibmmq/library
+          set ANSIBLE_LIBRARY=%ANSIBLE_LIBRARY%;<PATH-TO>/mq-ansible/plugins/modules
        ```
 
 2. Run the following command to execute the tasks within the playbook:
@@ -232,26 +232,32 @@ If one of the following errors appears during the run of the playbook, run the f
 
 ### Testing module's functionality with playbooks
 
-These playbooks test the functionality and performance of our roles and the queue_manager module in Ansible plays.
+These playbooks test the functionality and performance of our roles and the queue_manager module in Ansible plays. 
 
 To run the test playbooks first:
 
-1. copy your `inventory.ini` file to the `tests/playbooks` directory 
+1. Try the installation with our sample playbook. You should run `ibmmq.yml` prior.
+
+2. copy your `inventory.ini` file to the `tests/playbooks` directory 
     ```shell
      cp inventory.ini tests/playbooks
     ```
-2. go to the `tests/playbooks` directory 
+3. go to the `tests/playbooks` directory 
     ```shell
      cd tests/playbooks
     ```
-3. export the modules to your Ansible library
+4. export the modules to your Ansible library
     ```shell
-     export ANSIBLE_LIBRARY=${ANSIBLE_LIBRARY}:<PATH-TO>/mq-ansible/ansible_collections/ibm/ibmmq/library
+     export ANSIBLE_LIBRARY=${ANSIBLE_LIBRARY}:<PATH-TO>/mq-ansible/plugins/modules
     ```
    - ##### *Note*: change `<PATH-TO>` to your local directory path:
-4. run all test playbooks
+5. run all test playbooks
     ```shell
-      python3 main.py
+      ansible-playbook --inventory 'inventory.ini' main_test.yml
+    ```
+6. if any of the tests fail, run:
+   ```shell
+      ansible-playbook --inventory 'inventory.ini' cleanup_test.yml
     ```
 
 ## Installation as ansible galaxy module

@@ -5,6 +5,7 @@
   become_user: mqm
   environment:
     PATH: /opt/mqm/bin:{{ ansible_env.PATH }}
+  
   tasks:
     - name: Stop qmgr if running
       queue_manager:
@@ -12,6 +13,7 @@
         state: stopped
       register: testout_1
       failed_when: false
+    
     - name: Dump stop output
       debug:
         msg: "{{ testout_1 }}"
@@ -25,6 +27,7 @@
         state: absent
       register: testout_2
       failed_when: false
+    
     - name: Dump delete output
       debug:
         msg: "{{ testout_2 }}"
@@ -35,6 +38,7 @@
         state: stopped
       register: testout_1
       failed_when: false
+    
     - name: Dump stop output
       debug:
         msg: "{{ testout_1 }}"
@@ -48,6 +52,7 @@
         state: absent
       register: testout_2
       failed_when: false
+    
     - name: Dump delete output
       debug:
         msg: "{{ testout_2 }}"
@@ -61,12 +66,14 @@
         state: absent
       register: testout_1
       failed_when: false
+    
     - name: Stop qmgr if running
       queue_manager:
         qmname: qm1_present_start
         state: stopped
       register: testout_2
       failed_when: false
+    
     - name: Delete qmgr
       until: testout_3.state == 'absent'
       retries: 3
@@ -76,12 +83,14 @@
         state: absent
       register: testout_3
       failed_when: false
+    
     - name: Stop qmgr if running
       queue_manager:
         qmname: qm1_misc
         state: stopped
       register: testout_1
       failed_when: false
+    
     - name: Dump stop output
       debug:
         msg: "{{ testout_1 }}"
@@ -95,15 +104,18 @@
         state: absent
       register: testout_2
       failed_when: false
+    
     - name: Dump delete output
       debug:
         msg: "{{ testout_2 }}"
+    
     - name: Stop qmgr if running
       queue_manager:
         qmname: qm1_misc_2
         state: stopped
       register: testout_1
       failed_when: false
+    
     - name: Dump stop output
       debug:
         msg: "{{ testout_1 }}"
@@ -117,9 +129,11 @@
         state: absent
       register: testout_2
       failed_when: false
+    
     - name: Dump delete output
       debug:
         msg: "{{ testout_2 }}"
+    
     - name: Delete qmgr
       until: testout_1.state == 'absent'
       retries: 3
@@ -129,12 +143,14 @@
         state: absent
       register: testout_1
       failed_when: false
+    
     - name: Stop qmgr if running
       queue_manager:
         qmname: qm1_present_start
         state: stopped
       register: testout_2
       failed_when: false
+    
     - name: Delete qmgr
       until: testout_3.state == 'absent'
       retries: 3

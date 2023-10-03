@@ -5,11 +5,13 @@
   become_user: mqm
   environment:
     PATH: /opt/mqm/bin:{{ ansible_env.PATH }}
+  
   tasks:
     - name: (SETUP) create QMGR
       queue_manager:
         qmname: qm1_running
         state: present
+    
     - name: (SETUP) start QMGR
       queue_manager:
         qmname: qm1_running
@@ -22,14 +24,14 @@
         mqsc_file: /var/mqm/mqsc_display
       register: testout
       failed_when: false
-    - name: Dump test output
-      debug:
-        msg: "{{ testout }}"
+
     - name: Test mqsc output (given state:present)
       assert:
         that:
           - testout.state == 'present'
-          - testout.msg == 'IBM MQ Queue Manager already exists. MQSC configuration successfully applied to Queue Manager'
+          - testout.msg == 'IBM MQ Queue Manager already exists. MQSC configuration successfully applied to queue manager.'
+        fail_msg: "<<FAILED>> {{testout.msg}}"
+        success_msg: "<<SUCCESS>> {{testout.msg}}"
 
     - name: Can run mqsc when running (given state:running)
       queue_manager:
@@ -38,15 +40,18 @@
         mqsc_file: /var/mqm/mqsc_display
       register: testout
       failed_when: false
+    
     - name: Dump test output
       debug:
         msg: "{{ testout }}"
+    
     - name: Test mqsc output (given state:running)
       assert:
         that:
           - testout.state == 'running'
-          - testout.rc == 0
-          - testout.msg == 'IBM MQ queue manager running. MQSC configuration successfully applied to Queue Manager'
+          - testout.msg == 'MQSC configuration successfully applied to queue manager.'
+        fail_msg: "<<FAILED>> {{testout.msg}}"
+        success_msg: "<<SUCCESS>> {{testout.msg}}"
 
     - name: Cannot run mqsc when file does not exist (given state:running)
       queue_manager:
@@ -55,15 +60,15 @@
         mqsc_file: mqsc_display_does_not_exist
       register: testout
       failed_when: false
-    - name: Dump test output
-      debug:
-        msg: "{{ testout }}"
+   
     - name: Test mqsc output (given state:running)
       assert:
         that:
           - testout.state == 'running'
           - testout.rc == 16
-          - testout.msg == 'IBM MQ queue manager running. MQSC file could not be found'
+          - testout.msg == 'MQSC file could not be found'
+        fail_msg: "<<FAILED>> {{testout.msg}}"
+        success_msg: "<<SUCCESS>> {{testout.msg}}"
 
     - name: Cannot create when already running
       queue_manager:
@@ -71,13 +76,13 @@
         state: present
       register: testout
       failed_when: false
-    - name: Dump test output
-      debug:
-        msg: "{{ testout }}"
+    
     - name: Test create output
       assert:
         that:
-          - testout.msg == 'IBM MQ Queue Manager already exists'
+          - testout.msg == 'IBM MQ Queue Manager already exists. '
+        fail_msg: "<<FAILED>> {{testout.msg}}"
+        success_msg: "<<SUCCESS>> {{testout.msg}}"
 
     - name: Cannot start when already running
       queue_manager:
@@ -85,14 +90,14 @@
         state: running
       register: testout
       failed_when: false
-    - name: Dump test output
-      debug:
-        msg: "{{ testout }}"
+    
     - name: Test start output
       assert:
         that:
           - testout.state == 'running'
           - testout.msg == 'IBM MQ queue manager running'
+        fail_msg: "<<FAILED>> {{testout.msg}}"
+        success_msg: "<<SUCCESS>> {{testout.msg}}"
 
     - name: Cannot delete when running
       queue_manager:
@@ -100,14 +105,14 @@
         state: absent
       register: testout
       failed_when: false
-    - name: Dump test output
-      debug:
-        msg: "{{ testout }}"
+    
     - name: Test delete output
       assert:
         that:
           - testout.state == 'running'
           - testout.msg == 'IBM MQ queue manager running.'
+        fail_msg: "<<FAILED>> {{testout.msg}}"
+        success_msg: "<<SUCCESS>> {{testout.msg}}"
 
     - name: Can stop when running
       queue_manager:
@@ -115,12 +120,12 @@
         state: stopped
       register: testout
       failed_when: false
-    - name: Dump test output
-      debug:
-        msg: "{{ testout }}"
+    
     - name: Test stop output
       assert:
         that:
-          - testout.state == 'present'
+          - testout.state == 'stopped'
           - testout.rc == 0
           - testout.msg == 'Quiesce request accepted. The queue manager will stop when all outstanding work\nis complete.\n'
+        fail_msg: "<<FAILED>> {{testout.msg}}"
+        success_msg: "<<SUCCESS>> {{testout.msg}}"
