@@ -43,7 +43,7 @@
       assert:
         that:
           - testout_1.state == 'present'
-          - testout_1.msg == 'IBM MQ Queue Manager already exists'
+          - testout_1.msg == 'IBM MQ Queue Manager already exists. '
         fail_msg: "<<FAILED>> {{testout_1.msg}}"
         success_msg: "<<SUCCESS>> {{testout_1.msg}}"
 
@@ -76,6 +76,6 @@
       assert:
         that:
           - testout_3.state == 'present'
-          - testout_3.msg == 'Queue Manager needs to be running to apply MQSC configuration.'
+          - testout_3.msg == 'IBM MQ Queue Manager already exists. MQSC configuration successfully applied to queue manager.'
         fail_msg: ' <<FAILED>> {{ testout_3.msg }}'
         success_msg: '<<SUCCESS>> {{ testout_3.msg }}'

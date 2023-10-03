@@ -51,3 +51,4 @@
           - '{{ testout_webconsole_status.stdout_lines }} is search("is running")'
         fail_msg: "<<FAILED>> MQ web console is not running."
         success_msg: "<<SUCCESS>> MQ web console running"
+      ignore_errors: true

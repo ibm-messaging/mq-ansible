@@ -232,26 +232,32 @@ If one of the following errors appears during the run of the playbook, run the f
 
 ### Testing module's functionality with playbooks
 
-These playbooks test the functionality and performance of our roles and the queue_manager module in Ansible plays.
+These playbooks test the functionality and performance of our roles and the queue_manager module in Ansible plays. 
 
 To run the test playbooks first:
 
-1. copy your `inventory.ini` file to the `tests/playbooks` directory 
+1. Try the installation with our sample playbook. You should run `ibmmq.yml` prior.
+
+2. copy your `inventory.ini` file to the `tests/playbooks` directory 
     ```shell
      cp inventory.ini tests/playbooks
     ```
-2. go to the `tests/playbooks` directory 
+3. go to the `tests/playbooks` directory 
     ```shell
      cd tests/playbooks
     ```
-3. export the modules to your Ansible library
+4. export the modules to your Ansible library
     ```shell
      export ANSIBLE_LIBRARY=${ANSIBLE_LIBRARY}:<PATH-TO>/mq-ansible/ansible_collections/ibm/ibmmq/library
     ```
    - ##### *Note*: change `<PATH-TO>` to your local directory path:
-4. run all test playbooks
+5. run all test playbooks
     ```shell
-      ansible-playbook --inventory 'inventory.ini' main_test.yml --extra-vars ibmMqLicense=accept
+      ansible-playbook --inventory 'inventory.ini' main_test.yml
+    ```
+6. if any of the tests fail, run:
+   ```shell
+      ansible-playbook --inventory 'inventory.ini' cleanup_test.yml
     ```
 
 # License

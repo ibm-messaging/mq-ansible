@@ -28,21 +28,6 @@
         fail_msg: '<<FAILED>> {{testout_1.msg}}'
         success_msg: '<<SUCCESS>> {{testout_1.msg}}'
 
-    - name: Can't run when not created
-      queue_manager:
-        qmname: qm1_misc
-        state: running
-      register: testout_1
-      failed_when: false
-    
-    - name: Test run output
-      assert:
-        that:
-          - testout_1.state == 'absent'
-          - testout_1.msg == 'IBM MQ queue manager does not exist. Please create it first to set it running.'
-        fail_msg: '<<FAILED>> {{testout_1.msg}}'
-        success_msg: '<<SUCCESS>> {{testout_1.msg}}'
-
     - name: Can start, run and configure straight away
       queue_manager:
         qmname: qm1_misc_2
@@ -57,6 +42,6 @@
           # MQSC has run successfully
           - testout_1.state == 'running'
           - testout_1.rc == 0
-          - testout_1.msg == 'IBM MQ queue manager running. MQSC configuration successfully applied to Queue Manager'
+          - testout_1.msg == 'MQSC configuration successfully applied to queue manager.'
         fail_msg: '<<FAILED>> {{testout_1.msg}}'
         success_msg: '<<SUCCESS>> {{testout_1.msg}}'

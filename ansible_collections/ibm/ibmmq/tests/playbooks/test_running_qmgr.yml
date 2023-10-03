@@ -29,7 +29,7 @@
       assert:
         that:
           - testout.state == 'present'
-          - testout.msg == 'IBM MQ Queue Manager already exists. MQSC configuration successfully applied to Queue Manager'
+          - testout.msg == 'IBM MQ Queue Manager already exists. MQSC configuration successfully applied to queue manager.'
         fail_msg: "<<FAILED>> {{testout.msg}}"
         success_msg: "<<SUCCESS>> {{testout.msg}}"
 
@@ -49,7 +49,7 @@
       assert:
         that:
           - testout.state == 'running'
-          - testout.msg == 'MQSC configuration successfully applied to Queue Manager'
+          - testout.msg == 'MQSC configuration successfully applied to queue manager.'
         fail_msg: "<<FAILED>> {{testout.msg}}"
         success_msg: "<<SUCCESS>> {{testout.msg}}"
 
@@ -80,7 +80,7 @@
     - name: Test create output
       assert:
         that:
-          - testout.msg == 'IBM MQ Queue Manager already exists'
+          - testout.msg == 'IBM MQ Queue Manager already exists. '
         fail_msg: "<<FAILED>> {{testout.msg}}"
         success_msg: "<<SUCCESS>> {{testout.msg}}"
 
@@ -124,7 +124,7 @@
     - name: Test stop output
       assert:
         that:
-          - testout.state == 'present'
+          - testout.state == 'stopped'
           - testout.rc == 0
           - testout.msg == 'Quiesce request accepted. The queue manager will stop when all outstanding work\nis complete.\n'
         fail_msg: "<<FAILED>> {{testout.msg}}"

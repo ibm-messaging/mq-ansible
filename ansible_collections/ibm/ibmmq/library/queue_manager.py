@@ -48,7 +48,7 @@ def state_present(qmname, module):
             result['msg'] = 'IBM MQ Queue Manager Created' + result['msg']
             result['state'] = 'present'
         elif rc == 8:
-            module.exit_json(skipped=True, state='present', msg='IBM MQ Queue Manager already exists'+result['msg'])
+            module.exit_json(skipped=True, state='present', msg='IBM MQ Queue Manager already exists. '+result['msg'])
         elif rc > 0:
             module.fail_json(**result)
 
@@ -63,7 +63,7 @@ def run_mqsc_file(qmname, module):
             result['output'] = stdout + stderr
             if rc == 0:
                 result['state'] = 'running'
-                result['msg'] = 'MQSC configuration successfully applied to Queue Manager'
+                result['msg'] = 'MQSC configuration successfully applied to queue manager.'
                 
         else:
             rc, stdout, stderr = module.run_command(['strmqm', qmname])
@@ -72,12 +72,12 @@ def run_mqsc_file(qmname, module):
             result['output'] = stdout + stderr
             rc, stdout, stderr = module.run_command(['endmqm', qmname])
             if rc == 0:
-                result['msg'] = 'MQSC configuration successfully applied to queue manager'
+                result['msg'] = 'MQSC configuration successfully applied to queue manager.'
     else:
         if is_running:
             result['state'] = 'running'
         result['rc'] = 16    
-        result['msg'] = '. MQSC file could not be found'
+        result['msg'] = 'MQSC file could not be found'
     return (result['rc'], result['msg'], result['output'])
 
 
