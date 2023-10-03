@@ -1,0 +1,12 @@
+---
+- name: MQ-Ansible testing framework
+  hosts: all
+
+- name: Testing - Windows
+  import_playbook: tests_windows.yml
+  when: ansible_facts['os_family'] == "Windows"
+
+- name: Testing - Ubuntu, RedHat, AIX
+  import_playbook: tests_unix_based.yml
+  when: (ansible_facts['os_family'] == "RedHat") or (ansible_facts['os_family'] == "AIX" ) or (ansible_facts['distribution'] == "Ubuntu")
+  

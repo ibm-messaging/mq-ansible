@@ -1,0 +1,29 @@
+---
+
+- name: Test configuration and start of web console - Windows
+  hosts: all
+  become: false
+  
+  tasks:
+
+  - name: test that existing config file is mqwebuser.xml
+    ansible.windows.win_stat:
+      path: C:\ProgramData\IBM\MQ\web\installations\Installation1\servers\mqweb\mqwebuser.xml
+    register: mqwebuser
+    failed_when: mqwebuser.stat.exists == false
+  
+  # - name: test that web console is configured for remote connections
+  
+  - name: display web console status
+    ansible.windows.win_command: 
+      cmd: .\dspmqweb.bat
+      chdir: C:\Program Files\IBM\MQ\bin
+    register: webconsole_status
+    changed_when: false
+    ignore_errors: true
+
+  - name: test web console is running
+    ansible.builtin.assert:
+      that: '" is running." in webconsole_status.stdout'
+      fail_msg: "<<FAILED>> MQ web console is not running."
+      success_msg: "<<SUCCESS>> MQ web console running"

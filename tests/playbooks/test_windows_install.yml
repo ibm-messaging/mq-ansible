@@ -1,0 +1,57 @@
+---
+
+- name: Test downloading and installing MQ - Windows
+  hosts: all
+  become: false
+  
+  tasks:
+
+  - name: Test MQ download zip exists
+    ansible.windows.win_stat: 
+      path: C:\Users\Administrator\mq.zip
+    register: mq_zip
+    failed_when: mq_zip.stat.exists == false
+
+  - name: Test MQ unzipped file exists
+    ansible.windows.win_stat:
+      path: C:\Users\Administrator\mq-install\MQServer
+    register: mq_unzipped
+    failed_when: mq_unzipped.stat.exists == false
+
+  - name: Get groups
+    ansible.windows.win_shell: Get-LocalGroup
+    register: windows_groups
+    changed_when: false
+
+  - name: Test if mqm group exists
+    ansible.builtin.assert:
+      that:
+      - "'mqm' in windows_groups.stdout"
+      fail_msg: "<<FAILED>> mqm group does not exist."
+      success_msg: "<<SUCCESS>> mqm group exists."
+
+  - name: Get users
+    ansible.windows.win_shell: Get-LocalUser
+    register: windows_users
+    changed_when: false
+
+  - name: Test if mqmuser exists
+    ansible.builtin.assert:
+      that:
+      - "'mqmuser' in windows_users.stdout"
+      fail_msg: "<<FAILED>> mqm user does not exist."
+      success_msg: "<<SUCCESS>> mqm user exists."
+
+  - name: Get MQ version
+    ansible.windows.win_command: dspmqver
+    register: dspmqver_results
+    changed_when: false
+
+  - name: Test MQ version
+    ansible.builtin.assert:
+      that:
+      - "'Version:     9.3.0.0' in dspmqver_results.stdout_lines"
+      fail_msg: "<<FAILED>> incorrect MQ version."
+      success_msg: "<<SUCCESS>> correct MQ version"
+      
+
