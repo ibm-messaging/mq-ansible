@@ -1,7 +1,7 @@
 # SetupUsers
 
 ### Parameters
-Configures the relevant users required to install MQ on the target machine
+Configures the relevant users required to install MQ on the target machine.
 
 | Name | Description | Example |
 | --- | --- | --- |

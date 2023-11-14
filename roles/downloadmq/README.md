@@ -1,5 +1,5 @@
 # DownloadMQ
-Retrieves and unpackages the specified MQ installation
+Retrieves and unpackages the specified MQ installation.
 
 ### Parameters
 

@@ -1,2 +1,2 @@
 # GetConfig
-Retrieves and copies a local `mqsc` file to the target machine
+Retrieves and copies a local `mqsc` file to the target machine.
