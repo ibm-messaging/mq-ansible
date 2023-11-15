@@ -29,8 +29,8 @@ description: A collection for automating the installation and configuration of I
 
 # Either a single license or a list of licenses for content inside of a collection. Ansible Galaxy currently only
 # accepts L(SPDX,https://spdx.org/licenses/) licenses. This key is mutually exclusive with 'license_file'
-license:
-- Apache-2.0
+# license:
+# - Apache-2.0
 
 # The path to the license file for the collection. This path is relative to the root of the collection. This key is
 # mutually exclusive with 'license'
@@ -43,9 +43,9 @@ tags:
   - ibmmq
   - mq
   - queue
-  - Linux
-  - AIX
-  - Windows
+  - linux
+  - aix
+  - windows
 
 # Collections that this collection requires to be installed for it to be usable. The key of the dict is the
 # collection label 'namespace.name'. The value is a version range
