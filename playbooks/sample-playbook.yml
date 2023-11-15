@@ -10,30 +10,31 @@
   tasks:
     - name: Import downloadmq role
       ansible.builtin.import_role:
-        name: downloadmq
+        name: ibm_messaging.ibmmq.downloadmq
 
     - name: Import setupusers role
       ansible.builtin.import_role:
-        name: setupusers
+        name: ibm_messaging.ibmmq.setupusers
 
     - name: Import installmq role
       ansible.builtin.import_role:
-        name: installmq
+        name: ibm_messaging.ibmmq.installmq
 
     - name: Import setupenvironment role
       ansible.builtin.import_role:
-        name: setupenvironment
+        name: ibm_messaging.ibmmq.setupenvironment
 
     - name: Create a queue manager
       become_user: mqm
       tags: ["queue"]
-      queue_manager:
+      ibm_messaging.ibmmq.queue_manager:
         qmname: queue_manager_12
         state: present
 
+    # Make sure to have a MQSC file in the same directory you will run this playbook from
     - name: Use MQSC File
       become_user: mqm
-      queue_manager:
+      ibm_messaging.ibmmq.queue_manager:
         qmname: queue_manager_12
         state: running
         mqsc_file: files/dev-config.mqsc

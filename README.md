@@ -14,11 +14,12 @@ For a detailed explanation and documentation on how MQ-Ansible works, click [her
 
 | Section |
 | :------ |
-| [Requirements](https://github.com/ibm-messaging/mq-ansible/tree/aix-support#requirements) |
-| [Playbooks and Roles for IBM MQ installation](https://github.com/ibm-messaging/mq-ansible/tree/aix-support#requirements) |
-| [Run our sample playbook](https://github.com/ibm-messaging/mq-ansible/tree/aix-support#run-our-sample-playbook) |
+| [Requirements](https://github.com/ibm-messaging/mq-ansible#requirements) |
+| [Playbooks and Roles for IBM MQ installation](https://github.com/ibm-messaging/mq-ansible#playbooks-and-roles-for-ibm-mq-installation-on-ubuntu-target-machines) |
+| [Run our sample playbook](https://github.com/ibm-messaging/mq-ansible#run-our-sample-playbook) |
 | [Troubleshooting](https://github.com/ibm-messaging/mq-ansible/tree/aix-support#troubleshooting) |
-| [Testing Framework](https://github.com/ibm-messaging/mq-ansible/tree/aix-support#testing-framework) |
+| [Testing Framework](https://github.com/ibm-messaging/mq-ansible/#testing-framework) |
+| [Ansible Galaxy - Installation](https://github.com/ibm-messaging/mq-ansible/#ansible-galaxy-installation) |
 
 ## Requirements
 
@@ -260,20 +261,31 @@ To run the test playbooks first:
       ansible-playbook --inventory 'inventory.ini' cleanup_test.yml
     ```
 
-## Installation as ansible galaxy module
+## Ansible Galaxy - Installation
 
-1. first be sure that you have installed the latest version
+1. First, make sure that you have the minimun required version of ansible core with
+    ```
+    ansible --version
+    ```
+
+2. Install the latest version from our github repo with
     ```
     ansible-galaxy collection install git+https://github.com/ibm-messaging/mq-ansible.git,main
     ```
-2. Be sure to update your ansible inventory `inventory.ini` with the proper target hosts, as you'll refer to them while running the playbook:
+
+    or the latest version in ansible galaxy with:
+    ```
+    ansible-galaxy collection install ibm_messaging.ibmmq      
+
+    ```
+3. In your desired working directory, make sure to create your ansible inventory `inventory.ini` with the proper target hosts, as you'll refer to them while running the playbook:
     ```
     [mqservers]
     my.mqserver-001.dev
     my.mqserver-002.dev
     ```
  
-2. create now a playbook file `setup-playbook.yml` with this content
+2. Create now a playbook file `setup-playbook.yml` with the following content to try our roles and modules:
     ```
     ---
     - name: prepares MQ server
@@ -285,37 +297,38 @@ To run the test playbooks first:
         - ibm.ibmmq
 
       tasks:
-
         - name: Import downloadmq role
           ansible.builtin.import_role:
-            name: downloadmq
+            name: ibm_messaging.ibmmq.downloadmq
 
         - name: Import setupusers role
           ansible.builtin.import_role:
-            name: setupusers
+            name: ibm_messaging.ibmmq.setupusers
 
         - name: Import installmq role
           ansible.builtin.import_role:
-            name: installmq
+            name: ibm_messaging.ibmmq.installmq
 
         - name: Import setupenvironment role
           ansible.builtin.import_role:
-            name: setupenvironment
+            name: ibm_messaging.ibmmq.setupenvironment
 
         - name: Create a queue manager
           become_user: mqm
           tags: ["queue"]
-          queue_manager:
+          ibm_messaging.ibmmq.queue_manager:
             qmname: queue_manager_12
             state: present
 
+        # Make sure to have a MQSC file in the same directory you will run this playbook from
         - name: Use MQSC File
           become_user: mqm
-          queue_manager:
+          ibm_messaging.ibmmq.queue_manager:
             qmname: queue_manager_12
             state: running
             mqsc_file: files/dev-config.mqsc
     ```
+
 3. run it with
     ```
     ansible-playbook setup-playbook.yml -i ./inventory.ini -e 'ibmMqLicence=accept'
