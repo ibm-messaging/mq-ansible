@@ -23,11 +23,14 @@ A clear and concise description of what you expected to happen.
 **Screenshots**
 If applicable, add screenshots to help explain your problem. These can include the error message or screenshots of your config for extra context.
 
-**Tell us the platform and version that you are running the playbook on:**
+**Tell us the platform and version of the machine that ansible is being run on:**
  - OS: [e.g. Windows]
  - Version [e.g. 11]
 
-**Tell us the platforms and versions that the playbook is running against:**
+**Tell us the version of ansible being used:**
+ - Version [e.g. core 2.12.4]
+
+**Tell us the platforms and versions of the machines that the playbook is targetting (Usually supplied in an inventory file):**
  - OS: [e.g. Ubuntu]
  - Version [e.g. 23.10]
 
