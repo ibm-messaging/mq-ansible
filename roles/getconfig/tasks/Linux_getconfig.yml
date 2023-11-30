@@ -1,6 +1,6 @@
 ---
 - name: Copy developer config file to target
   ansible.builtin.copy:
-    src: ../../../playbooks/files/dev-config.mqsc
+    src: "{{ mqsc_local }}"
     dest: /var/mqm
     mode: "0644"
