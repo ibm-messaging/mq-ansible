@@ -7,7 +7,9 @@
     PATH: /opt/mqm/bin:{{ ansible_env.PATH }}
 
   roles:
-    - getconfig
+    - role: getconfig
+      vars:
+        mqsc_local: ../../../playbooks/files/dev-config.mqsc
     - setupconsole
     - startconsole
 
