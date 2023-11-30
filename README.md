@@ -261,7 +261,7 @@ To run the test playbooks first:
       ansible-playbook --inventory 'inventory.ini' cleanup_test.yml
     ```
 
-## Ansible Galaxy - Installation
+# Ansible Galaxy - Installation
 
 1. First, make sure that you have the minimun required version of ansible core with
     ```
@@ -294,7 +294,7 @@ To run the test playbooks first:
       environment:
         PATH: /opt/mqm/bin:{{ ansible_env.PATH }}
       collections:
-        - ibm.ibmmq
+        - ibm_messaging.ibmmq
 
       tasks:
         - name: Import downloadmq role
@@ -313,6 +313,24 @@ To run the test playbooks first:
           ansible.builtin.import_role:
             name: ibm_messaging.ibmmq.setupenvironment
 
+        - name: Get MQSC file 
+          ansible.builtin.import_role:
+            name: ibm_messaging.ibmmq.getconfig
+            become: true
+            become_user: mqm
+        
+        - name: Set up web console 
+          ansible.builtin.import_role:
+            name: ibm_messaging.ibmmq.setupconsole
+            become: true
+            become_user: mqm
+
+        - name: Start web console 
+          ansible.builtin.import_role:
+            name: ibm_messaging.ibmmq.startconsole
+            become: true
+            become_user: mqm
+
         - name: Create a queue manager
           become_user: mqm
           tags: ["queue"]
@@ -320,13 +338,13 @@ To run the test playbooks first:
             qmname: queue_manager_12
             state: present
 
-        # Make sure to have a MQSC file in the same directory you will run this playbook from
-        - name: Use MQSC File
+        - name: Use our MQSC File
+          become: true
           become_user: mqm
           ibm_messaging.ibmmq.queue_manager:
             qmname: queue_manager_12
             state: running
-            mqsc_file: files/dev-config.mqsc
+            mqsc_file: /var/mqm/dev-config.mqsc
     ```
 
 3. run it with

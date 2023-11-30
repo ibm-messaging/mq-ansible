@@ -8,10 +8,10 @@ namespace: ibm_messaging
 name: ibmmq
 
 # The version of the collection. Must be compatible with semantic versioning
-version: 1.0.0
+version: 1.0.1
 
 # The path to the Markdown (.md) readme file. This path is relative to the root of the collection
-readme: README.md
+readme: README-GALAXY.md
 
 # A list of the collection's content authors. Can be just the name or in the format 'Full Name <email> (url)
 # @nicks:irc/im.site#channel'
@@ -54,13 +54,13 @@ tags:
 dependencies: {}
 
 # The URL of the originating SCM repository
-repository: git@github.com:ibm-messaging/mq-ansible.git
+repository: https://github.com/ibm-messaging/mq-ansible
 
 # The URL to any online docs
-documentation: http://docs.example.com
+documentation: https://github.com/ibm-messaging/mq-ansible/blob/main/README.md
 
 # The URL to the homepage of the collection/project
-homepage: http://example.com
+homepage: https://github.com/ibm-messaging/mq-ansible
 
 # The URL to the collection issue tracker
 issues: https://github.com/ibm-messaging/mq-ansible/issues
@@ -81,7 +81,6 @@ build_ignore:
   - venv
   - .idea
   - meta/context
-  - playbooks
 
 # A dict controlling use of manifest directives used in building the collection artifact. The key 'directives' is a
 # list of MANIFEST.in style
