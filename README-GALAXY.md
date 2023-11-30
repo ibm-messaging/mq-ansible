@@ -15,11 +15,8 @@ For a detailed explanation and documentation on how MQ-Ansible works, click [her
 | Section |
 | :------ |
 | [Requirements](https://github.com/ibm-messaging/mq-ansible#requirements) |
-| [Playbooks and Roles for IBM MQ installation](https://github.com/ibm-messaging/mq-ansible#playbooks-and-roles-for-ibm-mq-installation-on-ubuntu-target-machines) |
-| [Run our sample playbook](https://github.com/ibm-messaging/mq-ansible#run-our-sample-playbook) |
-| [Troubleshooting](https://github.com/ibm-messaging/mq-ansible/tree/aix-support#troubleshooting) |
-| [Testing Framework](https://github.com/ibm-messaging/mq-ansible/#testing-framework) |
-| [Ansible Galaxy - Installation](https://github.com/ibm-messaging/mq-ansible/#ansible-galaxy-installation) |
+| [Our collection - IBM MQ installation on target machines](https://github.com/ibm-messaging/mq-ansible/README-GALAXY.md#our-collection---ibm-mq-installation-on-target-machines) |
+| [Ansible Galaxy - Installation](https://github.com/ibm-messaging/mq-ansible/#ansible-galaxy---installation) |
 
 ## Requirements
 
@@ -59,7 +56,7 @@ Detailed documentation and guide for installing MQ on Windows using our roles ca
 
 - `queue_manager.py` - Creates, starts, deletes an IBM MQ queue manager and runs an MQSC file. See the documentation [here.](https://github.com/ibm-messaging/mq-ansible/blob/main/docs/QUEUE_MANAGER.md)
 
-## Ansible Galaxy - Installation
+# Ansible Galaxy - Installation
 
 1. First, make sure that you have the minimun required version of ansible core with
 
@@ -121,8 +118,8 @@ Detailed documentation and guide for installing MQ on Windows using our roles ca
           become_user: mqm
           ansible.builtin.import_role:
             name: ibm_messaging.ibmmq.getconfig
-            vars: 
-              mqsc_local: ../../../playbooks/files/dev-config.mqsc
+          vars: 
+            mqsc_local: ../../../playbooks/files/dev-config.mqsc
         
         - name: Set up web console
           become: true

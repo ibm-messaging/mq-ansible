@@ -19,7 +19,7 @@ For a detailed explanation and documentation on how MQ-Ansible works, click [her
 | [Run our sample playbook](https://github.com/ibm-messaging/mq-ansible#run-our-sample-playbook) |
 | [Troubleshooting](https://github.com/ibm-messaging/mq-ansible/tree/aix-support#troubleshooting) |
 | [Testing Framework](https://github.com/ibm-messaging/mq-ansible/#testing-framework) |
-| [Ansible Galaxy - Installation](https://github.com/ibm-messaging/mq-ansible/#ansible-galaxy-installation) |
+| [Ansible Galaxy - Installation](https://github.com/ibm-messaging/mq-ansible/#ansible-galaxy---installation) |
 
 ## Requirements
 
@@ -336,8 +336,8 @@ To run the test playbooks first:
           become_user: mqm
           ansible.builtin.import_role:
             name: ibm_messaging.ibmmq.getconfig
-            vars: 
-              mqsc_local: ../../../playbooks/files/dev-config.mqsc
+          vars: 
+            mqsc_local: ../../../playbooks/files/dev-config.mqsc
         
         - name: Set up web console
           become: true

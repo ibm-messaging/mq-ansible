@@ -29,8 +29,8 @@
         become_user: mqm
         ansible.builtin.import_role:
           name: ibm_messaging.ibmmq.getconfig
-          vars: 
-            mqsc_local: ../../../playbooks/files/dev-config.mqsc
+        vars: 
+          mqsc_local: ../../../playbooks/files/dev-config.mqsc
       
       - name: Set up web console
         become: true
