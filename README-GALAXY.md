@@ -62,22 +62,25 @@ Detailed documentation and guide for installing MQ on Windows using our roles ca
 ## Ansible Galaxy - Installation
 
 1. First, make sure that you have the minimun required version of ansible core with
+
     ```
     ansible --version
     ```
 
 2. Install the latest version from our github repo with
+
     ```
     ansible-galaxy collection install git+https://github.com/ibm-messaging/mq-ansible.git,main
     ```
 
     or the latest version in ansible galaxy with:
+
     ```
     ansible-galaxy collection install ibm_messaging.ibmmq      
-
     ```
 
 3. In your desired working directory, make sure to create your ansible inventory `inventory.ini` with the proper target hosts, as you'll refer to them while running the playbook:
+
     ```
     [mqservers]
     my.mqserver-001.dev
@@ -85,7 +88,8 @@ Detailed documentation and guide for installing MQ on Windows using our roles ca
     ```
  
 4. Create now a playbook file `setup-playbook.yml` with the following content to try our roles and modules:
-       ```
+
+  ```
     ---
     - name: prepares MQ server
       hosts: mqservers
@@ -146,9 +150,10 @@ Detailed documentation and guide for installing MQ on Windows using our roles ca
             qmname: queue_manager_12
             state: running
             mqsc_file: /var/mqm/dev-config.mqsc
-    ```
+  ```
 
 5. Run it with
+
     ```
     ansible-playbook setup-playbook.yml -i ./inventory.ini -e 'ibmMqLicence=accept'
     ```

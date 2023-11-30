@@ -147,6 +147,7 @@ Before running the playbook and implementing our modules and roles for IBM MQ:
     ```shell
      ssh [USER]@[YOUR_TARGET_HOST]
     ```
+
     This should connect to your target machine without asking for a password.
     
 5. On your local machine clone this repository. 
@@ -157,15 +158,12 @@ Before running the playbook and implementing our modules and roles for IBM MQ:
      cd playbooks
     ```
 
-
 7. Create a file `inventory.ini` inside the directory with the following content:
   
     ```ini
-    
     [servers]
     YOUR_HOST_ALIAS ansible_host=YOUR_HOSTNAME ansible_ssh_user=YOUR_SSH_USER
     YOUR_HOST_ALIAS ansible_host=YOUR_HOSTNAME ansible_ssh_user=YOUR_SSH_USER
-
     ```
    ##### *Note*: you can specify one or more hosts
    - Change `YOUR_HOST_ALIAS` to an alias name that you wish to use e.g. `mq-host-1` , you can omit aliases if you prefer
@@ -183,20 +181,22 @@ The sample playbook [`ibmmq.yml`](playbooks/ibmmq.yml) installs IBM MQ Advanced 
 
     - On Mac:
 
-       ```shell
-          export ANSIBLE_LIBRARY=${ANSIBLE_LIBRARY}:<PATH-TO>/mq-ansible/plugins/modules
-       ```
+    ```shell
+      export ANSIBLE_LIBRARY=${ANSIBLE_LIBRARY}:<PATH-TO>/mq-ansible/plugins/modules
+    ```
 
     - On Windows:
     
-      ```shell
-          set ANSIBLE_LIBRARY=%ANSIBLE_LIBRARY%;<PATH-TO>/mq-ansible/plugins/modules
-       ```
+    ```shell
+      set ANSIBLE_LIBRARY=%ANSIBLE_LIBRARY%;<PATH-TO>/mq-ansible/plugins/modules
+    ```
 
 2. Run the following command to execute the tasks within the playbook:
-      ```shell
-       ansible-playbook ./ibmmq.yml -i inventory.ini -e 'ibmMqLicence=accept'
-      ```
+
+    ```shell
+      ansible-playbook ./ibmmq.yml -i inventory.ini -e 'ibmMqLicence=accept'
+    ```
+
       - ##### *Note*: you can optionally add `-K` (uppercase) to the command, this will prompt the user to enter the sudo password for [YOUR_SSH_USER] on the target machine, you can omit if you have setup SSH keys
 
 3. The playbook should return the result of `dspmq` with the queue manager created listed. Log into your target machine and check it manually:
@@ -213,15 +213,19 @@ If one of the following errors appears during the run of the playbook, run the f
   
   Fix:
   ##### *Note*: change `[YOUR_HOST]` to the target machine's network address
+
   ```shell
-  ssh-keyscan -H [YOUR_HOST] >> ~/.ssh/known_hosts
+    ssh-keyscan -H [YOUR_HOST] >> ~/.ssh/known_hosts
   ```
+
 - `zsh: command not found: dspmq` - Appears that MQ environment variables have not been set.
 
   Fix:
+
   ```shell
-  . /opt/mqm/bin/setmqenv -s
+    . /opt/mqm/bin/setmqenv -s
   ```
+
 - `AMQ7077E: You are not authorized to perform the requested operation` - Appears that the user cannot carry out queue manager operations. This occurs when an SSH session to a target machine hasn't been refreshed after the roles have been executed.
   
   Fix:
@@ -240,23 +244,32 @@ To run the test playbooks first:
 1. Try the installation with our sample playbook. You should run `ibmmq.yml` prior.
 
 2. copy your `inventory.ini` file to the `tests/playbooks` directory 
-    ```shell
-     cp inventory.ini tests/playbooks
-    ```
+
+  ```shell
+    cp inventory.ini tests/playbooks
+  ```
+
 3. go to the `tests/playbooks` directory 
-    ```shell
-     cd tests/playbooks
-    ```
+
+  ```shell
+    cd tests/playbooks
+  ```
+
 4. export the modules to your Ansible library
-    ```shell
-     export ANSIBLE_LIBRARY=${ANSIBLE_LIBRARY}:<PATH-TO>/mq-ansible/plugins/modules
-    ```
+
+  ```shell
+    export ANSIBLE_LIBRARY=${ANSIBLE_LIBRARY}:<PATH-TO>/mq-ansible/plugins/modules
+  ```
+
    - ##### *Note*: change `<PATH-TO>` to your local directory path:
 5. run all test playbooks
-    ```shell
-      ansible-playbook --inventory 'inventory.ini' main_test.yml
-    ```
+
+  ```shell
+    ansible-playbook --inventory 'inventory.ini' main_test.yml
+  ```
+
 6. if any of the tests fail, run:
+
    ```shell
       ansible-playbook --inventory 'inventory.ini' cleanup_test.yml
     ```
@@ -264,21 +277,25 @@ To run the test playbooks first:
 # Ansible Galaxy - Installation
 
 1. First, make sure that you have the minimun required version of ansible core with
+
     ```
     ansible --version
     ```
 
 2. Install the latest version from our github repo with
+
     ```
     ansible-galaxy collection install git+https://github.com/ibm-messaging/mq-ansible.git,main
     ```
 
     or the latest version in ansible galaxy with:
-    ```
-    ansible-galaxy collection install ibm_messaging.ibmmq      
 
     ```
+    ansible-galaxy collection install ibm_messaging.ibmmq      
+    ```
+
 3. In your desired working directory, make sure to create your ansible inventory `inventory.ini` with the proper target hosts, as you'll refer to them while running the playbook:
+
     ```
     [mqservers]
     my.mqserver-001.dev
@@ -286,8 +303,9 @@ To run the test playbooks first:
     ```
  
 4. Create now a playbook file `setup-playbook.yml` with the following content to try our roles and modules:
-    ```
-    ---
+
+```shell
+  ---
     - name: prepares MQ server
       hosts: mqservers
       become: true
@@ -347,9 +365,11 @@ To run the test playbooks first:
             qmname: queue_manager_12
             state: running
             mqsc_file: /var/mqm/dev-config.mqsc
-    ```
+            
+```
 
 5. run it with
+
     ```
     ansible-playbook setup-playbook.yml -i ./inventory.ini -e 'ibmMqLicence=accept'
     ```
