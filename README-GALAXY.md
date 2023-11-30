@@ -45,7 +45,7 @@ The implementation of our collection can carry out an installation of IBM MQ Adv
 
 ##### *Note*: For Ubuntu, dependencies are sensitive to the order of regex-matched packages in the `with_items` attribute of the above task. 
 
-`getconfig` - copies the dev-config.mqsc file to the target machine.
+`getconfig` - copies the dev-config.mqsc file to the target machine. You can also specify a local sourced MQSC file with the var `mqsc_local`.
 
 `setupconsole` - configures a target machine's environment and permissions to be able to run the MQ Web Console.
 
@@ -85,7 +85,7 @@ Detailed documentation and guide for installing MQ on Windows using our roles ca
     ```
  
 4. Create now a playbook file `setup-playbook.yml` with the following content to try our roles and modules:
-    ```
+       ```
     ---
     - name: prepares MQ server
       hosts: mqservers
@@ -113,22 +113,24 @@ Detailed documentation and guide for installing MQ on Windows using our roles ca
             name: ibm_messaging.ibmmq.setupenvironment
 
         - name: Get MQSC file 
+          become: true
+          become_user: mqm
           ansible.builtin.import_role:
             name: ibm_messaging.ibmmq.getconfig
-            become: true
-            become_user: mqm
+            vars: 
+              mqsc_local: ../../../playbooks/files/dev-config.mqsc
         
-        - name: Set up web console 
+        - name: Set up web console
+          become: true
+          become_user: mqm
           ansible.builtin.import_role:
             name: ibm_messaging.ibmmq.setupconsole
-            become: true
-            become_user: mqm
 
         - name: Start web console 
+          become: true
+          become_user: mqm
           ansible.builtin.import_role:
             name: ibm_messaging.ibmmq.startconsole
-            become: true
-            become_user: mqm
 
         - name: Create a queue manager
           become_user: mqm
