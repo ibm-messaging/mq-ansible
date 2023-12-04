@@ -1,9 +1,10 @@
 ---
 - name: Copy MQ Trial from Control to Z Worker
   ansible.builtin.copy:
-    src: /Users/<your-user>/Downloads/9.3.0.0-IBM-MQTRIAL-<OperatingSystem>S390X.tar.gz
+    src: "{{ mq_local_path: }}"
     dest: /var/mq.tar.gz
     mode: "0644"
+  when: local_source
 
 - name: Extract MQ fom TAR
   ansible.builtin.unarchive:
@@ -11,3 +12,4 @@
     remote_src: true
     dest: /var
   tags: download
+  when: local_source
