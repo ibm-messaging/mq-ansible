@@ -1,0 +1,12 @@
+---
+- name: Copy fixpack to target
+  ansible.builtin.copy:
+    src: "{{ fixpack_local }}"
+    dest: /var/"{{ fixpack_local | basename }}"
+    mode: "0644"
+
+- name: Extract fixpack fom TAR
+  ansible.builtin.unarchive:
+    src: /var/"{{ fixpack_local | basename }}"
+    remote_src: true
+    dest: /var
