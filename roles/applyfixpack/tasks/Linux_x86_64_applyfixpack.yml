@@ -1,24 +1,37 @@
 ---
+- name: Store fixpack name
+  ansible.builtin.set_fact:
+    fixpack_file: '{{ fixpack_local | basename }}'
+
+- name: Store fixpack directory
+  ansible.builtin.set_fact:
+    fixpack_dir: '{{ fixpack_file | replace(".tar.gz","") }}'
+
 - name: Copy fixpack to target
   ansible.builtin.copy:
     src: "{{ fixpack_local }}"
-    dest: '/var/{{ fixpack_local | basename }}'
+    dest: '/var'
     mode: "0644"
+
+- name: Create fixpack directory
+  ansible.builtin.file:
+    path: '/var/{{ fixpack_dir }}'
+    state: directory
 
 - name: Extract fixpack fom TAR
   ansible.builtin.unarchive:
-    src: '/var/{{ fixpack_local | basename }}'
+    src: '/var/{{ fixpack_file }}'
     remote_src: true
-    dest: /var
+    dest: '/var/{{ fixpack_dir }}'
 
 - name: Check if license status file exists
   ansible.builtin.stat:
-    path: '/var/MQServer/{{ fixpack_local }}-licensestatus.txt'
+    path: '/var/{{ fixpack_dir }}/licensestatus.txt'
   register: license_status
 
 - name: Accept MQ license
   ansible.builtin.shell: >-
     /var/MQServer/mqlicense.sh
     -{{ ibmMqLicence }} >
-    /var/MQServer/{{ fixpack_local }}-licensestatus.txt
+    /var/{{ fixpack_dir }}/licensestatus.txt
   changed_when: not license_status.stat.exists
