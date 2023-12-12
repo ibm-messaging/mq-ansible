@@ -81,10 +81,6 @@
     # - '(?i).*(-|_)cs.*'
     # - '(?i).*(-|_)tw.*'
 
-- name: output package files
-  debug:
-    msg: '{{ package_files }}'
-
 - name: Create a list of paths to the packages from found files
   ansible.builtin.set_fact:
     package_list: "{{ package_files.results | map(attribute='files.0.path') | list }}"
@@ -96,3 +92,14 @@
   when:
     - ansible_distribution == 'Ubuntu'
   loop: '{{ package_list }}'
+
+- name: RPM Installation
+  ansible.builtin.dnf:
+    name: "{{ package_list }}"
+    state: present
+    disable_gpg_check: true
+  when:
+    - ansible_distribution == 'RedHat'
+
+- name: Reset ssh connection
+  ansible.builtin.meta: reset_connection
