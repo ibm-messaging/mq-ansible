@@ -96,28 +96,28 @@ The playbooks and roles in this collection carry out an installation of IBM MQ A
 ```
 ## Roles
 
-`setupusers` - creates the `mqm`, `admin`, and `app` users; the `mqm`, `mqclient` groups; and sets the MQ environment variables. User and group IDs can be specified when calling this role. 
+- `setupusers` - creates the `mqm`, `admin`, and `app` users; the `mqm`, `mqclient` groups; and sets the MQ environment variables. User and group IDs can be specified when calling this role. 
 
-`downloadmq` - downloads and unzips the appropriate MQ package based on the target platform to `/var/MQServer` on the target machine. The MQ version to be installed can be specified when calling this role. 
-  You can also specify a local source for the MQ source packages to be copied over to target machine. To specify a local source, set the `local_source` and `mq_local_path` for the `downloadmq` role as follows:
+- `downloadmq` - downloads and unzips the appropriate MQ package based on the target platform to `/var/MQServer` on the target machine. The MQ version to be installed can be specified when calling this role. 
+    You can also specify a local source for the MQ source packages to be copied over to target machine. Example:
 
-  ```yaml
-  - role: downloadmq
-      vars:
-        local_source: true
-        mq_local_path: YOUR_PATH
-  ```
-  Where `YOUR_PATH` is the local path to the MQ source package. Example: `/Users/user1/Downloads/mqadv_dev932_ubuntu_x86-64.tar.gz`
+    ```yaml
+    - role: downloadmq
+        vars:
+          local_source: true
+          mq_local_path: YOUR_PATH
+    ```
+    Where `YOUR_PATH` is the local path to the MQ source package. Example: `/Users/user1/Downloads/mqadv_dev932_ubuntu_x86-64.tar.gz`
 
-`installmq` - handles platform-specific installation steps, where Ubuntu machines carry out a Debian installation and RedHat machines carry out an RPM installation. Core MQ components are installed as default, however further components and languages can be be added by uncommenting packages within the `package_files` list in  `/roles/installmq/tasks/main.yml`:
+- `installmq` - handles platform-specific installation steps, where Ubuntu machines carry out a Debian installation and RedHat machines carry out an RPM installation. Core MQ components are installed as default, however further components and languages can be be added by uncommenting packages within the `package_files` list in  `/roles/installmq/tasks/main.yml`:
 
 ##### *Note*: For Ubuntu, dependencies are sensitive to the order of regex-matched packages in the `with_items` attribute of the above task. 
 
-`getconfig` - copies the dev-config.mqsc file to the target machine. You can also specify a local sourced MQSC file with the var `mqsc_local`.
+- `getconfig` - copies the dev-config.mqsc file to the target machine. You can also specify a local sourced MQSC file with the var `mqsc_local`.
 
-`setupconsole` - configures a target machine's environment and permissions to be able to run the MQ Web Console.
+- `setupconsole` - configures a target machine's environment and permissions to be able to run the MQ Web Console.
 
-`startconsole` - starts the MQ Web Console.
+- `startconsole` - starts the MQ Web Console.
 
 ## Modules for IBM MQ resources' configuration
 

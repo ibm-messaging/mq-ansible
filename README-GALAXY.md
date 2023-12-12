@@ -32,21 +32,28 @@ For a detailed explanation and documentation on how MQ-Ansible works, click [her
 # Our collection - IBM MQ installation on target machines
 The implementation of our collection can carry out an installation of IBM MQ Advanced on a target machine with Ansible roles. These roles set up the required users on the machine, download the software, install and configure IBM MQ, copy over a configurable `dev-config.mqsc` file ready to be run on the target machine, and setup and start the web console. Developers can change this file to customise the configuration of their queue managers. 
 
-## Roles
+- `setupusers` - creates the `mqm`, `admin`, and `app` users; the `mqm`, `mqclient` groups; and sets the MQ environment variables. User and group IDs can be specified when calling this role. 
 
-`setupusers` - creates the `mqm`, `admin`, and `app` users; the `mqm`, `mqclient` groups; and sets the MQ environment variables. User and group IDs can be specified when calling this role. 
+- `downloadmq` - downloads and unzips the appropriate MQ package based on the target platform to `/var/MQServer` on the target machine. The MQ version to be installed can be specified when calling this role. 
+    You can also specify a local source for the MQ source packages to be copied over to target machine. Example:
 
-`downloadmq` - downloads and unzips the appropriate MQ package based on the target platform to `/var/MQServer` on the target machine. The MQ version to be installed can be specified when calling this role.
+    ```yaml
+    - role: downloadmq
+        vars:
+          local_source: true
+          mq_local_path: YOUR_PATH
+    ```
+    Where `YOUR_PATH` is the local path to the MQ source package. Example: `/Users/user1/Downloads/mqadv_dev932_ubuntu_x86-64.tar.gz`
 
-`installmq` - handles platform-specific installation steps, where Ubuntu machines carry out a Debian installation and RedHat machines carry out an RPM installation. Core MQ components are installed as default, however further components and languages can be be added by uncommenting packages within the `package_files` list in  `/roles/installmq/tasks/main.yml`:
+- `installmq` - handles platform-specific installation steps, where Ubuntu machines carry out a Debian installation and RedHat machines carry out an RPM installation. Core MQ components are installed as default, however further components and languages can be be added by uncommenting packages within the `package_files` list in  `/roles/installmq/tasks/main.yml`:
 
 ##### *Note*: For Ubuntu, dependencies are sensitive to the order of regex-matched packages in the `with_items` attribute of the above task. 
 
-`getconfig` - copies the dev-config.mqsc file to the target machine. You can also specify a local sourced MQSC file with the var `mqsc_local`.
+- `getconfig` - copies the dev-config.mqsc file to the target machine. You can also specify a local sourced MQSC file with the var `mqsc_local`.
 
-`setupconsole` - configures a target machine's environment and permissions to be able to run the MQ Web Console.
+- `setupconsole` - configures a target machine's environment and permissions to be able to run the MQ Web Console.
 
-`startconsole` - starts the MQ Web Console.
+- `startconsole` - starts the MQ Web Console.
 
 ## Installation roles on Windows machines
 

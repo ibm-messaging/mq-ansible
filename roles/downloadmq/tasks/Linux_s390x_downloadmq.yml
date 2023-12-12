@@ -1,7 +1,7 @@
 ---
 - name: Copy MQ Trial from Control to Z Worker
   ansible.builtin.copy:
-    src: "{{ mq_local_path: }}"
+    src: "{{ mq_local_path }}"
     dest: /var/mq.tar.gz
     mode: "0644"
   when: local_source
