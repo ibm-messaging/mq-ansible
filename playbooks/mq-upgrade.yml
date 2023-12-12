@@ -1,0 +1,11 @@
+---
+- hosts: "{{ ansible_play_batch }}"
+  serial: 1
+  become: true
+  environment:
+    PATH: /opt/mqm/bin:{{ ansible_env.PATH }}
+
+  roles:
+    - role: applyfixpack
+      vars:
+        fixpack_local: /Users/<your-user>/Downloads/<fixpack zip>
