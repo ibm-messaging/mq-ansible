@@ -5,7 +5,7 @@
 - name: Set filename of zip if target host is Windows
   ansible.builtin.set_fact:
     zipFile: mqadv_dev{{ version }}_windows.zip
-  when: ansible_os_family == 'Windows' && not local_source
+  when: ansible_os_family == 'Windows' and not local_source
 
 - name: Download MQ Advanced for Developers on Windows
   ansible.windows.win_get_url:
@@ -13,11 +13,11 @@
     dest: "{{ directory }}\\mq.zip"
     force: false
   tags: download
-  when: ansible_os_family == 'Windows' && not local_source
+  when: ansible_os_family == 'Windows' and not local_source
 
 - name: Copy local MQ source to target
   ansible.windows.win_copy:
-    src: "{{ mq_local_path}}"
+    src: "{{ mq_local_path }}"
     dest: "{{ directory }}\\mq.zip"
   when: local_source
 

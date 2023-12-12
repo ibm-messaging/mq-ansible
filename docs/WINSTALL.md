@@ -85,7 +85,7 @@ Our collection now also allows you to automate the download and install of IBM M
 
 ## Roles for Windows installation
 
-  - ``downloadmq``: For Windows, downloads the IBM MQ Advanced developer package to an specified directory. Default directory in our sample playbook is `C:\Users\Administrator`.
+  - ``downloadmq``: For Windows, downloads the IBM MQ Advanced developer package to an specified directory. Default directory in our sample playbook is `C:\Users\Administrator`. You can also specify a local source to copy to the target directory with the variable `local_source`
   - ``installmq``: Installs the package.
   - ``setupconsole``: Sets up the web console.
   - ``startconsole``: Starts the web console.
@@ -108,11 +108,20 @@ Our collection now also allows you to automate the download and install of IBM M
     - startconsole
 
 ```
+  To specify a local source, set the `local_source` and `mq_local_path` for the `downloadmq` role as follows:
 
+  ```yaml
+  - role: downloadmq
+      vars:
+        local_source: true
+        mq_local_path: YOUR_PATH
+  ```
+  Where `YOUR_PATH` is the local path to the MQ source package. Example: `/Users/user1/Downloads/mqadv_dev932_windows.zip`
+  
   To run the playbook, issue the following command on your local host:
 
   ```
-    ansible-playbook ./mq-winstall.yml -i inventory.ini -e 'ibmMqLicense=yes'
+    ansible-playbook ./mq-winstall.yml -i inventory.ini -e 'ibmMqLicence=yes'
   ```
 
 ## Troubleshooting
