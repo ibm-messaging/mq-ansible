@@ -83,6 +83,3 @@
     - ansible_distribution == 'Ubuntu'
     - "'ibmmq-runtime' not in ansible_facts.packages"
   loop: "{{ package_list }}"
-
-- name: Reset ssh connection
-  ansible.builtin.meta: reset_connection

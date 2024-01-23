@@ -70,6 +70,3 @@
   changed_when: true
   ansible.builtin.shell: |
     chuser groups=mqm "{{ ansible_ssh_user }}"
-
-- name: Reset ssh connection
-  ansible.builtin.meta: reset_connection
