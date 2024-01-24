@@ -80,10 +80,12 @@
     # - '(?i).*(-|_)pl.*'
     # - '(?i).*(-|_)cs.*'
     # - '(?i).*(-|_)tw.*'
+  when: '"MQSeriesRuntime" in ansible_facts.packages or "ibmmq-runtime" in ansible_facts.packages'
 
 - name: Create a list of paths to the packages from found files
   ansible.builtin.set_fact:
     package_list: "{{ package_files.results | map(attribute='files.0.path') | list }}"
+  when: '"MQSeriesRuntime" in ansible_facts.packages or "ibmmq-runtime" in ansible_facts.packages'
 
 - name: Deb Installation
   ansible.builtin.apt:
@@ -91,6 +93,7 @@
     state: present
   when:
     - ansible_distribution == 'Ubuntu'
+    - "'ibmmq-runtime' in ansible_facts.packages"
   loop: '{{ package_list }}'
 
 - name: RPM Installation
@@ -100,6 +103,7 @@
     disable_gpg_check: true
   when:
     - ansible_distribution == 'RedHat'
+    - "'MQSeriesRuntime' in ansible_facts.packages"
 
 - name: Reset ssh connection
   ansible.builtin.meta: reset_connection
