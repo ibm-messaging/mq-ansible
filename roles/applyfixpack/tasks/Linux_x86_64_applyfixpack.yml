@@ -1,11 +1,11 @@
 ---
 - name: Store fixpack name
   ansible.builtin.set_fact:
-    fixpack_tar: '{{ fixpack_local | basename }}'
+    fixpack_zip: '{{ fixpack_local | basename }}'
 
 - name: Store fixpack directory
   ansible.builtin.set_fact:
-    fixpack_dir: '{{ fixpack_tar | replace(".tar.gz","") }}'
+    fixpack_dir: '{{ fixpack_zip | replace(".tar.gz","") }}'
 
 - name: Copy fixpack to target
   ansible.builtin.copy:
@@ -18,9 +18,9 @@
     path: '/var/{{ fixpack_dir }}'
     state: directory
 
-- name: Extract fixpack fom TAR
+- name: Extract fixpack fom zip
   ansible.builtin.unarchive:
-    src: '/var/{{ fixpack_tar }}'
+    src: '/var/{{ fixpack_zip }}'
     remote_src: true
     dest: '/var/{{ fixpack_dir }}'
 
