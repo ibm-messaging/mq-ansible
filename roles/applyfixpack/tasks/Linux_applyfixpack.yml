@@ -1,10 +1,35 @@
 ---
-- name: Check if license status file exists
+- name: Store fixpack name
+  ansible.builtin.set_fact:
+    fixpack_tar: '{{ fixpack_local | basename }}'
+
+- name: Store fixpack directory
+  ansible.builtin.set_fact:
+    fixpack_dir: '{{ fixpack_tar | replace(".tar.gz","") }}'
+
+- name: Copy fixpack to target
+  ansible.builtin.copy:
+    src: '{{ fixpack_local }}'
+    dest: '/var'
+    mode: "0644"
+
+- name: Create fixpack directory
+  ansible.builtin.file:
+    path: '/var/{{ fixpack_dir }}'
+    state: directory
+
+- name: Extract fixpack fom zip
+  ansible.builtin.unarchive:
+    src: '/var/{{ fixpack_tar }}'
+    remote_src: true
+    dest: '/var/{{ fixpack_dir }}'
+
+- name: Check if MQ license has been accepted
   ansible.builtin.stat:
-    path: /var/MQServer/licensestatus.txt
+    path: '/var/MQServer/licensestatus.txt'
   register: license_status
 
-- name: Accept MQ license
+- name: Accept MQ license if not already done
   ansible.builtin.shell: >-
     /var/MQServer/mqlicense.sh
     -{{ ibmMqLicence }} >
@@ -17,9 +42,9 @@
 
 - name: Find required package files
   ansible.builtin.find:
-    paths: /var/MQServer
+    paths: '/var/{{ fixpack_dir }}'
     use_regex: true
-    patterns: "{{ item }}"
+    patterns: '{{ item }}'
   register: package_files
   with_items:
     - (?i).*runtime.*
@@ -55,31 +80,30 @@
     # - '(?i).*(-|_)pl.*'
     # - '(?i).*(-|_)cs.*'
     # - '(?i).*(-|_)tw.*'
-  when:
-    - '"MQSeriesRuntime" not in ansible_facts.packages'
-    - '"ibmmq-runtime" not in ansible_facts.packages'
+  when: '"MQSeriesRuntime" in ansible_facts.packages or "ibmmq-runtime" in ansible_facts.packages'
 
 - name: Create a list of paths to the packages from found files
   ansible.builtin.set_fact:
     package_list: "{{ package_files.results | map(attribute='files.0.path') | list }}"
-  when:
-    - "'MQSeriesRuntime' not in ansible_facts.packages"
-    - "'ibmmq-runtime' not in ansible_facts.packages"
+  when: '"MQSeriesRuntime" in ansible_facts.packages or "ibmmq-runtime" in ansible_facts.packages'
 
-- name: Rpm Installation
+- name: Deb Installation
+  ansible.builtin.apt:
+    deb: '{{ item }}'
+    state: present
+  when:
+    - ansible_distribution == 'Ubuntu'
+    - "'ibmmq-runtime' in ansible_facts.packages"
+  loop: '{{ package_list }}'
+
+- name: RPM Installation
   ansible.builtin.dnf:
     name: "{{ package_list }}"
     state: present
     disable_gpg_check: true
   when:
     - ansible_distribution == 'RedHat'
-    - "'MQSeriesRuntime' not in ansible_facts.packages"
+    - "'MQSeriesRuntime' in ansible_facts.packages"
 
-- name: Deb Installation
-  ansible.builtin.apt:
-    deb: "{{ item }}"
-    state: present
-  when:
-    - ansible_distribution == 'Ubuntu'
-    - "'ibmmq-runtime' not in ansible_facts.packages"
-  loop: "{{ package_list }}"
+- name: Reset ssh connection
+  ansible.builtin.meta: reset_connection
