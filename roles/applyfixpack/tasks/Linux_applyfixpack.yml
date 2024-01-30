@@ -1,7 +1,7 @@
 ---
 - name: Store fixpack name
   ansible.builtin.set_fact:
-    fixpack_tar: '{{ fixpack_local | basename }}'
+    fixpack_tar: '{{ mq_local_path | basename }}'
 
 - name: Store fixpack directory
   ansible.builtin.set_fact:
@@ -9,7 +9,7 @@
 
 - name: Copy fixpack to target
   ansible.builtin.copy:
-    src: '{{ fixpack_local }}'
+    src: '{{ mq_local_path }}'
     dest: '/var'
     mode: "0644"
 
