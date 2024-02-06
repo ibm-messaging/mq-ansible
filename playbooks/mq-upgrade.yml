@@ -8,4 +8,4 @@
   roles:
     - role: applyfixpack
       vars:
-        fixpack_local: /Users/<your-user>/Downloads/<fixpack zip>
+        mq_local_path: ~/tmp/

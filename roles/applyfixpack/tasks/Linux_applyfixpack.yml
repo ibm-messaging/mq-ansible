@@ -1,7 +1,7 @@
 ---
 - name: Store fixpack name
   ansible.builtin.set_fact:
-    fixpack_tar: '{{ fixpack_local | basename }}'
+    fixpack_tar: '{{ mq_local_path | basename }}'
 
 - name: Store fixpack directory
   ansible.builtin.set_fact:
@@ -9,7 +9,7 @@
 
 - name: Copy fixpack to target
   ansible.builtin.copy:
-    src: '{{ fixpack_local }}'
+    src: '{{ mq_local_path }}'
     dest: '/var'
     mode: "0644"
 
@@ -39,6 +39,12 @@
 - name: Gather package facts
   ansible.builtin.package_facts:
     manager: auto
+
+- name: End web server
+  become_user: mqm
+  ansible.builtin.command: endmqweb
+  register: mqweb_status
+  failed_when: '"Server mqweb is not running" not in mqweb_status.stdout'
 
 - name: Find required package files
   ansible.builtin.find:

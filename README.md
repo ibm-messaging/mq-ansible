@@ -94,6 +94,21 @@ The playbooks and roles in this collection carry out an installation of IBM MQ A
         - 'QM2'
         state: 'present'
 ```
+
+`mq-upgrade.yml` - this playbook installs an applicable fix pack to an existing MQ installation
+
+```yaml
+- hosts: "{{ ansible_play_batch }}"
+  serial: 1
+  become: true
+  environment:
+    PATH: /opt/mqm/bin:{{ ansible_env.PATH }}
+
+  roles:
+    - role: applyfixpack
+      vars:
+        mq_local_path: ~/tmp/
+```
 ## Roles
 
 - `setupusers` - creates the `mqm`, `admin`, and `app` users; the `mqm`, `mqclient` groups; and sets the MQ environment variables. User and group IDs can be specified when calling this role. 
@@ -118,6 +133,8 @@ The playbooks and roles in this collection carry out an installation of IBM MQ A
 - `setupconsole` - configures a target machine's environment and permissions to be able to run the MQ Web Console.
 
 - `startconsole` - starts the MQ Web Console.
+
+`applyfixpack` - installs a locally available fix pack to an existing MQ installation. The selected fix pack must be applicable to the MQ version already existing on the target machine.
 
 ## Modules for IBM MQ resources' configuration
 
