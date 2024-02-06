@@ -1,6 +1,7 @@
 ---
 - name: Download MQ Advanced for Developers
   ansible.builtin.copy:
-    src: /Users/<your-user>/Downloads/9.3.0.0-IBM-MQTRIAL-AixPPC64.tar.Z
+    src: "{{ mq_local_path: }}"
     dest: ~/tmp/
     mode: "0644"
+  when: local_source

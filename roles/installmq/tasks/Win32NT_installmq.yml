@@ -8,7 +8,7 @@
 - name: Silent Install
   ansible.windows.win_command:
     cmd: msiexec /i "{{ directory }}\mq-install\MQServer\MSI\IBM MQ.msi" /l*v C:\install.log /q USEINI="{{ directory }}\mq-install\MQServer\Response.ini" TRANSFORMS="1033.mst"
-      AGREETOLICENSE="{{ ibmMqLicense }}" ADDLOCAL="Server"
+      AGREETOLICENSE="{{ ibmMqLicence }}" ADDLOCAL="Server"
   when: is_mq_installed.rc == 1
 
 - name: Set MQ environment variable

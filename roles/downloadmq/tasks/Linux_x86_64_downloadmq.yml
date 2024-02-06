@@ -2,12 +2,12 @@
 - name: Set filename of zip if target host is Ubuntu
   ansible.builtin.set_fact:
     zip_file: mqadv_dev{{ version }}_ubuntu_x86-64.tar.gz
-  when: ansible_distribution == 'Ubuntu'
+  when: ansible_distribution == 'Ubuntu' and not local_source
 
 - name: Set filename of zip if target host is RedHat
   ansible.builtin.set_fact:
     zip_file: mqadv_dev{{ version }}_linux_x86-64.tar.gz
-  when: ansible_distribution == 'RedHat'
+  when: ansible_distribution == 'RedHat' and not local_source
 
 - name: Download MQ Advanced for Developers
   ansible.builtin.get_url:
@@ -16,6 +16,14 @@
     force: false
     mode: "0644"
   tags: download
+  when: not local_source
+
+- name: Copy local MQ source to target
+  ansible.builtin.copy:
+    src: "{{ mq_local_path }}"
+    dest: /var/mq.tar.gz
+  tags: download
+  when: local_source
 
 - name: Extract MQ fom TAR
   ansible.builtin.unarchive:
