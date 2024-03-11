@@ -44,7 +44,7 @@
   become_user: mqm
   ansible.builtin.command: endmqweb
   register: mqweb_status
-  failed_when: '"Server mqweb is not running" not in mqweb_status.stdout'
+  failed_when: mqweb_status.stderr != ""
 
 - name: Find required package files
   ansible.builtin.find:
