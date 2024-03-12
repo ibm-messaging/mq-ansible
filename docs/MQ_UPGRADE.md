@@ -76,7 +76,7 @@ Our collection allows you to automate the installation of IBM MQ Fix Packs via t
 
 ## Implementing the roles on your playbook
 
-  Example based in our sample playbook `mq-upgrade.yml`, specifying the location of the Fix Pack to be installed on the target machine/s:
+  Example based on our sample playbook `mq-upgrade.yml`, specifying the location of the Fix Pack to be installed on the target machine/s:
 
   ```yaml
 ---
@@ -109,7 +109,7 @@ If one of the following errors appears during the run of the playbook, carry out
 
     Fix: 
     
-    Ensure steps 3 and 4 in the [Pre-Requisites](#pre-requisites) section are completed before re-running the playbook
+    Ensure steps 3 and 4 in the [Pre-Requisites](#pre-requisites) section are completed before re-running the playbook.
 
 - `"The task includes an option with an undefined variable. The error was: list object has no element 0"` during deb/rpm package installation - the required package files for installation were not present in the Fix Pack you specified to install.
 
