@@ -103,7 +103,7 @@ ansible-playbook ./mq-upgrade.yml -i inventory.ini -e 'ibmMqLicence=yes'
     
 ## Troubleshooting
 
-If one of the following errors appears during the run of the playbook, run the following commands according to the problem:
+If one of the following errors appears during the run of the playbook, carry out the suggested fixes:
 
 - `"ERROR: Shared resources for installation at /opt/mqm are in use` - MQ objects haven't correctly been ended before installation of the Fix Packs has started. 
 
