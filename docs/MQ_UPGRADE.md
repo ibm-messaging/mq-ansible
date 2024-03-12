@@ -98,7 +98,7 @@ Where `YOUR_PATH` is the local path to the MQ Fix Pack. Example: `/Users/user1/D
 To run the playbook, issue the following command on your local host:
 
 ```
-ansible-playbook ./mq-upgrade.yml -i inventory.ini -e 'ibmMqLicence=yes'
+ansible-playbook ./mq-upgrade.yml -i inventory.ini -e 'ibmMqLicence=accept'
 ```
     
 ## Troubleshooting
