@@ -70,7 +70,7 @@ Our collection allows you to automate the installation of IBM MQ Fix Packs via t
     YOUR_HOSTNAME
     ```
 
-## Roles for Windows installation
+## Roles for Fix Pack installation
 
   - ``applyfixpack``: Copies a Fix Pack from your local machine to the target machine/s, and carries out installation of the Fix Pack. The path to your local Fix Pack must be specified in the `mq_local_path` variable when calling the role.
 
