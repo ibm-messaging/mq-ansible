@@ -1,6 +1,6 @@
 # `IBM MQ Fix Pack Maintenance` 
 
-Our collection allows you to automate the installation of IBM MQ Fix Packs via the [mq-upgrade.yml](https://github.com/bimsara-yasitha01/mq-ansible/blob/main/playbooks/mq-upgrade.yml) playbook for Linux systems. To ensure Fix Pack applicability and maintenance conventions, refer to documentation on [Maintaining and Migrating IBM MQ](https://www.ibm.com/docs/en/ibm-mq/9.3?topic=migrating-maintaining).
+Our collection allows you to automate the installation of IBM MQ Fix Packs via the [mq-upgrade.yml](https://github.com/ibm-messaging/mq-ansible/blob/main/playbooks/mq-upgrade.yml) playbook for Linux systems. To ensure Fix Pack applicability and maintenance conventions, refer to documentation on [Maintaining and Migrating IBM MQ](https://www.ibm.com/docs/en/ibm-mq/9.3?topic=migrating-maintaining).
 
 ## Pre-Requisites
 
