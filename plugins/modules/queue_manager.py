@@ -17,6 +17,8 @@
 from ansible.module_utils.basic import AnsibleModule
 import os.path
 
+qm_results = dict()
+
 result = dict(
     rc=0,
     msg='',
@@ -48,8 +50,14 @@ def state_present(qmname, module):
             result['msg'] = 'IBM MQ Queue Manager Created' + result['msg']
             result['state'] = 'present'
         elif rc == 8:
+            result['rc'] = rc
+            result['msg'] = 'IBM MQ Queue Manager Created' + result['msg']
+            result['state'] = 'present'
             module.exit_json(skipped=True, state='present', msg='IBM MQ Queue Manager already exists. '+result['msg'])
         elif rc > 0:
+            result['rc'] = rc
+            result['msg'] = 'IBM MQ Queue Manager Created' + result['msg']
+            result['state'] = 'present'
             module.fail_json(**result)
 
 def run_mqsc_file(qmname, module):
