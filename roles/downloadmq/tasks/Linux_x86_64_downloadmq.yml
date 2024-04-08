@@ -1,33 +1,5 @@
 ---
 
-# Set release types based on version mod, useful for different naming conventions
-- name: Set release type to LTS
-  ansible.builtin.set_fact:
-    release: lts
-  when: version%10 == 0 
-
-- name: Set release type to CD
-  ansible.builtin.set_fact:
-    release: cd
-  when: version%10 != 0 
-
-# If CD release, set the respective v.r.m.f 
-# Supported CD releases as of now: 9.3.3, 9.3.4 and 9.3.5
-- name: Set V.R.M.F to 9.3.3 if version matches
-  ansible.builtin.set_fact:
-    vrmf: '{{ vrmf933 }}'
-  when: release=='cd' and version==933
-
-- name: Set V.R.M.F to 9.3.4 if version matches
-  ansible.builtin.set_fact:
-    vrmf: '{{vrmf934}}'
-  when: release=='cd' and version==934
-
-- name: Set V.R.M.F to 9.3.5 if version matches
-  ansible.builtin.set_fact:
-    vrmf: '{{vrmf935}}'
-  when: release=='cd' and version==935
-
 # Set zip filename for LTS releases
 - name: Set filename of zip if target host is Ubuntu (LTS naming convention)
   ansible.builtin.set_fact:
