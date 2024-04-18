@@ -1,14 +1,28 @@
 ---
-- name: Set filename of zip if target host is Ubuntu
+
+# Set zip filename for LTS releases
+- name: Set filename of zip if target host is Ubuntu (LTS naming convention)
   ansible.builtin.set_fact:
     zip_file: mqadv_dev{{ version }}_ubuntu_x86-64.tar.gz
-  when: ansible_distribution == 'Ubuntu' and not local_source
+  when: ansible_distribution == 'Ubuntu' and not local_source and release=='lts'
 
-- name: Set filename of zip if target host is RedHat
+- name: Set filename of zip if target host is RedHat (LTS naming convention)
   ansible.builtin.set_fact:
     zip_file: mqadv_dev{{ version }}_linux_x86-64.tar.gz
-  when: ansible_distribution == 'RedHat' and not local_source
+  when: ansible_distribution == 'RedHat' and not local_source and release=='lts'
 
+# Set zip filename for CD releases
+- name: Set filename of zip if target host is Ubuntu (CD naming convention)
+  ansible.builtin.set_fact:
+    zip_file: '{{ vrmf }}-IBM-MQ-Advanced-for-Developers-UbuntuLinuxX64.tar.gz'
+  when: ansible_distribution == 'Ubuntu' and not local_source and release=='cd'
+
+- name: Set filename of zip if target host is RedHat (CD naming convention)
+  ansible.builtin.set_fact:
+    zip_file: '{{ vrmf }}-IBM-MQ-Advanced-for-Developers-LinuxX64.tar.gz   '
+  when: ansible_distribution == 'RedHat' and not local_source and release=='cd'
+
+# Get the file if local source is false
 - name: Download MQ Advanced for Developers
   ansible.builtin.get_url:
     url: "{{ downloadURL }}{{ zip_file }}"
@@ -18,6 +32,7 @@
   tags: download
   when: not local_source
 
+# Copy source to target if local source is true
 - name: Copy local MQ source to target
   ansible.builtin.copy:
     src: "{{ mq_local_path }}"
