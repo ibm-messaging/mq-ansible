@@ -52,7 +52,6 @@ def state_present(qmname, module):
             result['rc'] = 0
             result['msg'] = 'IBM MQ Queue Manager already exists. ' + result['msg']
             result['state'] = 'present'
-            #module.exit_json(skipped=True, state='present', msg='IBM MQ Queue Manager already exists. '+result['msg'])
         elif rc > 0:
             # Critical Error
             module.fail_json(**result)
@@ -108,7 +107,6 @@ def state_running(qmname, module):
             result['rc'] = 0
             result['msg'] = 'IBM MQ queue manager running'
             result['state'] = 'running'
-            #module.exit_json(skipped=True, state='running', msg='IBM MQ queue manager running')
         elif rc == 5 and module.params['mqsc_file']:
             run_mqsc_file(qmname, module)
         elif rc == 0: 
@@ -119,7 +117,6 @@ def state_running(qmname, module):
             if module.params['mqsc_file']:
                 run_mqsc_file(qmname, module)
             
-            #module.exit_json(rc=result['rc'], state=result['state'], msg=result['msg'])
         else:
             # Critical Error
             module.fail_json(**result)
@@ -140,11 +137,9 @@ def state_stopped(qmname, module):
             result['rc'] = 0
             result['msg'] = stdout + stderr
             result['state'] = 'present'
-            #module.exit_json(skipped=True, state='present', msg = stdout + stderr)
         elif rc == 0:
             result['rc'] = rc
             result['state'] = 'stopped'
-            #module.exit_json(**result)
         elif rc > 0:
             # Critical Error
             module.fail_json(**result)
@@ -164,18 +159,15 @@ def state_absent(qmname, module):
         
         if rc == 0:
             result['msg'] = 'IBM MQ queue manager \'' + str(qmname) + '\' deleted.'
-            #module.exit_json(**result)
         elif rc == 5:
             result['rc'] = 0
             result['msg'] = 'IBM MQ queue manager running.'
             result['state'] = 'running'
-            #module.exit_json(skipped=True, state='running', msg='IBM MQ queue manager running.')
         elif rc == 16:
             # Queue Manager does not exist
             result['rc'] = 0
             result['msg'] = 'AMQ8118E: IBM MQ queue manager does not exist.'
             result['state'] = 'absent'
-            #module.exit_json(skipped=True, state='absent', msg='AMQ8118E: IBM MQ queue manager does not exist.')
         else:
             # Critical Error
             module.fail_json(**result)
