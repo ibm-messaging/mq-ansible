@@ -26,3 +26,6 @@
 
 - name: Clean up after testing
   import_playbook: cleanup_test.yml
+
+- name: Test ALL_QMGRS
+  import_playbook: test_all_qmgrs.yml
