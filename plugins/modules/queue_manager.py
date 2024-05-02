@@ -192,6 +192,10 @@ def main():
         argument_spec=qmgr_attributes
     )
 
+    if module.params['qmname'][0] == "ALL_QMGRS":
+        module.params['qmname'] = re.findall("(?<=QMNAME\()([^\)]*)", module.run_command(['dspmq'])[1])
+        result['qmlists'] = re.findall("(?<=QMNAME\()([^\)]*)", module.run_command(['dspmq'])[1])
+
     ops = {
         "present": state_present,
         "running":  state_running,

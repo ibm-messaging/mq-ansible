@@ -160,3 +160,37 @@
         state: absent
       register: testout_3
       failed_when: false
+
+    - name: Stop qmgr if running
+      queue_manager:
+        qmname: qm1_all
+        state: stopped
+      register: testout_2
+      failed_when: false
+    
+    - name: Delete qmgr
+      until: testout_3.state == 'absent'
+      retries: 3
+      delay: 1
+      queue_manager:
+        qmname: qm1_all
+        state: absent
+      register: testout_3
+      failed_when: false
+
+    - name: Stop qmgr if running
+      queue_manager:
+        qmname: qm2_all
+        state: stopped
+      register: testout_2
+      failed_when: false
+    
+    - name: Delete qmgr
+      until: testout_3.state == 'absent'
+      retries: 3
+      delay: 1
+      queue_manager:
+        qmname: qm2_all
+        state: absent
+      register: testout_3
+      failed_when: false

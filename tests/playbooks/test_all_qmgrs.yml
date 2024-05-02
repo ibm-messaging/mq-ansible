@@ -1,0 +1,79 @@
+---
+- name: ALL_QMGRS Tests (5)
+  hosts: all
+  become: true
+  become_user: mqm
+  environment:
+    PATH: /opt/mqm/bin:{{ ansible_env.PATH }}
+  
+  tasks:
+    - name: (SETUP) create QMGRs
+      queue_manager:
+        qmname: 
+          - qm1_all
+          - qm2_all
+        state: present
+      register: testout
+
+    - name: Dump create output
+      debug:
+        msg: "{{ testout }}"
+
+    - name: Start ALL_QMGRs
+      queue_manager:
+        qmname: ALL_QMGRS
+        state: running
+      register: testout_1
+
+    - name: Dump start output
+      debug:
+        msg: "{{ testout_1 }}"
+
+    - name: Test start output
+      assert:
+        that:
+          - testout_1.state == 'running'
+          - testout_1.rc == 0
+          - testout_1.msg == "IBM MQ queue manager 'qm2_all' running."
+        fail_msg: '<<FAILED>> {{testout_1.msg}}'
+        success_msg: '<<SUCCESS>> {{testout_1.msg}}'
+
+    - name: Can stop when present
+      queue_manager:
+        qmname: ALL_QMGRS
+        state: stopped
+      register: testout_2
+      failed_when: false
+
+    - name: Dump stop output
+      debug:
+        msg: "{{ testout_2 }}"
+    
+    - name: Test stop output
+      assert:
+        that:
+          - testout_2.state == 'stopped'
+          - testout_2.rc == 0
+          - testout_2.msg == "Quiesce request accepted. The queue manager will stop when all outstanding work\nis complete.\n"
+        fail_msg: '<<FAILED>> {{testout_2.msg}}'
+        success_msg: '<<SUCCESS>> {{testout_2.msg}}'
+
+    - name: Can delete when present
+      queue_manager:
+        qmname: ALL_QMGRS
+        state: absent
+      register: testout_3
+      failed_when: false
+    
+    - name: Dump delete output
+      debug:
+        msg: "{{ testout_3 }}"
+
+    - name: Test delete output
+      assert:
+        that:
+          - testout_3.state == 'absent'
+          - testout_3.rc == 0
+          - testout_3.msg == "IBM MQ queue manager 'qm2_all' deleted."
+        fail_msg: '<<FAILED>> {{testout_3.msg}}'
+        success_msg: '<<SUCCESS>> {{testout_3.msg}}'

@@ -55,6 +55,17 @@ Module to create, start, delete a queue manager and run MQSC files.
       mqsc_file: 'commfile.in'
 ```
 
+#### Use of ALL_QMGRS value
+
+This may be used to refer to all queue managers currently defined to a system, e.g to start/stop both QM1 and QM2 defined in mq-setup.yml.
+
+```
+- name: Run MQSC command file 
+    queue_manager:
+      qmname: 'ALL_QMGRS'
+      state: running
+```
+
 ## Example of unit testing of a module 
 
 Note: Exeption classes `AnsibleExitJson` and `AnsibleFailJson` should be set. See [`test_queue_manager.py`](ansible_collections/ibm/ibmmq/tests/unit/test_queue_manager.py) for reference.
