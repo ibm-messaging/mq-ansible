@@ -1,7 +1,16 @@
 # *MQ-Ansible*
 
+## Issue Support
+
+The code in this repository is provided and maintained on a community basis, and is not covered by any IBM commercial support agreement or warranty.
+
+For enhancements, issues and fixes you are welcome raise an issue against this repository so that it may be considered. Alternatively, you may contribute updates as per the CLA outlined below.
+
 | :memo:        | Interested in contributing to this project? Please read our [IBM Contributor License Agreement](CLA.md) and our [Contributing Guide](CONTRIBUTING.md).       |
 |---------------|:------------------------|
+
+
+## What is MQ-Ansible?
 
 A collection for automating the installation and configuration of IBM MQ using Ansible on Ubuntu, Redhat, Windows and IBM AIX machines. Our aim is to make MQ-Ansible extensible for other platforms and more detailed IBM MQ configuration.
 
