@@ -11,7 +11,7 @@
 - name: Set convention type to new to other releases
   ansible.builtin.set_fact:
     convention: new
-  when: not convention
+  when: convention is undefined
 
 # If new convention, set the respective v.r.m.f 
 # Supported releases as of now: 9.3.3, 9.3.4 and 9.3.5 and 9.4 LTS
