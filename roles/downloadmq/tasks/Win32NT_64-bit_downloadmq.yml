@@ -2,17 +2,17 @@
 - name: Including specific vars for Windows
   ansible.builtin.include_vars: "{{ ansible_system }}_{{ ansible_architecture }}_{{ role_name }}.yml"
 
-# Set zip filename for LTS releases
-- name: Set filename of zip if target host is Windows (LTS naming convention)
+# Set zip filename for releases with old naming convention
+- name: Set filename of zip if target host is Windows (old naming convention)
   ansible.builtin.set_fact:
     zipFile: mqadv_dev{{ version }}_windows.zip
-  when: ansible_os_family == 'Windows' and not local_source and release=='lts'
+  when: ansible_os_family == 'Windows' and not local_source and convention=='old'
 
-# Set zip filename for CD releases
-- name: Set filename of zip if target host is Windows (CD naming convention)
+# Set zip filename for releases with new naming convention (>9.3)
+- name: Set filename of zip if target host is Windows (new naming convention)
   ansible.builtin.set_fact:
     zipFile: '{{ vrmf }}-IBM-MQ-Advanced-for-Developers-Win64.zip'
-  when: ansible_os_family == 'Windows' and not local_source and release=='cd'
+  when: ansible_os_family == 'Windows' and not local_source and convention=='new'
 
 - name: Download MQ Advanced for Developers on Windows
   ansible.windows.win_get_url:

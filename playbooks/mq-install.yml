@@ -15,7 +15,7 @@
         mqm_profile: .profile
     - role: downloadmq
       vars:
-        version: 930
+        version: 940
         downloadURL: https://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/messaging/mqadv/
     - role: installmq
     - role: setupenvironment

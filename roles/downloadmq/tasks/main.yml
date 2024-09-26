@@ -2,33 +2,38 @@
 - name: Including common vars for each platform
   ansible.builtin.include_vars: "common_{{ role_name }}.yml"
 
-# Set release types based on version mod, useful for different naming conventions
-- name: Set release type to LTS
+# Set convention types based on release version (new for >9.3 releases)
+- name: Set convention type to old for 9.3 and 9.2 LTS
   ansible.builtin.set_fact:
-    release: lts
-  when: version%10 == 0 
+    convention: old
+  when: version==930 or version==920
 
-- name: Set release type to CD
+- name: Set convention type to new to other releases
   ansible.builtin.set_fact:
-    release: cd
-  when: version%10 != 0 
+    convention: new
+  when: convention is undefined
 
-# If CD release, set the respective v.r.m.f 
-# Supported CD releases as of now: 9.3.3, 9.3.4 and 9.3.5
+# If new convention, set the respective v.r.m.f 
+# Supported releases as of now: 9.3.3, 9.3.4 and 9.3.5 and 9.4 LTS
 - name: Set V.R.M.F to 9.3.3 if version matches
   ansible.builtin.set_fact:
     vrmf: '{{ vrmf933 }}'
-  when: release=='cd' and version==933
+  when: convention=='new' and version==933
 
 - name: Set V.R.M.F to 9.3.4 if version matches
   ansible.builtin.set_fact:
-    vrmf: '{{vrmf934}}'
-  when: release=='cd' and version==934
+    vrmf: '{{ vrmf934 }}'
+  when: convention=='new' and version==934
 
 - name: Set V.R.M.F to 9.3.5 if version matches
   ansible.builtin.set_fact:
-    vrmf: '{{vrmf935}}'
-  when: release=='cd' and version==935
+    vrmf: '{{ vrmf935 }}'
+  when: convention=='new' and version==935
+
+- name: Set V.R.M.F to 9.4.0 if version matches
+  ansible.builtin.set_fact:
+    vrmf: '{{ vrmf940 }}'
+  when: convention=='new' and version==940
 
 - name: Including the task list for this platform
   ansible.builtin.include_tasks: "{{ ansible_system }}_{{ ansible_architecture }}_{{ role_name }}.yml"

@@ -1,26 +1,26 @@
 ---
 
-# Set zip filename for LTS releases
-- name: Set filename of zip if target host is Ubuntu (LTS naming convention)
+# Set zip filename for releases with old naming convention
+- name: Set filename of zip if target host is Ubuntu (old naming convention)
   ansible.builtin.set_fact:
     zip_file: mqadv_dev{{ version }}_ubuntu_x86-64.tar.gz
-  when: ansible_distribution == 'Ubuntu' and not local_source and release=='lts'
+  when: ansible_distribution == 'Ubuntu' and not local_source and convention=='old'
 
-- name: Set filename of zip if target host is RedHat (LTS naming convention)
+- name: Set filename of zip if target host is RedHat (old naming convention)
   ansible.builtin.set_fact:
     zip_file: mqadv_dev{{ version }}_linux_x86-64.tar.gz
-  when: ansible_distribution == 'RedHat' and not local_source and release=='lts'
+  when: ansible_distribution == 'RedHat' and not local_source and convention=='old'
 
-# Set zip filename for CD releases
-- name: Set filename of zip if target host is Ubuntu (CD naming convention)
+# Set zip filename for releases with new naming convention (>9.3)
+- name: Set filename of zip if target host is Ubuntu (new naming convention)
   ansible.builtin.set_fact:
     zip_file: '{{ vrmf }}-IBM-MQ-Advanced-for-Developers-UbuntuLinuxX64.tar.gz'
-  when: ansible_distribution == 'Ubuntu' and not local_source and release=='cd'
+  when: ansible_distribution == 'Ubuntu' and not local_source and convention=='new'
 
-- name: Set filename of zip if target host is RedHat (CD naming convention)
+- name: Set filename of zip if target host is RedHat (new naming convention)
   ansible.builtin.set_fact:
     zip_file: '{{ vrmf }}-IBM-MQ-Advanced-for-Developers-LinuxX64.tar.gz   '
-  when: ansible_distribution == 'RedHat' and not local_source and release=='cd'
+  when: ansible_distribution == 'RedHat' and not local_source and convention=='new'
 
 # Get the file if local source is false
 - name: Download MQ Advanced for Developers
