@@ -1,0 +1,25 @@
+---
+  - name: Install MQ in servers
+    hosts: all
+    become: true
+    environment:
+      PATH: /opt/mqm/bin:{{ ansible_env.PATH }}
+    collections:
+      - ibm_messaging.ibmmq
+
+    tasks:
+      - name: Import downloadmq role
+        ansible.builtin.import_role:
+          name: ibm_messaging.ibmmq.downloadmq
+
+      - name: Import setupusers role
+        ansible.builtin.import_role:
+          name: ibm_messaging.ibmmq.setupusers
+
+      - name: Import installmq role
+        ansible.builtin.import_role:
+          name: ibm_messaging.ibmmq.installmq
+
+      - name: Import setupenvironment role
+        ansible.builtin.import_role:
+          name: ibm_messaging.ibmmq.setupenvironment

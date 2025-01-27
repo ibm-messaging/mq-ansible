@@ -1,0 +1,28 @@
+* © Copyright IBM Corporation 2017, 2019
+*
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+* http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+
+STOP LISTENER('SYSTEM.DEFAULT.LISTENER.TCP') IGNSTATE(YES)
+
+* Define transmit queue (make sure name matches target QM)
+DEFINE QLOCAL(RECEIVER) USAGE (XMITQ)
+
+* Define sender channel
+DEFINE CHANNEL(SDR.TO.RCVR) CHLTYPE(SDR) CONNAME('<RCVR.QMGR.IP>(1414)') XMITQ(RECEIVER)
+
+* Define remote queue
+DEFINE QREMOTE(REMOTE.Q) RNAME(RCVR.TARGET.Q) RQMNAME(RECEIVER)
+
+* Start channel
+START CHANNEL(SDR.TO.RCVR)

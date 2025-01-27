@@ -1,0 +1,9 @@
+---
+- name: Install IBM MQ and set up a sender-receiver configuration
+  hosts: all
+
+- name: Run the install playbook
+  import_playbook: setup.yml
+
+- name: Run the sender-receiver playbook
+  import_playbook: sdr-rcvr.yml

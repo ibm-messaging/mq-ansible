@@ -1,0 +1,83 @@
+---
+  - name: Set up the sender-receiver configuration
+    hosts: all
+    become: true
+    environment:
+      PATH: /opt/mqm/bin:{{ ansible_env.PATH }}
+    collections:
+      - ibm_messaging.ibmmq
+
+    tasks:
+      - name: Get the IP address of receiver host
+        ansible.builtin.setup:
+        when: inventory_hostname == "receiver"
+        register: receiver_facts
+
+      - name: msg debug
+        ansible.builtin.debug:
+          msg: "{{ receiver_facts }}"
+
+      - name: Set the IP of receiver as a fact
+        ansible.builtin.set_fact:
+          receiver_ip: "{{ receiver_facts['ansible_facts']['ansible_default_ipv4']['address'] }}"
+        when: inventory_hostname == "receiver"
+        delegate_to: localhost
+
+      - name: Get MQSC file for sender
+        become: true
+        become_user: mqm
+        ansible.builtin.import_role:
+          name: ibm_messaging.ibmmq.getconfig
+        vars: 
+          mqsc_local: ./sender-config.mqsc
+        when: inventory_hostname == "sender"
+
+      - name: Get MQSC file for receiver
+        become: true
+        become_user: mqm
+        ansible.builtin.import_role:
+          name: ibm_messaging.ibmmq.getconfig
+        vars: 
+          mqsc_local: ./receiver-config.mqsc
+        when: inventory_hostname == "receiver"
+
+      - name: Add the receiver qmgr's IP
+        ansible.builtin.replace:
+          path: /var/mqm/sender-config.mqsc
+          regexp: "<RCVR.QMGR.IP>"
+          replace: "{{ hostvars['receiver']['receiver_ip'] }}"
+        when: inventory_hostname == "sender"
+      
+      - name: Create a queue manager
+        become_user: mqm
+        tags: ["queue"]
+        ibm_messaging.ibmmq.queue_manager:
+          qmname: SENDER
+          state: present
+        when: inventory_hostname == "sender"
+
+      - name: Create a queue manager
+        become_user: mqm
+        tags: ["queue"]
+        ibm_messaging.ibmmq.queue_manager:
+          qmname: RECEIVER
+          state: present
+        when: inventory_hostname == "receiver"
+      
+      - name: Use our MQSC File to set up the RECEIVER
+        become: true
+        become_user: mqm
+        ibm_messaging.ibmmq.queue_manager:
+          qmname: RECEIVER
+          state: running
+          mqsc_file: /var/mqm/receiver-config.mqsc
+        when: inventory_hostname == "receiver"
+
+      - name: Use our MQSC File to set up the SENDER
+        become: true
+        become_user: mqm
+        ibm_messaging.ibmmq.queue_manager:
+          qmname: SENDER
+          state: running
+          mqsc_file: /var/mqm/sender-config.mqsc
+        when: inventory_hostname == "sender"
