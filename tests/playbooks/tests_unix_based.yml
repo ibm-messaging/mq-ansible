@@ -3,29 +3,29 @@
   hosts: all
 
 - name: Test install - Ubuntu, RedHat, AIX
-  import_playbook: test_install.yml
+  import_playbook: 1_test_install.yml
 
 - name: Set up for testing
-  import_playbook: setup_test.yml
+  import_playbook: 2_setup_test.yml
 
 # - name: Test queue manager module functionalities
 - name: Test absent queue manager
-  import_playbook: test_absent_qmgr.yml
+  import_playbook: 3_test_absent_qmgr.yml
 
 - name: Test present queue manager
-  import_playbook: test_present_qmgr.yml
+  import_playbook: 4_test_present_qmgr.yml
 
 - name: Test running queue manager
-  import_playbook: test_running_qmgr.yml
+  import_playbook: 5_test_running_qmgr.yml
 
 - name: Test queue manager (miscellaneous)
-  import_playbook: test_misc.yml
+  import_playbook: 6_test_misc.yml
 
 - name: Test web console
-  import_playbook: test_web_console.yml
+  import_playbook: 7_test_web_console.yml
 
 - name: Clean up after testing
-  import_playbook: cleanup_test.yml
+  import_playbook: 8_cleanup_test.yml
 
 - name: Test ALL_QMGRS
-  import_playbook: test_all_qmgrs.yml
+  import_playbook: 9_test_all_qmgrs.yml
