@@ -27,7 +27,4 @@ IBM requires that each Contribution You Submit now or in the future comply with 
 Contributions.
 3) Whatever content You Contribute will be provided under the license(s) associated with the particular IBM GitHub repository You are contributing to.
 4) You understand and agree that IBM GitHub repositories and Your contributions are public, and that a record of the contribution (including all personal information You submit with it)
-is maintained indefinitely and may be redistributed consistent with the license(s) involved.
-You will promptly notify the Eclipse Foundation if You become aware of any facts or circumstances that would make these commitments inaccurate in any way.
-To do so, please create an Issue in the appropriate GitHub repository.
-
+is maintained indefinitely and may be redistributed consistent with the license(s) involved. You will promptly create an Issue in the appropriate GitHub repository if You become aware of any facts or circumstances that would make these commitments inaccurate in any way.
