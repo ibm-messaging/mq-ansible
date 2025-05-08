@@ -35,5 +35,15 @@
     vrmf: '{{ vrmf940 }}'
   when: convention=='new' and version==940
 
+- name: Set V.R.M.F to 9.4.1 if version matches
+  ansible.builtin.set_fact:
+    vrmf: '{{ vrmf941 }}'
+  when: convention=='new' and version==941
+
+- name: Set V.R.M.F to 9.4.2 if version matches
+  ansible.builtin.set_fact:
+    vrmf: '{{ vrmf942 }}'
+  when: convention=='new' and version==942
+
 - name: Including the task list for this platform
   ansible.builtin.include_tasks: "{{ ansible_system }}_{{ ansible_architecture }}_{{ role_name }}.yml"
