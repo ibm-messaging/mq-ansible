@@ -26,5 +26,5 @@
   ansible.builtin.unarchive:
     src: /tmp/mq.tar.gz
     remote_src: true
-    dest: /tmp
+    dest: /opt/mq
   tags: download
