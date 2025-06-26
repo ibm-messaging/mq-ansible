@@ -8,7 +8,7 @@
 - name: Download MQ Advanced for Developers
   ansible.builtin.get_url:
     url: "{{ downloadURL }}{{ zip_file }}"
-    dest: /tmp/mq.tar.gz
+    dest: /var/mq.tar.gz
     force: false
     mode: "0644"
   tags: download
@@ -18,13 +18,13 @@
 - name: Copy local MQ source to target
   ansible.builtin.copy:
     src: "{{ mq_local_path }}"
-    dest: /vtmp/mq.tar.gz
+    dest: /var/mq.tar.gz
   tags: download
   when: local_source
 
 - name: Extract MQ fom TAR
   ansible.builtin.unarchive:
-    src: /tmp/mq.tar.gz
+    src: /var/mq.tar.gz
     remote_src: true
-    dest: /opt/mq
+    dest: /var
   tags: download
