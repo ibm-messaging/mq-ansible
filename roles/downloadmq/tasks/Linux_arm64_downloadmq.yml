@@ -1,7 +1,7 @@
 ---
 - name: Set filename of zip for arm64
   ansible.builtin.set_fact:
-    zip_file: '{{ vrmf }}-IBM-MQ-Advanced-for-Developers-UbuntuLinuxARM64.tar.gz    '
+    zip_file: '{{ vrmf }}-IBM-MQ-Advanced-for-Developers-UbuntuLinuxARM64.tar.gz'
 
 
 # Get the file if local source is false
