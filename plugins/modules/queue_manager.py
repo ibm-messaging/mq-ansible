@@ -35,10 +35,45 @@ def check_status_queue_managers(qmname, module):
     return False
 
 
+def build_crtmqm_command(qmname, module):
+    """Build the crtmqm command with all supported flags"""
+    cmd = ['crtmqm']
+    
+    # Add data directory if specified
+    if module.params.get('data_dir'):
+        cmd.extend(['-md', module.params['data_dir']])
+    
+    # Add log directory if specified
+    if module.params.get('log_dir'):
+        cmd.extend(['-ld', module.params['log_dir']])
+    
+    # Add log file size if specified
+    if module.params.get('log_file_size'):
+        cmd.extend(['-lf', str(module.params['log_file_size'])])
+    
+    # Add log primary files if specified
+    if module.params.get('log_primary'):
+        cmd.extend(['-lp', str(module.params['log_primary'])])
+    
+    # Add log secondary files if specified
+    if module.params.get('log_secondary'):
+        cmd.extend(['-ls', str(module.params['log_secondary'])])
+    
+    # Add queue manager description if specified
+    if module.params.get('description'):
+        cmd.extend(['-c', module.params['description']])
+    
+    # Add queue manager name at the end
+    cmd.append(qmname)
+    
+    return cmd
+
 
 def state_present(qmname, module):
     if module.params['unit_test'] is False:
-        rc, stdout, stderr = module.run_command(['crtmqm', qmname])
+        # Use the function to build the command with all parameters
+        cmd = build_crtmqm_command(qmname, module)
+        rc, stdout, stderr = module.run_command(cmd)
         result['rc'] = rc
 
         if module.params['mqsc_file'] is not None:
@@ -93,7 +128,8 @@ def state_running(qmname, module):
 
         if rc == 72:
             # QMGR does not exist Create then set running
-            rc, stdout, stderr = module.run_command(['crtmqm', qmname])
+            cmd = build_crtmqm_command(qmname, module)
+            rc, stdout, stderr = module.run_command(cmd)
             if rc > 0:
                 # Critical Error
                 module.fail_json(**result)
@@ -185,7 +221,12 @@ def main():
         state=dict(type='str', required=True),
         description=dict(type='str', required=False),
         unit_test=dict(type='bool', default=False, required=False),
-        mqsc_file=dict(type='str', required=False)
+        mqsc_file=dict(type='str', required=False),
+        data_dir=dict(type='str', required=False),
+        log_dir=dict(type='str', required=False),
+        log_file_size=dict(type='int', required=False),
+        log_primary=dict(type='int', required=False),
+        log_secondary=dict(type='int', required=False)
     )
 
     module = AnsibleModule(
