@@ -61,7 +61,7 @@ def build_crtmqm_command(qmname, module):
     
     # Add queue manager description if specified
     if module.params.get('description'):
-        cmd.extend(['-q', module.params['description']])
+        cmd.extend(['-c', module.params['description']])
     
     # Add queue manager name at the end
     cmd.append(qmname)
