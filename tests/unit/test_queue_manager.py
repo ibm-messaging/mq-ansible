@@ -84,6 +84,60 @@ class TestQueueManager(unittest.TestCase):
             queue_manager.main()
         self.assertEquals(result.exception.args[0]['state'], 'present')
 
+    def test_create_qm_with_data_dir(self):
+        set_module_args({
+            'qmname': 'qm1',
+            'state': 'present',
+            'description': 'testing',
+            'data_dir': '/mnt/mqm/qmgrs/qm1/data',
+            'unit_test': True
+        })
+        with self.assertRaises(AnsibleExitJson) as result:
+            queue_manager.main()
+        self.assertEquals(result.exception.args[0]['state'], 'present')
+
+    def test_create_qm_with_log_dir(self):
+        set_module_args({
+            'qmname': 'qm1',
+            'state': 'present',
+            'description': 'testing',
+            'log_dir': '/mnt/mqm/qmgrs/qm1/logs',
+            'unit_test': True
+        })
+        with self.assertRaises(AnsibleExitJson) as result:
+            queue_manager.main()
+        self.assertEquals(result.exception.args[0]['state'], 'present')
+
+    def test_create_qm_with_log_parameters(self):
+        set_module_args({
+            'qmname': 'qm1',
+            'state': 'present',
+            'description': 'testing',
+            'log_file_size': 8192,
+            'log_primary': 200,
+            'log_secondary': 200,
+            'unit_test': True
+        })
+        with self.assertRaises(AnsibleExitJson) as result:
+            queue_manager.main()
+        self.assertEquals(result.exception.args[0]['state'], 'present')
+
+    def test_create_qm_with_all_parameters(self):
+        set_module_args({
+            'qmname': 'qm1',
+            'state': 'present',
+            'description': 'testing',
+            'data_dir': '/mnt/mqm/qmgrs/qm1/data',
+            'log_dir': '/mnt/mqm/qmgrs/qm1/logs',
+            'log_file_size': 8192,
+            'log_primary': 200,
+            'log_secondary': 200,
+            'unit_test': True
+        })
+        with self.assertRaises(AnsibleExitJson) as result:
+            queue_manager.main()
+        self.assertEquals(result.exception.args[0]['state'], 'present')
+
     def test_delete_qm(self):
         set_module_args({
             'qmname': 'qm1',
@@ -109,12 +163,49 @@ class TestQueueManager(unittest.TestCase):
         self.assertEquals(result.exception.args[0]['msg'], 'IBM MQ queue manager \'qm1\' started')
         self.assertEquals(result.exception.args[0]['rc'], 0)
 
+    def test_start_qmgr_with_all_parameters(self):
+        set_module_args({
+            'qmname': 'qm1',
+            'state': 'running',
+            'description': 'testing',
+            'data_dir': '/mnt/mqm/qmgrs/qm1/data',
+            'log_dir': '/mnt/mqm/qmgrs/qm1/logs',
+            'log_file_size': 8192,
+            'log_primary': 200,
+            'log_secondary': 200,
+            'unit_test': True
+        })
+        with self.assertRaises(AnsibleExitJson) as result:
+            queue_manager.main()
+        self.assertEquals(result.exception.args[0]['state'], 'running')
+        self.assertEquals(result.exception.args[0]['msg'], 'IBM MQ queue manager \'qm1\' started')
+        self.assertEquals(result.exception.args[0]['rc'], 0)
+
     def test_runmqsc_on_qmgr(self):
         set_module_args({
             'qmname': 'qm1',
             'state': 'present',
             'description': 'testing',
             'mqsc_file': 'testing_file',
+            'unit_test': True
+        })
+        with self.assertRaises(AnsibleExitJson) as result:
+            queue_manager.main()
+        self.assertEquals(result.exception.args[0]['state'], 'present')
+        self.assertEquals(result.exception.args[0]['msg'], 'runmqsc command ran successfully')
+        self.assertEquals(result.exception.args[0]['rc'], 0)
+
+    def test_runmqsc_on_qmgr_with_all_parameters(self):
+        set_module_args({
+            'qmname': 'qm1',
+            'state': 'present',
+            'description': 'testing',
+            'mqsc_file': 'testing_file',
+            'data_dir': '/mnt/mqm/qmgrs/qm1/data',
+            'log_dir': '/mnt/mqm/qmgrs/qm1/logs',
+            'log_file_size': 8192,
+            'log_primary': 200,
+            'log_secondary': 200,
             'unit_test': True
         })
         with self.assertRaises(AnsibleExitJson) as result:
