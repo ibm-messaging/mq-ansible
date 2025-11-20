@@ -1,0 +1,30 @@
+---
+- name: Set filename of zip for arm64
+  ansible.builtin.set_fact:
+    zip_file: '{{ vrmf }}-IBM-MQ-Advanced-for-Developers-UbuntuLinuxARM64.tar.gz'
+
+
+# Get the file if local source is false
+- name: Download MQ Advanced for Developers
+  ansible.builtin.get_url:
+    url: "{{ downloadURL }}{{ zip_file }}"
+    dest: /var/mq.tar.gz
+    force: false
+    mode: "0644"
+  tags: download
+  when: not local_source
+
+# Copy source to target if local source is true
+- name: Copy local MQ source to target
+  ansible.builtin.copy:
+    src: "{{ mq_local_path }}"
+    dest: /var/mq.tar.gz
+  tags: download
+  when: local_source
+
+- name: Extract MQ fom TAR
+  ansible.builtin.unarchive:
+    src: /var/mq.tar.gz
+    remote_src: true
+    dest: /var
+  tags: download
