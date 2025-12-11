@@ -65,7 +65,9 @@
   loop:
     "{{ package_files.results }}"
   when: 
-    - item.files is defined and item.files | length > 0 and item.files.0.path is defined
+    - item.files is defined
+    - item.files | length > 0
+    - item.files.0.path is defined
     - ansible_architecture == 'aarch64'
 
 
