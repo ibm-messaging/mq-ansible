@@ -1,0 +1,8 @@
+---
+- name: Including the vars for this platform
+  ansible.builtin.include_vars: "{{ ansible_system }}_{{ role_name }}.yml"
+  ignore_errors: true
+
+- name: Including the task list for this platform
+  ansible.builtin.include_tasks: "{{ ansible_system }}_{{ role_name }}.yml"
+

@@ -1,0 +1,79 @@
+---
+- name: Check if IBM MQ is installed
+  ansible.builtin.command: dspmqver
+  changed_when: false
+  register: mq_installed
+  ignore_errors: true
+
+- name: Get list of installed MQ packages
+  ansible.builtin.shell: lslpp -l | grep mqm | awk '{print $1}' | sort -r
+  register: mq_packages
+  changed_when: false
+  failed_when: false
+  when: mq_installed.rc == 0
+
+- name: Uninstall MQ packages
+  become: true
+  ansible.builtin.shell: |
+    installp -u {{ item }}
+  loop: "{{ mq_packages.stdout_lines }}"
+  when:
+    - mq_installed.rc == 0
+    - mq_packages.stdout_lines is defined
+    - mq_packages.stdout_lines | length > 0
+  register: uninstall_result
+  changed_when: "'SUCCESS' in uninstall_result.stdout or uninstall_result.rc == 0"
+  failed_when: false
+
+- name: Remove MQ environment variables from profile
+  become: true
+  ansible.builtin.lineinfile:
+    dest: /etc/profile
+    state: absent
+    line: . /opt/mqm/bin/setmqenv -s
+
+- name: Remove MQ installation directory
+  become: true
+  ansible.builtin.file:
+    path: /opt/mqm
+    state: absent
+  when: remove_mq_directories | default(false)
+
+- name: Remove MQ data directory
+  become: true
+  ansible.builtin.file:
+    path: /var/mqm
+    state: absent
+  when: remove_mq_directories | default(false)
+
+- name: Remove MQ Server download directory
+  become: true
+  ansible.builtin.file:
+    path: /tmp/MQServer
+    state: absent
+  when: remove_mq_directories | default(false)
+
+- name: Remove MQ license status file
+  become: true
+  ansible.builtin.file:
+    path: /tmp/MQServer/licensestatus.txt
+    state: absent
+  ignore_errors: true
+
+
+- name: Remove mqm user
+  become: true
+  ansible.builtin.user:
+    name: mqm
+    state: absent
+    remove: true
+  when: remove_mq_users | default(false)
+  ignore_errors: true
+
+- name: Remove mqm group
+  become: true
+  ansible.builtin.group:
+    name: mqm
+    state: absent
+  when: remove_mq_users | default(false)
+  ignore_errors: true

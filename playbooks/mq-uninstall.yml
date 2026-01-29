@@ -1,0 +1,6 @@
+- hosts: servers
+  roles:
+    - role: uninstallmq
+      vars:
+        remove_mq_directories: true
+        remove_mq_users: true
