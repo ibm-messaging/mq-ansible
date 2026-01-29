@@ -1,0 +1,11 @@
+---
+# Whether to remove MQ directories after uninstall
+# Set to true to remove /opt/mqm, /var/mqm, and download directories
+# Set to false to keep directories (useful for preserving queue manager data)
+remove_mq_directories: false
+
+# Whether to remove MQ user and group after uninstall
+# Set to true to remove mqm user and mqm group
+# Set to false to keep user and group (useful if you plan to reinstall)
+remove_mq_users: false
+

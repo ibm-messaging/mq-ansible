@@ -1,0 +1,90 @@
+---
+- name: Gather package facts
+  ansible.builtin.package_facts:
+    manager: auto
+
+- name: Get list of installed MQ RPM packages (RedHat)
+  ansible.builtin.shell: rpm -qa | grep -i mqseries | sort -r
+  register: mq_rpm_packages
+  changed_when: false
+  failed_when: false
+  when:
+    - ansible_distribution == 'RedHat'
+    - '"MQSeriesRuntime" in ansible_facts.packages'
+
+- name: Get list of installed MQ DEB packages (Ubuntu)
+  ansible.builtin.shell: dpkg -l | grep ibmmq | awk '{print $2}' | sort -r
+  register: mq_deb_packages
+  changed_when: false
+  failed_when: false
+  when:
+    - ansible_distribution == 'Ubuntu'
+    - '"ibmmq-runtime" in ansible_facts.packages'
+
+- name: Uninstall MQ RPM packages (RedHat)
+  become: true
+  ansible.builtin.dnf:
+    name: "{{ item }}"
+    state: absent
+  loop: "{{ mq_rpm_packages.stdout_lines }}"
+  when:
+    - ansible_distribution == 'RedHat'
+    - mq_rpm_packages.stdout_lines is defined
+    - mq_rpm_packages.stdout_lines | length > 0
+
+- name: Uninstall MQ DEB packages (Ubuntu)
+  become: true
+  ansible.builtin.apt:
+    name: "{{ item }}"
+    state: absent
+    purge: true
+  loop: "{{ mq_deb_packages.stdout_lines }}"
+  when:
+    - ansible_distribution == 'Ubuntu'
+    - mq_deb_packages.stdout_lines is defined
+    - mq_deb_packages.stdout_lines | length > 0
+
+- name: Remove MQ installation directory
+  become: true
+  ansible.builtin.file:
+    path: /opt/mqm
+    state: absent
+  when: remove_mq_directories | default(false)
+
+- name: Remove MQ data directory
+  become: true
+  ansible.builtin.file:
+    path: /var/mqm
+    state: absent
+  when: remove_mq_directories | default(false)
+
+- name: Remove MQ Server download directory
+  become: true
+  ansible.builtin.file:
+    path: /var/MQServer
+    state: absent
+  when: remove_mq_directories | default(false)
+
+- name: Remove MQ license status file
+  become: true
+  ansible.builtin.file:
+    path: /var/MQServer/licensestatus.txt
+    state: absent
+  ignore_errors: true
+
+- name: Remove mqm user
+  become: true
+  ansible.builtin.user:
+    name: mqm
+    state: absent
+    remove: true
+  when: remove_mq_users | default(false)
+  ignore_errors: true
+
+- name: Remove mqm group
+  become: true
+  ansible.builtin.group:
+    name: mqm
+    state: absent
+  when: remove_mq_users | default(false)
+  ignore_errors: true
