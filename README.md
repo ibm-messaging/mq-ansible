@@ -102,6 +102,14 @@ The playbooks and roles in this collection carry out an installation of IBM MQ A
         - 'QM1'
         - 'QM2'
         state: 'present'
+    
+    - name: Create queue manager with queues
+      queue_manager:
+        qmname: 'QM3'
+        state: 'running'
+        queues:
+          - APP.QUEUE.1
+          - APP.QUEUE.2
 ```
 
 `mq-upgrade.yml` - this playbook installs an applicable fix pack to an existing MQ installation
@@ -147,7 +155,7 @@ The playbooks and roles in this collection carry out an installation of IBM MQ A
 
 ## Modules for IBM MQ resources' configuration
 
-- `queue_manager.py` - Creates, starts, deletes an IBM MQ queue manager and runs an MQSC file. See the documentation [here.](docs/QUEUE_MANAGER.md)
+- `queue_manager.py` - Creates, starts, deletes an IBM MQ queue manager, runs an MQSC file, and creates queues. See the documentation [here.](docs/QUEUE_MANAGER.md)
 
 ## Installation roles on Windows machines
 
@@ -306,7 +314,7 @@ To run the test playbooks first:
 6. if any of the tests fail, run:
 
    ```shell
-      ansible-playbook --inventory 'inventory.ini' cleanup_test.yml
+      ansible-playbook --inventory 'inventory.ini' 9_cleanup_test.yml
     ```
 
 # Ansible Galaxy - Installation
@@ -393,13 +401,16 @@ To run the test playbooks first:
             qmname: queue_manager_12
             state: present
 
-        - name: Use our MQSC File
+        - name: Use our MQSC File and create queues
           become: true
           become_user: mqm
           ibm_messaging.ibmmq.queue_manager:
             qmname: queue_manager_12
             state: running
             mqsc_file: /var/mqm/dev-config.mqsc
+            queues:
+              - APP.QUEUE.1
+              - APP.QUEUE.2
             
 ```
 

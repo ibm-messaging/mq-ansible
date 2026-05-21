@@ -194,3 +194,54 @@
         state: absent
       register: testout_3
       failed_when: false
+
+    - name: Stop qmgr if running
+      queue_manager:
+        qmname: qm_with_queues_present
+        state: stopped
+      register: testout_4
+      failed_when: false
+    
+    - name: Delete qmgr
+      until: testout_5.state == 'absent'
+      retries: 3
+      delay: 1
+      queue_manager:
+        qmname: qm_with_queues_present
+        state: absent
+      register: testout_5
+      failed_when: false
+
+    - name: Stop qmgr if running
+      queue_manager:
+        qmname: qm_with_queues_running
+        state: stopped
+      register: testout_6
+      failed_when: false
+    
+    - name: Delete qmgr
+      until: testout_7.state == 'absent'
+      retries: 3
+      delay: 1
+      queue_manager:
+        qmname: qm_with_queues_running
+        state: absent
+      register: testout_7
+      failed_when: false
+
+    - name: Stop qmgr if running
+      queue_manager:
+        qmname: qm_queues_and_mqsc
+        state: stopped
+      register: testout_8
+      failed_when: false
+    
+    - name: Delete qmgr
+      until: testout_9.state == 'absent'
+      retries: 3
+      delay: 1
+      queue_manager:
+        qmname: qm_queues_and_mqsc
+        state: absent
+      register: testout_9
+      failed_when: false

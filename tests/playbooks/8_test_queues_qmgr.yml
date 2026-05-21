@@ -1,0 +1,137 @@
+---
+- name: Test queue creation with queue manager
+  hosts: all
+  become: true
+  become_user: mqm
+  environment:
+    PATH: /opt/mqm/bin:{{ ansible_env.PATH }}
+  
+  tasks:
+    - name: Create queue manager (state present)
+      queue_manager:
+        qmname: qm_with_queues_present
+        state: present
+      register: testout
+      failed_when: false
+    
+    - name: Test queue manager creation
+      assert:
+        that:
+          - testout.state == 'present'
+          - testout.rc == 0
+        fail_msg: "<<FAILED>> {{testout.msg}}"
+        success_msg: "<<SUCCESS>> {{testout.msg}}"
+    
+    - name: Add queues to queue manager
+      queue_manager:
+        qmname: qm_with_queues_present
+        state: present
+        queues:
+          - TEST.QUEUE.1
+          - TEST.QUEUE.2
+          - TEST.QUEUE.3
+      register: testout
+      failed_when: false
+    
+    - name: Test queue creation
+      assert:
+        that:
+          - testout.state == 'present'
+          - testout.rc == 0
+          - "'Created 3 queue(s)' in testout.msg"
+        fail_msg: "<<FAILED>> {{testout.msg}}"
+        success_msg: "<<SUCCESS>> {{testout.msg}}"
+    
+    - name: Start queue manager for verification
+      command: strmqm qm_with_queues_present
+      register: start_result
+      failed_when: false
+    
+    - name: Verify queues were created
+      shell: echo "DISPLAY QLOCAL(TEST.QUEUE.*)" | runmqsc qm_with_queues_present
+      register: queue_check
+      failed_when: false
+    
+    - name: Check queue verification output
+      assert:
+        that:
+          - "'TEST.QUEUE.1' in queue_check.stdout"
+          - "'TEST.QUEUE.2' in queue_check.stdout"
+          - "'TEST.QUEUE.3' in queue_check.stdout"
+        fail_msg: "<<FAILED>> Queues not found in output"
+        success_msg: "<<SUCCESS>> All queues verified"
+    
+    - name: Stop queue manager after verification
+      command: endmqm -i qm_with_queues_present
+      failed_when: false
+    
+    - name: Create queue manager with queues (state running)
+      queue_manager:
+        qmname: qm_with_queues_running
+        state: running
+        queues:
+          - APP.QUEUE.1
+          - APP.QUEUE.2
+      register: testout
+      failed_when: false
+    
+    - name: Test queue manager running with queues
+      assert:
+        that:
+          - testout.state == 'running'
+          - testout.rc == 0
+          - "'Created 2 queue(s)' in testout.msg"
+        fail_msg: "<<FAILED>> {{testout.msg}}"
+        success_msg: "<<SUCCESS>> {{testout.msg}}"
+    
+    - name: Verify queues were created on running queue manager
+      shell: echo "DISPLAY QLOCAL(APP.QUEUE.*)" | runmqsc qm_with_queues_running
+      register: queue_check_running
+      failed_when: false
+    
+    - name: Check running queue manager queue verification
+      assert:
+        that:
+          - "'APP.QUEUE.1' in queue_check_running.stdout"
+          - "'APP.QUEUE.2' in queue_check_running.stdout"
+        fail_msg: "<<FAILED>> Queues not found in running queue manager"
+        success_msg: "<<SUCCESS>> All queues verified on running queue manager"
+    
+    - name: Add queues to existing queue manager
+      queue_manager:
+        qmname: qm_with_queues_running
+        state: running
+        queues:
+          - ADDITIONAL.QUEUE.1
+          - ADDITIONAL.QUEUE.2
+      register: testout
+      failed_when: false
+    
+    - name: Test adding queues to existing queue manager
+      assert:
+        that:
+          - testout.state == 'running'
+          - testout.rc == 0
+        fail_msg: "<<FAILED>> {{testout.msg}}"
+        success_msg: "<<SUCCESS>> {{testout.msg}}"
+    
+    - name: Create queue manager with queues and MQSC file
+      queue_manager:
+        qmname: qm_queues_and_mqsc
+        state: running
+        mqsc_file: /var/mqm/mqsc_display
+        queues:
+          - COMBINED.QUEUE.1
+          - COMBINED.QUEUE.2
+      register: testout
+      failed_when: false
+    
+    - name: Test queue manager with both queues and MQSC file
+      assert:
+        that:
+          - testout.state == 'running'
+          - testout.rc == 0
+          - "'Created 2 queue(s)' in testout.msg"
+        fail_msg: "<<FAILED>> {{testout.msg}}"
+        success_msg: "<<SUCCESS>> {{testout.msg}}"
+    

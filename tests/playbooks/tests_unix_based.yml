@@ -24,8 +24,11 @@
 - name: Test web console
   import_playbook: 7_test_web_console.yml
 
+- name: Test queue creation with queue manager
+  import_playbook: 8_test_queues_qmgr.yml
+
 - name: Clean up after testing
-  import_playbook: 8_cleanup_test.yml
+  import_playbook: 9_cleanup_test.yml
 
 - name: Test ALL_QMGRS
-  import_playbook: 9_test_all_qmgrs.yml
+  import_playbook: 10_test_all_qmgrs.yml
