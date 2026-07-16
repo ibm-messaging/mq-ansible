@@ -314,7 +314,7 @@ To run the test playbooks first:
 6. if any of the tests fail, run:
 
    ```shell
-      ansible-playbook --inventory 'inventory.ini' 9_cleanup_test.yml
+      ansible-playbook --inventory 'inventory.ini' 8_cleanup_test.yml
     ```
 
 # Ansible Galaxy - Installation
