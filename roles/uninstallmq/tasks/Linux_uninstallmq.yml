@@ -3,6 +3,31 @@
   ansible.builtin.package_facts:
     manager: auto
 
+- name: Get list of running queue managers
+  become: true
+  ansible.builtin.shell: /opt/mqm/bin/dspmq -o status | awk -F'[()]' '/STATUS\(Running\)/{print $2}'
+  register: running_qmgrs
+  changed_when: false
+  failed_when: false
+
+- name: End all running queue managers
+  become: true
+  ansible.builtin.shell: /opt/mqm/bin/endmqm -i {{ item }}
+  loop: "{{ running_qmgrs.stdout_lines }}"
+  when: running_qmgrs.stdout_lines | default([]) | length > 0
+  failed_when: false
+
+- name: Wait for queue managers to stop
+  become: true
+  ansible.builtin.shell: /opt/mqm/bin/dspmq -o status | grep -c 'STATUS(Running)' || true
+  register: qmgr_status
+  retries: 12
+  delay: 5
+  until: qmgr_status.stdout | int == 0
+  changed_when: false
+  failed_when: false
+  when: running_qmgrs.stdout_lines | default([]) | length > 0
+
 - name: Get list of installed MQ RPM packages (RedHat)
   ansible.builtin.shell: rpm -qa | grep -i mqseries | sort -r
   register: mq_rpm_packages
