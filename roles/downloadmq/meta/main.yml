@@ -1,0 +1,10 @@
+galaxy_info:
+  role_name: downloadmq
+  author: IBM Corp.
+  description: Retrieves and unpackages the specified MQ installation.
+  license: Apache-2.0
+  min_ansible_version: "2.9"
+  platforms:
+    - name: EL
+      versions: [all]
+dependencies: []

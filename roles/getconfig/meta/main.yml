@@ -1,0 +1,10 @@
+galaxy_info:
+  role_name: getconfig
+  author: IBM Corp.
+  description: Retrieves and copies a local mqsc file to the target machine.
+  license: Apache-2.0
+  min_ansible_version: "2.9"
+  platforms:
+    - name: EL
+      versions: [all]
+dependencies: []
