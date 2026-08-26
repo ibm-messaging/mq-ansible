@@ -105,7 +105,7 @@ def run_mqsc_file(qmname, module):
                 result['msg'] = 'MQSC configuration successfully applied to queue manager.'
                 
         else:
-            rc, stdout, stderr = module.run_command(['strmqm', qmname])
+            rc, stdout, stderr = module.run_command(['strmqm', '-ns', qmname])
             rc, stdout, stderr = module.run_command(["runmqsc", qmname, "-f", module.params['mqsc_file']])
             result['rc'] = rc
             result['output'] = stdout + stderr
