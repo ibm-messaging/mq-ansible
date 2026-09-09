@@ -30,3 +30,11 @@
   ansible.builtin.file:
     path: /var/mqm/web/installations/Installation1/servers/mqweb/mqwebuser.xml
     mode: "0640"
+
+- name: Add app user to mqwebuser.xml basic registry
+  become: true
+  ansible.builtin.lineinfile:
+    path: /var/mqm/web/installations/Installation1/servers/mqweb/mqwebuser.xml
+    insertafter: '<user name="mqreader" password="mqreader"/>'
+    line: '        <user name="app" password="Passw0rd"/>'
+    state: present
