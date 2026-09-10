@@ -14,11 +14,16 @@
     zipFile: '{{ vrmf }}-IBM-MQ-Advanced-for-Developers-Win64.zip'
   when: ansible_os_family == 'Windows' and not local_source and convention=='new'
 
+- name: Remove previously cached MQ archive on Windows
+  ansible.windows.win_file:
+    path: "{{ directory }}\\mq.zip"
+    state: absent
+  when: ansible_os_family == 'Windows' and not local_source
+
 - name: Download MQ Advanced for Developers on Windows
   ansible.windows.win_get_url:
     url: "{{ downloadURL }}{{ zipFile }}"
     dest: "{{ directory }}\\mq.zip"
-    force: false
   tags: download
   when: ansible_os_family == 'Windows' and not local_source
 

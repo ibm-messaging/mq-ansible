@@ -1,0 +1,10 @@
+galaxy_info:
+  role_name: startconsole
+  author: IBM Corp.
+  description: Starts the MQ Web Console and allows access from anywhere.
+  license: Apache-2.0
+  min_ansible_version: "2.9"
+  platforms:
+    - name: EL
+      versions: [all]
+dependencies: []

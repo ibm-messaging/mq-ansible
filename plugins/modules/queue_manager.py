@@ -14,6 +14,141 @@
 # limitations under the License.
 #
 
+DOCUMENTATION = r'''
+---
+module: queue_manager
+short_description: Manage IBM MQ queue managers
+description:
+  - Create, start, stop, or delete an IBM MQ queue manager.
+  - Optionally run an MQSC command file against a queue manager.
+version_added: "1.0.0"
+author:
+  - ibm_messaging
+options:
+  qmname:
+    description:
+      - IBM MQ queue manager name.
+      - Use C(ALL_QMGRS) to target every queue manager defined on the system.
+    type: list
+    elements: str
+    required: true
+  state:
+    description:
+      - Desired state of the queue manager.
+    type: str
+    required: true
+    choices: [present, absent, running, stopped]
+  description:
+    description:
+      - Queue manager description.
+    type: str
+    required: false
+  mqsc_file:
+    description:
+      - Path to an MQSC command file to run against the queue manager.
+    type: str
+    required: false
+  data_dir:
+    description:
+      - Data directory path for the queue manager (C(-md) flag of C(crtmqm)).
+    type: str
+    required: false
+  log_dir:
+    description:
+      - Log directory path for the queue manager (C(-ld) flag of C(crtmqm)).
+    type: str
+    required: false
+  log_file_size:
+    description:
+      - Log file size in kilobytes (C(-lf) flag of C(crtmqm)).
+    type: int
+    required: false
+  log_primary:
+    description:
+      - Number of primary log files (C(-lp) flag of C(crtmqm)).
+    type: int
+    required: false
+  log_secondary:
+    description:
+      - Number of secondary log files (C(-ls) flag of C(crtmqm)).
+    type: int
+    required: false
+  unit_test:
+    description:
+      - Flag used for unit testing of the module. Do not set in production.
+    type: bool
+    required: false
+    default: false
+'''
+
+EXAMPLES = r'''
+- name: Create a queue manager
+  ibm_messaging.ibmmq.queue_manager:
+    qmname: QM1
+    state: present
+
+- name: Create a queue manager with custom paths and log settings
+  ibm_messaging.ibmmq.queue_manager:
+    qmname: QM1
+    state: present
+    data_dir: /var/mqm/qmgrs/QM1/data
+    log_dir: /var/mqm/qmgrs/QM1/logs
+    log_file_size: 8192
+    log_primary: 10
+    log_secondary: 20
+    description: My queue manager
+
+- name: Start a queue manager
+  ibm_messaging.ibmmq.queue_manager:
+    qmname: QM1
+    state: running
+
+- name: Stop a queue manager
+  ibm_messaging.ibmmq.queue_manager:
+    qmname: QM1
+    state: stopped
+
+- name: Delete a queue manager
+  ibm_messaging.ibmmq.queue_manager:
+    qmname: QM1
+    state: absent
+
+- name: Run an MQSC command file
+  ibm_messaging.ibmmq.queue_manager:
+    qmname: QM1
+    state: running
+    mqsc_file: /tmp/config.mqsc
+
+- name: Start all queue managers defined on the system
+  ibm_messaging.ibmmq.queue_manager:
+    qmname: ALL_QMGRS
+    state: running
+'''
+
+RETURN = r'''
+rc:
+  description: Return code of the last MQ command executed.
+  returned: always
+  type: int
+msg:
+  description: Human-readable description of the result.
+  returned: always
+  type: str
+state:
+  description: State of the queue manager after the operation.
+  returned: always
+  type: str
+output:
+  description: Raw stdout/stderr output from the MQ commands.
+  returned: always
+  type: str
+qmlists:
+  description: List of queue manager names when C(ALL_QMGRS) is used.
+  returned: when qmname is ALL_QMGRS
+  type: list
+  elements: str
+'''
+
 from ansible.module_utils.basic import AnsibleModule
 import os.path
 import re
@@ -294,8 +429,8 @@ def main():
     )
 
     if module.params['qmname'][0] == "ALL_QMGRS":
-        module.params['qmname'] = re.findall("(?<=QMNAME\()([^\)]*)", module.run_command(['dspmq'])[1])
-        result['qmlists'] = re.findall("(?<=QMNAME\()([^\)]*)", module.run_command(['dspmq'])[1])
+        module.params['qmname'] = re.findall(r"(?<=QMNAME\()([^\)]*)", module.run_command(['dspmq'])[1])
+        result['qmlists'] = re.findall(r"(?<=QMNAME\()([^\)]*)", module.run_command(['dspmq'])[1])
 
     ops = {
         "present": state_present,

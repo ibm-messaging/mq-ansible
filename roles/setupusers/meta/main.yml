@@ -1,0 +1,10 @@
+galaxy_info:
+  role_name: setupusers
+  author: IBM Corp.
+  description: Configures the relevant users required to install MQ on the target machine.
+  license: Apache-2.0
+  min_ansible_version: "2.9"
+  platforms:
+    - name: EL
+      versions: [all]
+dependencies: []
