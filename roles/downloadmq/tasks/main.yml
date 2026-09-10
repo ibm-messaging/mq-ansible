@@ -14,7 +14,7 @@
   when: convention is undefined
 
 # If new convention, set the respective v.r.m.f 
-# Supported releases as of now: 9.3.3, 9.3.4 and 9.3.5 and 9.4 LTS
+# Supported releases as of now: 9.3.3, 9.3.4 and 9.3.5, 9.4 LTS and 10.0
 - name: Set V.R.M.F to 9.3.3 if version matches
   ansible.builtin.set_fact:
     vrmf: '{{ vrmf933 }}'
@@ -59,6 +59,12 @@
   ansible.builtin.set_fact:
     vrmf: '{{ vrmf945 }}'
   when: convention=='new' and version==945
+
+
+- name: Set V.R.M.F to 10.0.0 if version matches
+  ansible.builtin.set_fact:
+    vrmf: "{{ vrmf1000 }}"
+  when: convention=="new" and version==1000
 
 - name: Including the task list for this platform
   ansible.builtin.include_tasks: "{{ ansible_system }}_{{ ansible_architecture }}_{{ role_name }}.yml"

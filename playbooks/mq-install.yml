@@ -5,6 +5,15 @@
   environment:
     PATH: /opt/mqm/bin:{{ ansible_env.PATH }}
 
+
+  pre_tasks:
+    - name: Install acl package (required for Ansible privilege escalation on Ubuntu)
+      ansible.builtin.apt:
+        name: acl
+        state: present
+        update_cache: false
+      when: ansible_distribution == 'Ubuntu'
+
   roles:
     - role: setupusers
       vars:
@@ -15,7 +24,7 @@
         mqm_profile: .profile
     - role: downloadmq
       vars:
-        version: 945
+        version: 1000
         downloadURL: https://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/messaging/mqadv/
     - role: installmq
     - role: setupenvironment
