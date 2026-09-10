@@ -90,6 +90,14 @@ def state_present(qmname, module):
         elif rc > 0:
             # Critical Error
             module.fail_json(**result)
+        
+        # Create queues if specified
+        if module.params.get('queues'):
+            queue_rc, queue_msg, queue_output = create_queues(qmname, module)
+            if queue_rc != 0:
+                result['rc'] = queue_rc
+            result['msg'] += ' ' + queue_msg
+            result['output'] += queue_output
 
 def run_mqsc_file(qmname, module):
     is_running = check_status_queue_managers(qmname, module)
@@ -120,6 +128,40 @@ def run_mqsc_file(qmname, module):
     return (result['rc'], result['msg'], result['output'])
 
 
+def create_queues(qmname, module):
+    """Create queues defined in the queues parameter"""
+    if not module.params.get('queues'):
+        return (0, '', '')
+    
+    is_running = check_status_queue_managers(qmname, module)
+    
+    # Build MQSC commands for queue creation
+    mqsc_commands = []
+    for queue_name in module.params['queues']:
+        mqsc_commands.append(f"DEFINE QLOCAL({queue_name})")
+    
+    mqsc_input = "\n".join(mqsc_commands)
+    
+    # Execute MQSC commands
+    if is_running:
+        rc, stdout, stderr = module.run_command(
+            ["runmqsc", qmname],
+            data=mqsc_input
+        )
+    else:
+        module.run_command(['strmqm', qmname])
+        rc, stdout, stderr = module.run_command(
+            ["runmqsc", qmname],
+            data=mqsc_input
+        )
+        module.run_command(['endmqm', qmname])
+    
+    output = stdout + stderr
+    msg = f"Created {len(module.params['queues'])} queue(s)" if rc == 0 else "Queue creation failed"
+    
+    return (rc, msg, output)
+
+
 def state_running(qmname, module):
     result['msg'] = 'IBM MQ queue manager \'' + str(qmname) + '\' started.'
     result['state'] = 'running'
@@ -139,19 +181,36 @@ def state_running(qmname, module):
         result['msg'] = stdout + stderr
             
 
-        if rc == 5 and module.params['mqsc_file'] is None:
+        if rc == 5:
             result['rc'] = 0
             result['msg'] = 'IBM MQ queue manager running'
             result['state'] = 'running'
-        elif rc == 5 and module.params['mqsc_file']:
-            run_mqsc_file(qmname, module)
-        elif rc == 0: 
             
+            if module.params['mqsc_file']:
+                result['rc'], result['msg'], result['output'] = run_mqsc_file(qmname, module)
+            
+            # Create queues if specified
+            if module.params.get('queues'):
+                queue_rc, queue_msg, queue_output = create_queues(qmname, module)
+                if queue_rc != 0:
+                    result['rc'] = queue_rc
+                result['msg'] += ' ' + queue_msg
+                result['output'] += queue_output
+                
+        elif rc == 0:
             result['state'] = 'running'
             result['msg'] = 'IBM MQ queue manager \'' + str(qmname) + '\' running.'
             
             if module.params['mqsc_file']:
-                run_mqsc_file(qmname, module)
+                result['rc'], result['msg'], result['output'] = run_mqsc_file(qmname, module)
+            
+            # Create queues if specified
+            if module.params.get('queues'):
+                queue_rc, queue_msg, queue_output = create_queues(qmname, module)
+                if queue_rc != 0:
+                    result['rc'] = queue_rc
+                result['msg'] += ' ' + queue_msg
+                result['output'] += queue_output
             
         else:
             # Critical Error
@@ -226,7 +285,8 @@ def main():
         log_dir=dict(type='str', required=False),
         log_file_size=dict(type='int', required=False),
         log_primary=dict(type='int', required=False),
-        log_secondary=dict(type='int', required=False)
+        log_secondary=dict(type='int', required=False),
+        queues=dict(type='list', required=False, elements='str')
     )
 
     module = AnsibleModule(
