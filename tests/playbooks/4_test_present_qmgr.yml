@@ -27,8 +27,8 @@
     - name: Test the output for present when Queue Manager exists
       assert:
         that:
-          - testout_1.state == 'present'
-          - testout_1.msg == 'AMQ8146E: IBM MQ queue manager not available.\n'
+          - "testout_1.state == 'present'"
+          - "testout_1.msg == 'AMQ8146E: IBM MQ queue manager not available.\\n'"
         fail_msg: "<<FAILED>> {{testout_1.msg}}"
         success_msg: "<<SUCCESS>> {{testout_1.msg}}"
 
@@ -42,8 +42,8 @@
     - name: Test the output for present when Queue Manager exists
       assert:
         that:
-          - testout_1.state == 'present'
-          - testout_1.msg == 'IBM MQ Queue Manager already exists. '
+          - "testout_1.state == 'present'"
+          - "testout_1.msg == 'IBM MQ Queue Manager already exists. '"
         fail_msg: "<<FAILED>> {{testout_1.msg}}"
         success_msg: "<<SUCCESS>> {{testout_1.msg}}"
 
@@ -58,9 +58,9 @@
     - name: Test the output for running when Queue Manager does exist
       assert:
         that:
-          - testout_2.state == 'running'
-          - testout_2.rc == 0
-          - testout_2.msg == 'IBM MQ queue manager \'qm1_present_start\' running.'
+          - "testout_2.state == 'running'"
+          - "testout_2.rc == 0"
+          - "testout_2.msg == \"IBM MQ queue manager 'qm1_present_start' running.\""
         fail_msg: "<<FAILED>> {{testout_2.msg}}"
         success_msg: "<<SUCCESS>> {{testout_2.msg}}"
 
@@ -75,7 +75,7 @@
     - name: Test the output for present when MQSC file is supplied
       assert:
         that:
-          - testout_3.state == 'present'
-          - testout_3.msg == 'IBM MQ Queue Manager already exists. MQSC configuration successfully applied to queue manager.'
+          - "testout_3.state == 'present'"
+          - "testout_3.msg == 'IBM MQ Queue Manager already exists. MQSC configuration successfully applied to queue manager.'"
         fail_msg: ' <<FAILED>> {{ testout_3.msg }}'
         success_msg: '<<SUCCESS>> {{ testout_3.msg }}'

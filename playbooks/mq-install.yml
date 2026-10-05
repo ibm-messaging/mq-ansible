@@ -6,11 +6,6 @@
     PATH: /opt/mqm/bin:{{ ansible_env.PATH }}
 
   pre_tasks:
-    - name: Ensure appPassword is provided
-      ansible.builtin.fail:
-        msg: "appPassword must be provided e.g. -e 'appPassword=YourPassword'"
-      when: appPassword is not defined
-
     - name: Install acl package (required for Ansible privilege escalation on Ubuntu)
       ansible.builtin.apt:
         name: acl

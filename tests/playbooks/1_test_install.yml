@@ -14,7 +14,7 @@
     - name: Test 'mqclient' group exists
       assert:
         that:
-          - '{{ testout_mqclient_group.stdout_lines }} is search("mqclient")'
+          - testout_mqclient_group.stdout is search("mqclient")
         fail_msg: "<<FAILED>> 'MQclient' group does not exist."
         success_msg: "<<SUCCESS>> 'MQclient' group exists."
 
@@ -26,7 +26,7 @@
     - name: Test 'app' user exists
       assert:
         that:
-          - '{{ testout_app_user.stdout_lines }} is search("app")'
+          - testout_app_user.stdout is search("app")
         fail_msg: "<<FAILED>> 'app' user does not exist."
         success_msg: "<<SUCCESS>> 'app' user exists."
 
@@ -60,7 +60,7 @@
 
     - name: Test licence accepted
       assert:
-        that: '{{ test_out_accepted }} is search("Proceed with install")'
+        that: test_out_accepted.stdout is search("Proceed with install")
         fail_msg: "<<FAILED>> License has not been accepted"
         success_msg: "<<SUCCESS>> License has been accepted"
 
@@ -71,16 +71,16 @@
 
     - name: Test mq installed and environment variables set
       assert:
-        that: '{{ testout_mq_version }} is search("LicenseType: Developer")'
+        that: "testout_mq_version.stdout is search('LicenseType: Developer')"
         fail_msg: "<<FAILED>> MQ might not be installed or environment variables have not been set"
-        success_msg: "<<SUCCESS>> MQ environment variables correctly set."      
+        success_msg: "<<SUCCESS>> MQ environment variables correctly set."
       when: ansible_architecture == 'x86_64'
 
     - name: Test mq installed and environment variables set
       assert:
-        that: '{{ testout_mq_version }} is search("LicenseType: Trial")'
+        that: "testout_mq_version.stdout is search('LicenseType: Trial')"
         fail_msg: "<<FAILED>> MQ might not be installed or environment variables have not been set"
-        success_msg: "<<SUCCESS>> MQ environment variables correctly set."      
+        success_msg: "<<SUCCESS>> MQ environment variables correctly set."
       when: ansible_architecture != 'x86_64'
 
 

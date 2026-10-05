@@ -30,7 +30,7 @@
     - name: test mqwebuser has correct permissions
       assert:
         that:
-          - '{{ testout_mqwebuser_permissions }} is search("-rw-r-----")'
+          - testout_mqwebuser_permissions.stdout is search("-rw-r-----")
         fail_msg: "<<FAILED>> not correct permissions."
         success_msg: "<<SUCCESS>> correct permissions."
     
@@ -48,7 +48,7 @@
     - name: test mq web console is running
       assert:
         that:
-          - '{{ testout_webconsole_status.stdout_lines }} is search("is running")'
+          - testout_webconsole_status.stdout is search("is running")
         fail_msg: "<<FAILED>> MQ web console is not running."
         success_msg: "<<SUCCESS>> MQ web console running"
       ignore_errors: true

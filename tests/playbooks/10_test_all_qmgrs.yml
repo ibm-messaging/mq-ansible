@@ -32,9 +32,9 @@
     - name: Test start output
       assert:
         that:
-          - testout_1.state == 'running'
-          - testout_1.rc == 0
-          - testout_1.msg == "IBM MQ queue manager 'qm2_all' running."
+          - "testout_1.state == 'running'"
+          - "testout_1.rc == 0"
+          - "testout_1.msg == \"IBM MQ queue manager 'qm2_all' running.\""
         fail_msg: '<<FAILED>> {{testout_1.msg}}'
         success_msg: '<<SUCCESS>> {{testout_1.msg}}'
 
@@ -52,9 +52,9 @@
     - name: Test stop output
       assert:
         that:
-          - testout_2.state == 'stopped'
-          - testout_2.rc == 0
-          - testout_2.msg == "Quiesce request accepted. The queue manager will stop when all outstanding work\nis complete.\n"
+          - "testout_2.state == 'stopped'"
+          - "testout_2.rc == 0"
+          - "testout_2.msg == 'Quiesce request accepted. The queue manager will stop when all outstanding work\\nis complete.\\n'"
         fail_msg: '<<FAILED>> {{testout_2.msg}}'
         success_msg: '<<SUCCESS>> {{testout_2.msg}}'
 
@@ -72,8 +72,8 @@
     - name: Test delete output
       assert:
         that:
-          - testout_3.state == 'absent'
-          - testout_3.rc == 0
-          - testout_3.msg == "IBM MQ queue manager 'qm2_all' deleted."
+          - "testout_3.state == 'absent'"
+          - "testout_3.rc == 0"
+          - "testout_3.msg == \"IBM MQ queue manager 'qm2_all' deleted.\""
         fail_msg: '<<FAILED>> {{testout_3.msg}}'
         success_msg: '<<SUCCESS>> {{testout_3.msg}}'
