@@ -364,7 +364,6 @@ def state_stopped(qmname, module):
             result['rc'] = 0
             result['msg'] = 'AMQ8118E: IBM MQ queue manager does not exist.'
             result['state'] = 'absent'
-            module.fail_json(**result)
         elif rc == 40:
             result['rc'] = 0
             result['msg'] = stdout + stderr
