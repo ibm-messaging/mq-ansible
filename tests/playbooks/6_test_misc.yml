@@ -22,9 +22,9 @@
     - name: Test delete output
       assert:
         that:
-          - testout_1.state == 'absent'
-          - testout_1.rc == 0
-          - testout_1.msg == "IBM MQ queue manager 'qm1_misc' deleted."
+          - "testout_1.state == 'absent'"
+          - "testout_1.rc == 0"
+          - "testout_1.msg == \"IBM MQ queue manager 'qm1_misc' deleted.\""
         fail_msg: '<<FAILED>> {{testout_1.msg}}'
         success_msg: '<<SUCCESS>> {{testout_1.msg}}'
 
@@ -40,8 +40,8 @@
       assert:
         that:
           # MQSC has run successfully
-          - testout_1.state == 'running'
-          - testout_1.rc == 0
-          - testout_1.msg == 'MQSC configuration successfully applied to queue manager.'
+          - "testout_1.state == 'running'"
+          - "testout_1.rc == 0"
+          - "testout_1.msg == 'MQSC configuration successfully applied to queue manager.'"
         fail_msg: '<<FAILED>> {{testout_1.msg}}'
         success_msg: '<<SUCCESS>> {{testout_1.msg}}'

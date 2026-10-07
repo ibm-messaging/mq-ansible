@@ -30,3 +30,37 @@
   ansible.builtin.file:
     path: /var/mqm/web/installations/Installation1/servers/mqweb/mqwebuser.xml
     mode: "0640"
+
+- name: Add app user to mqwebuser.xml basic registry
+  become: true
+  ansible.builtin.lineinfile:
+    path: /var/mqm/web/installations/Installation1/servers/mqweb/mqwebuser.xml
+    insertafter: '<user name="mqreader" password="mqreader"/>'
+    line: '        <user name="app" password="{{ appPassword }}"/>'
+    state: present
+
+- name: Add applications group with app member to mqwebuser.xml
+  become: true
+  ansible.builtin.lineinfile:
+    path: /var/mqm/web/installations/Installation1/servers/mqweb/mqwebuser.xml
+    insertafter: '<member name="mqadmin"/>'
+    line: "        </group>\n        <group name=\"applications\">\n           <member name=\"app\"/>"
+    state: present
+
+- name: Replace ALL_AUTHENTICATED_USERS with applications group in MQ Console MQWebUser role
+  become: true
+  ansible.builtin.replace:
+    path: /var/mqm/web/installations/Installation1/servers/mqweb/mqwebuser.xml
+    after: '<enterpriseApplication id="com.ibm.mq.console">'
+    before: '</enterpriseApplication>'
+    regexp: '<special-subject type="ALL_AUTHENTICATED_USERS"/>'
+    replace: '<group name="applications" realm="defaultRealm"/>'
+
+- name: Replace ALL_AUTHENTICATED_USERS with applications group in MQ REST API MQWebUser role
+  become: true
+  ansible.builtin.replace:
+    path: /var/mqm/web/installations/Installation1/servers/mqweb/mqwebuser.xml
+    after: '<enterpriseApplication id="com.ibm.mq.rest">'
+    before: '</enterpriseApplication>'
+    regexp: '<special-subject type="ALL_AUTHENTICATED_USERS"/>'
+    replace: '<group name="applications" realm="defaultRealm"/>'

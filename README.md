@@ -237,8 +237,10 @@ The sample playbook [`ibmmq.yml`](playbooks/ibmmq.yml) installs IBM MQ Advanced 
 2. Run the following command to execute the tasks within the playbook:
 
     ```shell
-      ansible-playbook ./ibmmq.yml -i inventory.ini -e 'ibmMqLicence=accept'
+      ansible-playbook ./ibmmq.yml -i inventory.ini -e 'ibmMqLicence=accept' -e 'appPassword=YourPassword'
     ```
+
+      Replace `YourPassword` with a password of your choice. This will be set as the password for the `app` user used to connect to the MQ REST API and web console.
 
       - ##### *Note*: you can optionally add `-K` (uppercase) to the command, this will prompt the user to enter the sudo password for [YOUR_SSH_USER] on the target machine, you can omit if you have setup SSH keys
 
@@ -417,7 +419,7 @@ To run the test playbooks first:
 5. run it with
 
     ```
-    ansible-playbook setup-playbook.yml -i ./inventory.ini -e 'ibmMqLicence=accept'
+    ansible-playbook setup-playbook.yml -i ./inventory.ini -e 'ibmMqLicence=accept' -e 'appPassword=YourPassword'
     ```
 
 # License

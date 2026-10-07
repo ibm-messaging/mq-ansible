@@ -8,10 +8,8 @@
 
 - name: Add the user 'app' with a specific UID
   become: true
-  vars:
-    apppassword: Passw0rd
   ansible.builtin.user:
     name: app
-    password: "{{ 'apppassword' | password_hash('sha512', 65534 | random(seed=inventory_hostname) | string) }}"
+    password: "{{ appPassword | password_hash('sha512', 65534 | random(seed=inventory_hostname) | string) }}"
     uid: "{{ gid }}"
     group: mqclient
